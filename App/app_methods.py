@@ -93,7 +93,7 @@ def graph():
     colors = [t >= 200 for t in sizes]
     fig, ax = plt.subplots(subplot_kw=dict(facecolor='#EEEEEE'))
     scatter = ax.scatter(task_list['Impact'].tolist(), task_list['Effort'].tolist(), s=sizes, c=colors)
-    ax.set_xlim(0, 10)
+    ax.set_xlim(0, 16)
     ax.set_ylim(0, 10)
     plt.ylabel('Effort', fontsize=15)
     plt.xlabel('Impact', fontsize=15)
