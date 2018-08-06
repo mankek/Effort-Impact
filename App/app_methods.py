@@ -86,8 +86,11 @@ def graph():
             sizes.append((1 / (int(due[0]) / 24)) * 100)
         elif due[1][0] == 'd':
             sizes.append((1 / (int(due[0]))) * 100)
+        elif due[1][0] == 'i':
+            sizes.append(300)
+    colors = [t > 100 for t in sizes]
     fig, ax = plt.subplots(subplot_kw=dict(facecolor='#EEEEEE'))
-    scatter = ax.scatter(task_list['Impact'].tolist(), task_list['Effort'].tolist(), s=sizes)
+    scatter = ax.scatter(task_list['Impact'].tolist(), task_list['Effort'].tolist(), s=sizes, c=colors)
     ax.set_xlim(0, 10)
     ax.set_ylim(0, 10)
     plt.ylabel('Effort', fontsize=15)
@@ -107,13 +110,16 @@ def graph():
 def due_day(year, month, day):
     x = datetime.datetime(year, month, day)
     y = datetime.datetime.today()
-    t = x - y
-    one_day = datetime.timedelta(days=1)
-    if t < one_day:
-        return str(round(t.seconds/3600)) + ' hours left!'
-    elif t == one_day:
-        return str(t.days) + ' day left'
-    else:
-        return str(t.days) + ' days left!'
+    if x > y:
+        t = x - y
+        one_day = datetime.timedelta(days=1)
+        if t < one_day:
+            return str(round(t.seconds/3600)) + ' hours left!'
+        elif t == one_day:
+            return str(t.days) + ' day left'
+        else:
+            return str(t.days) + ' days left!'
+    elif y > x:
+        return "Task is past due"
 
 

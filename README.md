@@ -16,3 +16,5 @@ Generates a graph in a seperate window that graphs Effort vs. Impact with Task d
 Can update specific fields of a specific task
 
 When a point on the graph is hovered over, it shows all info for that task
+
+When the deadline date is passed, the point is different color and the Deadline field says the task is past due
