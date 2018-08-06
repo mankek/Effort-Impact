@@ -60,7 +60,7 @@
             Description: <input type="text" name="Description" required><br>
             Effort (0-10): <input type="number" name="Effort" required><br>
             Impact (0-10): <input type="number" name="Impact" required><br>
-            Deadline: <input type="date" name="Deadline"><br>
+            Deadline: <input type="date" name="Deadline">   <input type="time" name="time"><br>
             Subject: <input type="text" name="Subject" required><br>
             Notes: <input type="text" name="Notes" value="None"><br>
             <br>
@@ -77,9 +77,11 @@
     </form>
     <form action="/update" method="post">
         <div id="form3">
-            Task ID #: <input type="number" name="id" required><br>
-            Field: <input type="text" id="field" name="Field" required><br>
-            Content: <input type="text" id="change" name="Content"><br>
+            <div id="inputs">
+                Task ID #: <input type="number" name="id" required><br>
+                Field: <input type="text" id="field" name="Field" required><br>
+                Content: <input type="text" id="change" name="Content"><br>
+            </div>
             <br>
             <button type="button" onclick="change_type('date')">Click me to select a date!</button><button type="button" onclick="change_type('number')">Click me to select a number!</button>
             <br>
@@ -109,7 +111,15 @@
 
         function change_type(new_type) {
             document.getElementById("change").type = new_type;
-            }
+            if (new_type == 'date') {
+                var new_time = document.createElement("INPUT");
+                new_time.setAttribute("type", "time");
+                new_time.setAttribute("name", "up_time");
+                var text = document.createTextNode("New Time!");
+                new_time.appendChild(text);
+                document.getElementById("inputs").appendChild(new_time);
+            };
+        }
     </script>
     <script>
         // Function to control form visibility

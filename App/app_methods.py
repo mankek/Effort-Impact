@@ -81,14 +81,16 @@ def graph():
         """
     sizes = []
     for i in task_list['Deadline']:
-        due = i.split('\n')[1].split(" ")
+        due = i.split('\n')[2].split(" ")
         if due[1][0] == 'h':
             sizes.append((1 / (int(due[0]) / 24)) * 100)
         elif due[1][0] == 'd':
             sizes.append((1 / (int(due[0]))) * 100)
         elif due[1][0] == 'i':
             sizes.append(300)
-    colors = [t > 100 for t in sizes]
+        elif due[1][0] == 't':
+            sizes.append(200)
+    colors = [t >= 200 for t in sizes]
     fig, ax = plt.subplots(subplot_kw=dict(facecolor='#EEEEEE'))
     scatter = ax.scatter(task_list['Impact'].tolist(), task_list['Effort'].tolist(), s=sizes, c=colors)
     ax.set_xlim(0, 10)
@@ -107,10 +109,12 @@ def graph():
 
 
 # Changes Deadline date to days/hours until due
-def due_day(year, month, day):
-    x = datetime.datetime(year, month, day)
+def due_day(year, month, day, hour):
+    x = datetime.datetime(year, month, day, hour)
     y = datetime.datetime.today()
-    if x > y:
+    u = datetime.date(year, month, day)
+    v = datetime.date.today()
+    if u > v:
         t = x - y
         one_day = datetime.timedelta(days=1)
         if t < one_day:
@@ -119,7 +123,9 @@ def due_day(year, month, day):
             return str(t.days) + ' day left'
         else:
             return str(t.days) + ' days left!'
-    elif y > x:
+    elif v > u or y > x:
         return "Task is past due"
+    elif v == u:
+        return "Due today!"
 
 

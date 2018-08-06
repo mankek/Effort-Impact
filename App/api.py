@@ -13,8 +13,9 @@ def view():
     for i in result:
         line = i['Deadline'].split('\n')
         date = line[0].split('-')
-        new_diff = app_methods.due_day(int(date[0]), int(date[1]), int(date[2]))
-        line[1] = new_diff
+        time = line[1].split(':')
+        new_diff = app_methods.due_day(int(date[0]), int(date[1]), int(date[2]), int(time[0]))
+        line[2] = new_diff
         i['Deadline'] = '\n'.join(line)
     return render_template("index.html", result=result, names=names, length=len(result))
 
@@ -26,9 +27,10 @@ def update():
     field = request.form["Field"]
     content = request.form["Content"]
     if field == "Deadline":
+        due_time = request.form["up_time"].split(":")
         due_date = content.split('-')
-        diff = app_methods.due_day(int(due_date[0]), int(due_date[1]), int(due_date[2]))
-        content = content + '\n' + diff
+        diff = app_methods.due_day(int(due_date[0]), int(due_date[1]), int(due_date[2]), int(due_time[0]))
+        content = content + '\n' + request.form["up_time"] + "\n" + diff
     app_methods.update_table(task_id, field, content)
     return redirect(url_for("view"))
 
@@ -39,10 +41,11 @@ def add_new():
     new_task = {}
     field_names = ['Task', 'Description', 'Effort', 'Impact', 'Deadline', 'Subject', 'Notes']
     due_date = request.form['Deadline'].split('-')
-    diff = app_methods.due_day(int(due_date[0]), int(due_date[1]), int(due_date[2]))
+    due_time = request.form['time'].split(':')
+    diff = app_methods.due_day(int(due_date[0]), int(due_date[1]), int(due_date[2]), int(due_time[0]))
     for i in field_names:
         if i == 'Deadline':
-            data = request.form[i] + '\n' + diff
+            data = request.form[i] + '\n' + request.form['time'] + '\n' + diff
         else:
             data = request.form[i]
         new_task[i] = data
