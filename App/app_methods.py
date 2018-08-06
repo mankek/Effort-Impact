@@ -87,20 +87,20 @@ def graph():
         elif due[1][0] == 'd':
             sizes.append((1 / (int(due[0]))) * 100)
         elif due[1][0] == 'i':
-            sizes.append(300)
+            sizes.append(250)
         elif due[1][0] == 't':
-            sizes.append(200)
-    colors = [t >= 200 for t in sizes]
+            sizes.append(150)
+    colors = [t >= 175 for t in sizes]
     fig, ax = plt.subplots(subplot_kw=dict(facecolor='#EEEEEE'))
     scatter = ax.scatter(task_list['Impact'].tolist(), task_list['Effort'].tolist(), s=sizes, c=colors)
     ax.set_xlim(0, 16)
-    ax.set_ylim(0, 10)
+    ax.set_ylim(0, 10.5)
     plt.ylabel('Effort', fontsize=15)
     plt.xlabel('Impact', fontsize=15)
     labels = []
     for i in range(0, task_list.shape[0]):
         label = task_list.ix[[i], :].T
-        label.columns = ['Row {0}'.format(i)]
+        label.columns = ['Task {0}'.format(i)]
         labels.append(label.to_html())
     tooltip = mpld3.plugins.PointHTMLTooltip(scatter, labels=labels, voffset=10, hoffset=10, css=css)
     mpld3.plugins.connect(fig, tooltip)
@@ -122,7 +122,7 @@ def due_day(year, month, day, hour):
         elif t == one_day:
             return str(t.days) + ' day left'
         else:
-            return str(t.days) + ' days left!'
+            return str(t.days) + ' days and ' + str(round((int(t.seconds)/3600))) + ' hours left!'
     elif v > u or y > x:
         return "Task is past due"
     elif v == u:
