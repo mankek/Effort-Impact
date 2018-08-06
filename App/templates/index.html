@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Effort-Impact</title>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+        #form {
+            display: none;
+            }
+        #form2 {
+            display: none;
+            }
+        #form3 {
+            display: none;
+            }
+    </style>
+</head>
+<body>
+    <div id="all" >
+        <table id="table">
+            <tr>
+                <th> Task ID </th>
+                <th> {{ names[0] }} </th>
+                <th> {{ names[1] }} </th>
+                <th> {{ names[2] }} </th>
+                <th> {{ names[3] }} </th>
+                <th> {{ names[4] }} </th>
+                <th> {{ names[5] }} </th>
+                <th> {{ names[6] }} </th>
+            </tr>
+        </table>
+    </div>
+    <br>
+    <button onclick="display('form', 'form2', 'form3')">Add a new task!</button>   <button onclick="display('form2', 'form', 'form3')">Delete a task!</button>   <button onclick="display('form3', 'form', 'form2')">Update a task!</button>
+    <br>
+    <br>
+    <form action="/graph" method="post">
+        <button type="submit" name="graph" value="generate">Generate Graph</button>
+    </form>
+    <br>
+    <br>
+    <form action="/new" method="post">
+        <div id="form">
+            Task: <input type="text" name="Task" required><br>
+            Description: <input type="text" name="Description" required><br>
+            Effort (0-10): <input type="number" name="Effort" required><br>
+            Impact (0-10): <input type="number" name="Impact" required><br>
+            Deadline: <input type="date" name="Deadline"><br>
+            Subject: <input type="text" name="Subject" required><br>
+            Notes: <input type="text" name="Notes" value="None"><br>
+            <br>
+            <button type="submit">Submit to me!</button>
+        </div>
+    </form>
+    <br>
+    <form action="/delete" method="post">
+        <div id="form2">
+            Id of task to delete: <input type="number" name="taskid">
+            <br>
+            <button type="submit">Delete them!</button>
+        </div>
+    </form>
+    <form action="/update" method="post">
+        <div id="form3">
+            Task ID #: <input type="number" name="id" required><br>
+            Field: <input type="text" id="field" name="Field" required><br>
+            Content: <input type="text" id="change" name="Content"><br>
+            <br>
+            <button type="button" onclick="change_type('date')">Click me to select a date!</button><button type="button" onclick="change_type('number')">Click me to select a number!</button>
+            <br>
+            <br>
+            <button type="submit">Transform!</button>
+        </div>
+    </form>
+    <script>
+        // Dynamically creates the table and populates it with the task details
+
+        var l = {{ length }};
+        var r = {{ result|tojson|safe }};
+        var n = {{ names|safe }};
+        var table = document.getElementById("table");
+        for (i = 0; i < l; i++) {
+            var row = table.insertRow(-1);
+            var idcell = row.insertCell(0);
+            idcell.innerHTML = i;
+            for (s = 1; s < 8; s++) {
+                var cell = row.insertCell(s);
+                cell.innerHTML = r[i][n[s-1]];
+            }
+        }
+    </script>
+    <script>
+        // Changes input type of form3 Content to date if Field is "Deadline"
+
+        function change_type(new_type) {
+            document.getElementById("change").type = new_type;
+            }
+    </script>
+    <script>
+        // Function to control form visibility
+
+        function display(div1, div2, div3) {
+            document.getElementById(div1).style.display = "block";
+            document.getElementById(div2).style.display = "none";
+            document.getElementById(div3).style.display = "none";
+            }
+    </script>
+<h1 id="test"></h1>
+</body>
+</html>
