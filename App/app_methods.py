@@ -1,25 +1,65 @@
 # !/usr/bin/python
 import pandas
 import os
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-import mpld3
 import datetime
+import math
 
+out_path = ("\\").join(os.path.dirname(os.path.abspath(__file__)).split("\\")[0:3]) + r"\Desktop\Tasks.xlsx"
+if os.path.exists(out_path):
+    file_path = out_path
+else:
+    df = pandas.DataFrame({'Task': [], 'Description': [], 'Effort': [], 'Impact': [], 'Deadline': [], 'Subject': [], 'Notes': []})
+    writer = pandas.ExcelWriter(out_path, engine='xlsxwriter')
+    df.to_excel(writer, sheet_name='Sheet1')
+    writer.save()
+    file_path = out_path
 
-file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'Tasks.xlsx')
 task_list = pandas.read_excel(file_path, index=0)
 task_fields = list(task_list)
 
 
+# Changes Deadline date to days/hours until due
+def due_day(year, month, day, hour):
+    x = datetime.datetime(year, month, day, hour)
+    y = datetime.datetime.today()
+    u = datetime.date(year, month, day)
+    v = datetime.date.today()
+    if u > v:
+        t = x - y
+        one_day = datetime.timedelta(days=1)
+        if t < one_day:
+            return str(round(t.seconds/3600)) + ' hours left!'
+        elif t == one_day:
+            return str(t.days) + ' day left'
+        else:
+            return str(t.days) + ' days and ' + str(round((int(t.seconds)/3600))) + ' hours left!'
+    elif v > u or y > x:
+        return "Task is past due"
+    elif v == u:
+        return "Due today!"
+
+
 # Loads the excel sheet where tasks are stored, formats them as a list of dictionaries; also returns field names
 def load_table():
-    tasks = []
+    # Update deadlines in task_list
     for s in range(0, (task_list.shape[0])):
+        line = task_list['Deadline'][s]
+        if line == "No Deadline":
+            continue
+        else:
+            line = line.split('_')
+            date = line[0].split('-')
+            time = line[1].split(':')
+            new_diff = due_day(int(date[0]), int(date[1]), int(date[2]), int(time[0]))
+            line[2] = new_diff
+            task_list.loc[s, ['Deadline']] = '_'.join(line)
+
+    # Form list of results
+    tasks = []
+    for t in range(0, (task_list.shape[0])):
         task = []
         for i in task_fields:
-            task.append({i: str(task_list[i][s])})
+            task.append({i: str(task_list[i][t])})
         while len(task) != 1:
             task[0].update(task[1])
             del task[1]
@@ -27,12 +67,45 @@ def load_table():
     return tasks, task_fields
 
 
+# Extracts the Effort, Impact data and returns it as [x], [y] lists
+def effort_impact(dict_list):
+    effort = []
+    impact = []
+    for i in dict_list:
+        eff = i["Effort"]
+        im = i["Impact"]
+        effort.append(float(eff))
+        impact.append(float(im))
+    return effort, impact
+
+
+# Provides deadline info for color scale
+def deadline_colors(tasks):
+    colors = []
+    for i in tasks:
+        due = i['Deadline'].split('_')[-1].split(" ")
+        if due[1][0] == 'h':
+            colors.append(((math.log(int(due[0])/24)) * 0.1222) + 0.1858)
+        elif due[1][0] == 'd':
+            colors.append(((math.log(int(due[0]))) * 0.1222) + 0.1858)
+        elif due[0][0] == 'N':
+            colors.append(1)
+        elif due[1][0] == 'i':
+            colors.append(0)
+        elif due[1][0] == 't':
+            colors.append(.125)
+    return colors
+
+
 # Updates the specified field of the specified task
 def update_table(task_id, field, content):
-    task_list.loc[int(task_id), field] = content
-    writer = pandas.ExcelWriter(file_path)
-    task_list.to_excel(writer)
-    writer.save()
+    if str(field) in task_fields:
+        task_list.loc[int(task_id), field] = content
+        writer = pandas.ExcelWriter(file_path)
+        task_list.to_excel(writer)
+        writer.save()
+    else:
+        print("improper field")
 
 
 # Takes the new task and adds it to the excel sheet
@@ -56,76 +129,7 @@ def delete_from_table(task_id):
     return "Table saved"
 
 
-# Creates graph based on Effort and Impact
-def graph():
-    css = """
-        table
-        {
-          border-collapse: collapse;
-        }
-        th
-        {
-          color: #89A9E1;
-          background-color: #5D749D;
-        }
-        td
-        {
-          background-color: #C9D8F2;
-        }
-        table, th, td
-        {
-          font-family:Arial, Helvetica, sans-serif;
-          border: 1px solid black;
-          text-align: center;
-        }
-        """
-    sizes = []
-    for i in task_list['Deadline']:
-        due = i.split('\n')[2].split(" ")
-        if due[1][0] == 'h':
-            sizes.append((1 / (int(due[0]) / 24)) * 100)
-        elif due[1][0] == 'd':
-            sizes.append((1 / (int(due[0]))) * 100)
-        elif due[1][0] == 'i':
-            sizes.append(250)
-        elif due[1][0] == 't':
-            sizes.append(150)
-    colors = [t >= 175 for t in sizes]
-    fig, ax = plt.subplots(subplot_kw=dict(facecolor='#EEEEEE'))
-    scatter = ax.scatter(task_list['Impact'].tolist(), task_list['Effort'].tolist(), s=sizes, c=colors)
-    ax.set_xlim(0, 16)
-    ax.set_ylim(0, 10.5)
-    plt.ylabel('Effort', fontsize=15)
-    plt.xlabel('Impact', fontsize=15)
-    labels = []
-    for i in range(0, task_list.shape[0]):
-        label = task_list.ix[[i], :].T
-        label.columns = ['Task {0}'.format(i)]
-        labels.append(label.to_html())
-    tooltip = mpld3.plugins.PointHTMLTooltip(scatter, labels=labels, voffset=10, hoffset=10, css=css)
-    mpld3.plugins.connect(fig, tooltip)
-    mpld3.show()
-    return "yes"
 
 
-# Changes Deadline date to days/hours until due
-def due_day(year, month, day, hour):
-    x = datetime.datetime(year, month, day, hour)
-    y = datetime.datetime.today()
-    u = datetime.date(year, month, day)
-    v = datetime.date.today()
-    if u > v:
-        t = x - y
-        one_day = datetime.timedelta(days=1)
-        if t < one_day:
-            return str(round(t.seconds/3600)) + ' hours left!'
-        elif t == one_day:
-            return str(t.days) + ' day left'
-        else:
-            return str(t.days) + ' days and ' + str(round((int(t.seconds)/3600))) + ' hours left!'
-    elif v > u or y > x:
-        return "Task is past due"
-    elif v == u:
-        return "Due today!"
 
 

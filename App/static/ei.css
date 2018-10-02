@@ -1,0 +1,61 @@
+body {
+    background-color: #8ab2f2;
+    float: left;
+}
+form {
+    background-color: #b3cbf2;
+    float: right;
+    display: none;
+}
+#form {
+    border:2px solid black;
+    text-align:center;
+    width:40%;
+}
+#form2 {
+    border:2px solid black;
+    text-align:center;
+    width:40%;
+}
+#coord {
+    display:none;
+}
+#table {
+    float:right;
+    width:50%;
+    word-wrap:break-word;
+}
+table {
+    display: none;
+    border-collapse: collapse;
+}
+tr {
+    background-color: #5D749D;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 30px;
+    border: 2px solid black;
+    text-align:center;
+}
+td {
+    border: 1px solid black;
+}
+.grid line {
+    stroke: lightgrey;
+    stroke-opacity: 0.7;
+    stroke-opacity: crispEdges;
+}
+.grid path {
+    stroke-width: 0;
+}
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    padding: 2px;
+    font: 15px sans-serif;
+    background: lightsteelblue;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+    word-wrap: break-word;
+}
+

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Effort-Impact V2</title>
+    <script type="text/javascript" src="http://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/static/ei.css">
+</head>
+<body>
+    <div id="scatterplot">
+        <script>
+            var result = {{ result|tojson|safe }};
+            var colors = {{ colors|tojson|safe }};
+            var y_raw = {{ y|tojson|safe }};
+            var x_raw = {{ x|tojson|safe }};
+        </script>
+        <script src="/static/chart.js"></script>
+        <script src="/static/jQ.js"></script>
+    </div>
+    <div id="coord">
+        Effort: <h1 id="Eff"></h1>   Impact: <h1 id="Im"></h1>
+    </div>
+    <div id="table">
+        <table id="task_table">
+        </table>
+        <table id="id_table">
+        </table>
+    </div>
+    <br>
+    <form action="/new" method="post" id="form">
+        <br>
+        Task: <input type="text" name="Task" required><br><br>
+        Description: <input type="text" name="Description" required><br><br>
+        Deadline: <input type="date" name="Deadline">   <input type="time" name="time"><br><br>
+        Impact: <h1 id="Impact"></h1><br>
+        Effort: <h1 id="Effort"></h1><br>
+        Subject: <input type="text" name="Subject" required><br><br>
+        Notes: <input type="text" name="Notes" value="None"><br>
+        <br>
+        <h2>Leave Deadline Fields blank for no deadline!</h2>
+        <button type="submit">Submit to me!</button><button type="button" onclick="Hide('form')">Go back</button> <br>
+        <br>
+    </form>
+    <form action="/update" method="post" id="form2">
+        <h2>Change Form</h2>
+        <h3>Press the Ctrl button to delete this task!</h3>
+        <div id="inputs">
+            <br>
+            Task ID #: <input type="number" name="id" id="id"><br><br>
+            <label id="field-label">Field to be Changed: </label><input type="text" id="field" name="Field"><br><br>
+            Content: <input type="text" id="change" name="Content"><br><br>
+        </div>
+        <br>
+        <button type="button" onclick="change_type('date')">Click me to change the Deadline!</button><br>
+        <button type="button" onclick="change_type('number')">Click me to select a number!</button><br>
+        <br>
+        <button type="submit">Transform!</button><button type="button" onclick="Hide('form2')">Go back</button> <br>
+        <br>
+    </form>
+    <script>
+        // Changes input type of form2 Content
+
+        function change_type(new_type){
+            $("#change").attr("type", new_type);
+            if (new_type == 'date'){
+                var new_time = $("<input>").attr("type", "time").attr("name", "up_time");
+                $("#inputs").append(new_time);
+                $("#field").hide();
+                $("#field-label").hide();
+                $("#field").attr("value", "Deadline");
+            } else {
+                $("#field").show();
+                $("#field-label").show();
+                $("[name=up_time]").hide();
+                $("#field").attr("value", "");
+            }
+        };
+
+        // Hides forms
+
+        function Hide(form) {
+            $("#" + form).hide();
+            if (form == "form") {
+                d3.selectAll("circle:last-of-type").remove();
+            };
+        };
+    </script>
+</body>
+</html>
