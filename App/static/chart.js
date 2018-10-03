@@ -1,11 +1,11 @@
 // Variables for chart creation
-var margin = {top: 30, right: 30, bottom: 30, left: 30}
-var width = 650
-var height = 650
+var margin = {top: 40, right: 40, bottom: 40, left: 40}
+var width = 500
+var height = 500
 
 
 var x_scale = d3.scaleLinear()
-    .domain([0, 10])
+    .domain([0, 16])
     .range([0, width]);
 var y_scale = d3.scaleLinear()
     .domain([0, 16])
@@ -17,7 +17,7 @@ var xAxis = d3.axisBottom(x_scale);
 var yAxis = d3.axisLeft(y_scale);
 var cAxis = d3.axisRight(c_scale);
 var legendWidth = 25;
-var legendHeight = 20;
+var legendHeight = 25;
 
 // Chart background creation
 
@@ -31,10 +31,44 @@ var svg = d3.select('#scatterplot')
 // Chart creation
 
 var chart = svg.append('g')
-    .attr('width', width - (margin.left + margin.right))
-    .attr('height', height - (margin.top + margin.bottom))
-    .attr("transform", 'translate(' + (margin.left/2) + "," + (margin.top/2) + ")")
-    .style("background-color", 'black')
+    .attr('width', width)
+    .attr('height', height)
+    .attr("transform", 'translate(' + (margin.left) + "," + (margin.top/2) + ")")
+
+// Adding quadrant squares
+
+// Square 1 (green)
+
+chart.append("rect")
+    .attr("width", (width/2))
+    .attr("height", (height/2))
+    .attr("transform", 'translate(0,0)')
+    .style("fill", "#e6ffe6")
+
+//// Square 2 (yellow-top)
+
+chart.append("rect")
+    .attr("width", (width/2))
+    .attr("height", (height/2))
+    .attr("transform", 'translate(' + width/2 + "," + "0)")
+    .style("fill", '#ffffe6')
+
+//// Square 3 (red)
+
+chart.append("rect")
+    .attr("width", (width/2))
+    .attr("height", (height/2))
+    .attr("transform", 'translate(' + width/2 + "," + height/2 + ")")
+    .style("fill", "#ffe6e6")
+
+//// Square 4 (yellow-bottom)
+
+chart.append("rect")
+    .attr("width", (width/2))
+    .attr("height", (height/2))
+    .attr("transform", 'translate(0,' + (height/2) + ")")
+    .style("fill", "#ffffe6")
+
 
 // Adding data to chart
 
@@ -64,17 +98,12 @@ g.append("circle")
         return i;
     });
 
-//var g = svg.append('g')
-//  .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-//  .attr('width', width+50)
-//  .attr('height', height-20)
-//  .attr('class', 'main')
 
 // Gridlines
 
 function make_x_gridlines(){
     return d3.axisBottom(x_scale)
-        .tickValues([0, 5, 10])
+        .tickValues([0, 8, 16])
 }
 
 function make_y_gridlines(){
@@ -84,17 +113,17 @@ function make_y_gridlines(){
 
 chart.append("g")
     .attr("class", "grid")
-    .attr('transform', 'translate(' + margin.left + ',' + height + ')')
+    .attr("transform", 'translate(0,' + height + ')')
     .call(make_x_gridlines()
-        .tickSize(-height + 22)
+        .tickSize(-height)
         .tickFormat("")
     )
 
 chart.append("g")
     .attr("class", "grid")
-    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+    .attr("transform", 'translate(0,0)')
     .call(make_y_gridlines()
-        .tickSize(-width + 13)
+        .tickSize(-width)
         .tickFormat("")
     )
 
@@ -106,47 +135,47 @@ chart.append("g")
 //    .call(xAxis);
 
 svg.append("text")
-    .attr("transform", "translate(" + (width/2) + "," + (height + margin.top + 15) + ")")
+    .attr("transform", "translate(" + ((width/2) + (1.5*margin.left/2)) + "," + (height + (margin.bottom + 20)) + ")")
+    .style("text-anchor", "middle")
+    .style("font-size", "20px")
+    .text("Effort");
+
+//svg.append('g')
+//    .attr('transform', 'translate(0,0)')
+//    .attr('class', 'main axis date')
+//    .call(yAxis);
+
+svg.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", (margin.left/4))
+    .attr("x", -((height/2) + (margin.top/2)))
+    .attr("dy", "1em")
     .style("text-anchor", "middle")
     .style("font-size", "20px")
     .text("Impact");
-//
-////main.append('g')
-////    .attr('transform', 'translate(0,0)')
-////    .attr('class', 'main axis date')
-////    .call(yAxis);
-//
-//svg.append("text")
-//    .attr("transform", "rotate(-90)")
-//    .attr("y", 0 - margin.left + 10)
-//    .attr("x", 0 - (height/2))
-//    .attr("dy", "1em")
-//    .style("text-anchor", "middle")
-//    .style("font-size", "20px")
-//    .text("Effort");
-//
+
 //// Chart title
-//
+
 //svg.append("text")
-//    .attr("transform", "translate(" + (width/2) + ",0)")
+//    .attr("transform", "translate(" + ((width/2) + (margin.left/2)) + "," + (margin.top/2) + ")")
 //    .style("text-anchor", "middle")
 //    .style("text-anchor", "right")
 //    .style("font-size", "25px")
 //    .text("Effort-Impact Matrix")
-//
-//
-//// Color Legend
-//
-//var legendsvg = svg.selectAll(".legend")
-//    .data(c_scale.ticks(20).slice(1).reverse())
-//    .enter().append("g")
-//    .attr("transform", function(d, i) { return "translate(" + (width + 30) + "," + (20 + i * 20) + ")"; });
-//
-//legendsvg.append("rect")
-//    .attr("width", legendWidth)
-//    .attr("height", legendHeight)
-//    .style("fill", c_scale);
-//
+
+
+// Color Legend
+
+var legendsvg = svg.selectAll(".legend")
+    .data(c_scale.ticks(30).slice(1).reverse())
+    .enter().append("g")
+    .attr("transform", function(d, i) { return "translate(" + (width + margin.left + 9) + "," + ((height/6) + i * 20) + ")"; });
+
+legendsvg.append("rect")
+    .attr("width", legendWidth)
+    .attr("height", legendHeight)
+    .style("fill", c_scale);
+
 //svg.append("text")
 //    .attr("transform", "rotate(90)")
 //    .attr("x", 0 + ((height/2) - 25))

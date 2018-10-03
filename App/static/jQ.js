@@ -1,12 +1,9 @@
 $(document).ready(function(){
-//    $("#form").hide();
-//    $("#form2").hide();
     var svg = d3.select("svg");
     var focused = null;
 
     // Hover event (show task info)
 
-//    $("#task_table").hide()
     $("circle").hover(function(){
         var index = $(this).attr("id")
         var table = document.getElementById("task_table")

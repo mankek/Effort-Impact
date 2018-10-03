@@ -1,4 +1,5 @@
 body {
+    position: absolute;
     background-color: #8ab2f2;
     float: left;
 }
@@ -6,24 +7,6 @@ form {
     background-color: #b3cbf2;
     float: right;
     display: none;
-}
-#form {
-    border:2px solid black;
-    text-align:center;
-    width:40%;
-}
-#form2 {
-    border:2px solid black;
-    text-align:center;
-    width:40%;
-}
-#coord {
-    display:none;
-}
-#table {
-    float:right;
-    width:50%;
-    word-wrap:break-word;
 }
 table {
     display: none;
@@ -38,6 +21,27 @@ tr {
 }
 td {
     border: 1px solid black;
+}
+#scatterplot {
+    float: left;
+}
+#coord {
+    display:none;
+}
+#table {
+    float: right;
+    width:50%;
+    word-wrap:break-word;
+}
+#form {
+    border:2px solid black;
+    text-align:center;
+    width:40%;
+}
+#form2 {
+    border:2px solid black;
+    text-align:center;
+    width:40%;
 }
 .grid line {
     stroke: lightgrey;
