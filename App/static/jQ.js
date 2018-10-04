@@ -19,7 +19,7 @@ $(document).ready(function(){
     function(){
         $("#task_table").hide()
         var table = document.getElementById("task_table")
-        for (b = 0; b < 7; b++) {
+        for (b = 0; b < 5; b++) {
             table.deleteRow(-1)
         }
     });
@@ -43,7 +43,7 @@ $(document).ready(function(){
                     console.log(focused)
                     d3.select(focused).remove();
                     var table = document.getElementById("task_table");
-                    for (b = 0; b < 7; b++) {
+                    for (b = 0; b < 5; b++) {
                         table.deleteRow(-1)
                     }
                     var cir_id = '{ "Id": ' + focused.id + ' }';
@@ -109,17 +109,9 @@ $(document).ready(function(){
             .attr("cy", d3.event.y)
             .attr("x", x_scale.invert(d3.event.x).toFixed(1))
             .attr("y", y_scale.invert(d3.event.y).toFixed(1))
-        $("#coord").show();
-        $("#Eff").html(d3.select(this).attr("y"));
-        $("#Im").html(d3.select(this).attr("x"));
     };
 
     function dragend(d, i){
-        $("#coord").hide();
-        if (result[i]){
-            result[i]["Impact"] = d3.select(this).attr("x")
-            result[i]["Effort"] = d3.select(this).attr("y")
-        };
         var circle = d3.select(this)
         var new_loc = {
             Effort: circle.attr("y"),
@@ -167,7 +159,7 @@ $(document).ready(function(){
                 if (d3.event.ctrlKey){
                     d3.select(this).remove();
                     var table = document.getElementById("task_table")
-                    for (b = 0; b < 7; b++) {
+                    for (b = 0; b < 5; b++) {
                         table.deleteRow(-1)
                     }
                 }

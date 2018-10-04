@@ -33,7 +33,7 @@ var svg = d3.select('#scatterplot')
 var chart = svg.append('g')
     .attr('width', width)
     .attr('height', height)
-    .attr("transform", 'translate(' + (margin.left) + "," + (margin.top/2) + ")")
+    .attr("transform", 'translate(' + (margin.left) + "," + (margin.top) + ")")
 
 // Adding quadrant squares
 
@@ -135,7 +135,7 @@ chart.append("g")
 //    .call(xAxis);
 
 svg.append("text")
-    .attr("transform", "translate(" + ((width/2) + (1.5*margin.left/2)) + "," + (height + (margin.bottom + 20)) + ")")
+    .attr("transform", "translate(" + ((width/2) + (1.5*margin.left/2)) + "," + (height + (1.5*margin.bottom)) + ")")
     .style("text-anchor", "middle")
     .style("font-size", "20px")
     .text("Effort");
@@ -147,7 +147,7 @@ svg.append("text")
 
 svg.append("text")
     .attr("transform", "rotate(-90)")
-    .attr("y", (margin.left/4))
+    .attr("y", (margin.left/10))
     .attr("x", -((height/2) + (margin.top/2)))
     .attr("dy", "1em")
     .style("text-anchor", "middle")
@@ -156,12 +156,12 @@ svg.append("text")
 
 //// Chart title
 
-//svg.append("text")
-//    .attr("transform", "translate(" + ((width/2) + (margin.left/2)) + "," + (margin.top/2) + ")")
-//    .style("text-anchor", "middle")
-//    .style("text-anchor", "right")
-//    .style("font-size", "25px")
-//    .text("Effort-Impact Matrix")
+svg.append("text")
+    .attr("transform", "translate(" + ((width/2) + (margin.left/2)) + "," + (margin.top/2) + ")")
+    .style("text-anchor", "middle")
+    .style("text-anchor", "right")
+    .style("font-size", "25px")
+    .text(title)
 
 
 // Color Legend
@@ -169,7 +169,7 @@ svg.append("text")
 var legendsvg = svg.selectAll(".legend")
     .data(c_scale.ticks(30).slice(1).reverse())
     .enter().append("g")
-    .attr("transform", function(d, i) { return "translate(" + (width + margin.left + 9) + "," + ((height/6) + i * 20) + ")"; });
+    .attr("transform", function(d, i) { return "translate(" + (width + margin.left + 9) + "," + ((height/12) + i * 25) + ")"; });
 
 legendsvg.append("rect")
     .attr("width", legendWidth)

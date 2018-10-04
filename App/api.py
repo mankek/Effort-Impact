@@ -9,11 +9,26 @@ app = Flask(__name__)
 # Get the table of tasks
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
+def index():
+    return render_template("index.html")
+
+
+chosen_file = {}
+
+
+@app.route("/chart", methods=['POST'])
 def view():
-    result, names = app_methods.load_table()
+    if request.form['action'] == 'submit':
+        file = request.form['file']
+    elif request.form['action'] == 'new':
+        new_name = request.form['new_name']
+        file = new_name
+    chosen_file[0] = file
+    result, names = app_methods.Table(file).load_table()
     x, y = app_methods.effort_impact(result)
     colors = app_methods.deadline_colors(result)
-    return render_template("index_3.html", x=x, y=y, result=result, colors=colors)
+    new_result = app_methods.clean_result(result)
+    return render_template("chart.html", x=x, y=y, result=new_result, colors=colors, name=file.split(".")[0])
 
 
 # Update existing task
@@ -24,8 +39,8 @@ def update():
         eff = change['Effort']
         im = change['Impact']
         task_id = change['Id']
-        app_methods.update_table(task_id, "Effort", eff)
-        app_methods.update_table(task_id, "Impact", im)
+        app_methods.Table(chosen_file[0]).update_table(task_id, "Effort", eff)
+        app_methods.Table(chosen_file[0]).update_table(task_id, "Impact", im)
     else:
         task_id = request.form["id"]
         field = request.form["Field"]
@@ -38,7 +53,7 @@ def update():
                 due_date = content.split('-')
                 diff = app_methods.due_day(int(due_date[0]), int(due_date[1]), int(due_date[2]), int(due_time[0]))
                 content = content + '_' + request.form["up_time"] + "_" + diff
-        app_methods.update_table(task_id, field, content)
+        app_methods.Table(chosen_file[0]).update_table(task_id, field, content)
     return redirect(url_for("view"))
 
 
@@ -67,7 +82,7 @@ def add_new():
             else:
                 data = request.form[i]
             new_task[i] = data
-        app_methods.add_to_table(new_task)
+        app_methods.Table(chosen_file[0]).add_to_table(new_task)
     return redirect(url_for("view"))
 
 
@@ -76,7 +91,7 @@ def add_new():
 def delete_task():
     delete_info = request.json
     task_id = int(json.dumps(delete_info["Id"]))
-    app_methods.delete_from_table(task_id)
+    app_methods.Table(chosen_file[0]).delete_from_table(task_id)
     return "done!"
 
 

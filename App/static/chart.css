@@ -6,7 +6,6 @@ body {
 form {
     background-color: #b3cbf2;
     float: right;
-    display: none;
 }
 table {
     display: none;
@@ -37,11 +36,13 @@ td {
     border:2px solid black;
     text-align:center;
     width:40%;
+    display: none;
 }
 #form2 {
     border:2px solid black;
     text-align:center;
     width:40%;
+    display: none;
 }
 .grid line {
     stroke: lightgrey;

@@ -4,18 +4,8 @@ import os
 import datetime
 import math
 
-out_path = ("\\").join(os.path.dirname(os.path.abspath(__file__)).split("\\")[0:3]) + r"\Desktop\Tasks.xlsx"
-if os.path.exists(out_path):
-    file_path = out_path
-else:
-    df = pandas.DataFrame({'Task': [], 'Description': [], 'Effort': [], 'Impact': [], 'Deadline': [], 'Subject': [], 'Notes': []})
-    writer = pandas.ExcelWriter(out_path, engine='xlsxwriter')
-    df.to_excel(writer, sheet_name='Sheet1')
-    writer.save()
-    file_path = out_path
 
-task_list = pandas.read_excel(file_path, index=0)
-task_fields = list(task_list)
+out_path = ("\\").join(os.path.dirname(os.path.abspath(__file__)).split("\\")[0:3]) + r"\Desktop\Task Sheets"
 
 
 # Changes Deadline date to days/hours until due
@@ -39,34 +29,6 @@ def due_day(year, month, day, hour):
         return "Due today!"
 
 
-# Loads the excel sheet where tasks are stored, formats them as a list of dictionaries; also returns field names
-def load_table():
-    # Update deadlines in task_list
-    for s in range(0, (task_list.shape[0])):
-        line = task_list['Deadline'][s]
-        if line == "No Deadline":
-            continue
-        else:
-            line = line.split('_')
-            date = line[0].split('-')
-            time = line[1].split(':')
-            new_diff = due_day(int(date[0]), int(date[1]), int(date[2]), int(time[0]))
-            line[2] = new_diff
-            task_list.loc[s, ['Deadline']] = '_'.join(line)
-
-    # Form list of results
-    tasks = []
-    for t in range(0, (task_list.shape[0])):
-        task = []
-        for i in task_fields:
-            task.append({i: str(task_list[i][t])})
-        while len(task) != 1:
-            task[0].update(task[1])
-            del task[1]
-        tasks.append(task[0])
-    return tasks, task_fields
-
-
 # Extracts the Effort, Impact data and returns it as [x], [y] lists
 def effort_impact(dict_list):
     effort = []
@@ -77,6 +39,15 @@ def effort_impact(dict_list):
         effort.append(float(eff))
         impact.append(float(im))
     return effort, impact
+
+
+# Removes Effort, Impact values
+def clean_result(dict_list):
+    new_result = dict_list
+    for i in new_result:
+        i.pop("Effort")
+        i.pop("Impact")
+    return new_result
 
 
 # Provides deadline info for color scale
@@ -97,34 +68,91 @@ def deadline_colors(tasks):
     return colors
 
 
-# Updates the specified field of the specified task
-def update_table(task_id, field, content):
-    if str(field) in task_fields:
-        task_list.loc[int(task_id), field] = content
-        writer = pandas.ExcelWriter(file_path)
-        task_list.to_excel(writer)
-        writer.save()
-    else:
-        print("improper field")
-
-
-# Takes the new task and adds it to the excel sheet
-def add_to_table(new_task):
-    row_number = task_list.shape[0]
-    for t in new_task.keys():
-        task_list.loc[row_number, t] = new_task[t]
-    writer = pandas.ExcelWriter(file_path)
-    task_list.to_excel(writer)
+def new_table(new_name):
+    path = os.path.join(out_path, (new_name + ".xlsx"))
+    df = pandas.DataFrame(
+        {'Task': [], 'Description': [], 'Effort': [], 'Impact': [], 'Deadline': [], 'Subject': [], 'Notes': []})
+    writer = pandas.ExcelWriter(path, engine='xlsxwriter')
+    df.to_excel(writer, sheet_name='Sheet1')
     writer.save()
-    return "Table saved!"
+
+
+class Table:
+
+    def __init__(self, file_name):
+        self.name = file_name
+        self.path = os.path.join(out_path, file_name)
+        self.list = pandas.read_excel(self.path, index=0)
+        self.fields = list(self.list)
+
+
+    # Loads the excel sheet where tasks are stored, formats them as a list of dictionaries; also returns field names
+    def load_table(self):
+
+        # Update deadlines in task_list
+        for s in range(0, (self.list.shape[0])):
+            line = self.list['Deadline'][s]
+            if line == "No Deadline":
+                continue
+            else:
+                line = line.split('_')
+                date = line[0].split('-')
+                time = line[1].split(':')
+                new_diff = due_day(int(date[0]), int(date[1]), int(date[2]), int(time[0]))
+                line[2] = new_diff
+                self.list.loc[s, ['Deadline']] = '_'.join(line)
+
+        # Form list of results
+        tasks = []
+        for t in range(0, (self.list.shape[0])):
+            task = []
+            for i in self.fields:
+                task.append({i: str(self.list[i][t])})
+            while len(task) != 1:
+                task[0].update(task[1])
+                del task[1]
+            tasks.append(task[0])
+        return tasks, self.fields
+
+    # Updates the specified field of the specified task
+    def update_table(self, task_id, field, content):
+        if str(field) in self.fields:
+            self.list.loc[int(task_id), field] = content
+            writer = pandas.ExcelWriter(self.path)
+            self.list.to_excel(writer)
+            writer.save()
+        else:
+            print("improper field")
+
+    # Takes the new task and adds it to the excel sheet
+    def add_to_table(self, new_task):
+        row_number = self.list.shape[0]
+        for t in new_task.keys():
+            self.list.loc[row_number, t] = new_task[t]
+        writer = pandas.ExcelWriter(self.path)
+        self.list.to_excel(writer)
+        writer.save()
+        return "Table saved!"
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # Deletes a selected task from the excel sheet
 def delete_from_table(task_id):
-    task_list.drop(index=task_id, inplace=True)
-    task_list.reset_index(drop=True, inplace=True)
-    writer = pandas.ExcelWriter(file_path)
-    task_list.to_excel(writer)
+    Table.task_list.drop(index=task_id, inplace=True)
+    Table.task_list.reset_index(drop=True, inplace=True)
+    writer = pandas.ExcelWriter(Table.path)
+    Table.task_list.to_excel(writer)
     writer.save()
     return "Table saved"
 

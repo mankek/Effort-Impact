@@ -6,7 +6,7 @@
     <script type="text/javascript" src="http://d3js.org/d3.v4.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="/static/ei.css">
+    <link rel="stylesheet" href="/static/chart.css">
 </head>
 <body>
     <div id="scatterplot">
@@ -15,12 +15,10 @@
             var colors = {{ colors|tojson|safe }};
             var y_raw = {{ y|tojson|safe }};
             var x_raw = {{ x|tojson|safe }};
+            var title = {{ name|tojson }};
         </script>
         <script src="/static/chart.js"></script>
         <script src="/static/jQ.js"></script>
-    </div>
-    <div id="coord">
-        Effort: <h1 id="Eff"></h1>   Impact: <h1 id="Im"></h1>
     </div>
     <div id="table">
         <table id="task_table">
@@ -34,8 +32,6 @@
         Task: <input type="text" name="Task" required><br><br>
         Description: <input type="text" name="Description" required><br><br>
         Deadline: <input type="date" name="Deadline">   <input type="time" name="time"><br><br>
-        Impact: <h1 id="Impact"></h1><br>
-        Effort: <h1 id="Effort"></h1><br>
         Subject: <input type="text" name="Subject" required><br><br>
         Notes: <input type="text" name="Notes" value="None"><br>
         <br>

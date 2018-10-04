@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+    <link rel="stylesheet" href="/static/index.css">
+</head>
+<body>
+    <div id="heading">
+        <h2>Welcome to the Effort-Impact Application!</h2><br>
+    </div>
+    <br>
+    <div id="instructions">
+        <h3>Some instructions to get you started:</h3><br>
+        <p>
+            The first step to generating the Effort-Impact Matrix is selecting your task sheet. All task sheets must be
+            located in the Task Sheet folder on the Desktop. If you do not yet have an Task sheet in the folder, you can
+            click on the Create New Sheet button, which will create a new Task Sheet with a given name.
+        </p><br>
+    </div>
+    <br>
+    <br>
+    <div id="choose_file">
+        <form action="/chart" method="post">
+            <label>Choose Task Sheet</label><br><br>
+            <input type="file" name="file"><br>
+            <br>
+            <button type="submit" name="submit">Submit</button><br>
+            _____________________________________________________
+            <br>
+            <br>
+            <label>New Sheet Name (no extension needed)</label><br><br>
+            <input type="text" name="new_name"><br><br>
+            <button type="submit" name="new">Create new Sheet</button>
+        </form>
+    </div>
+</body>
+</html>

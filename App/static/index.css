@@ -1,0 +1,21 @@
+body {
+    position: absolute;
+    background-color: #8ab2f2;
+}
+#heading {
+    text-decoration: underline;
+    font-size: 35px;
+}
+#instructions {
+    border: 2px solid black;
+    padding: 5px;
+    background-color: #e8f0fc;
+}
+#choose_file {
+    position: relative;
+    float: left;
+    border: 2px solid black;
+    padding: 5px;
+    background-color: #e8f0fc;
+    width: 40%;
+}
