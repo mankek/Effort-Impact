@@ -134,21 +134,19 @@ $(document).ready(function(){
 
     // Double click event (add new circle)
 
-    svg.on("dblclick", function(){
+    chart.on("dblclick", function(){
         var mouse = d3.mouse(this);
-        g.selectAll("scatterplot")
+        g.selectAll("chart")
             .data([mouse[1]])
-            .enter().append("svg:circle")
-            .attr('transform', 'translate(-' + margin.left + ',-' + margin.top + ')')
+            .enter()
+            .append("svg:circle")
             .attr("cy", function (d) { return d; })
             .attr("y", function (d) {
                 var c_y = d - margin.top
-                document.getElementById("Effort").innerHTML = y_scale.invert(c_y).toFixed(1);
                 return y_scale.invert(c_y); })
             .attr("cx", function () { return mouse[0] })
             .attr("x", function () {
                 var c_x = mouse[0] - margin.left
-                document.getElementById("Impact").innerHTML = x_scale.invert(c_x).toFixed(1);
                 return x_scale.invert(c_x); })
             .attr("r", 15)
             .attr("id", function(){

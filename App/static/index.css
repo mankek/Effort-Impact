@@ -19,3 +19,9 @@ body {
     background-color: #e8f0fc;
     width: 40%;
 }
+#make {
+    border-top: 1px solid black;
+}
+input {
+    width: 50%;
+}

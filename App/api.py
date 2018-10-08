@@ -2,6 +2,7 @@
 from App import app_methods
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 import json
+import time
 
 app = Flask(__name__)
 
@@ -21,14 +22,18 @@ def view():
     if request.form['action'] == 'submit':
         file = request.form['file']
     elif request.form['action'] == 'new':
-        new_name = request.form['new_name']
+        new_name = request.form['new_name'] + ".xlsx"
+        app_methods.new_table(new_name)
         file = new_name
     chosen_file[0] = file
-    result, names = app_methods.Table(file).load_table()
-    x, y = app_methods.effort_impact(result)
-    colors = app_methods.deadline_colors(result)
-    new_result = app_methods.clean_result(result)
-    return render_template("chart.html", x=x, y=y, result=new_result, colors=colors, name=file.split(".")[0])
+    try:
+        result, names = app_methods.Table(file).load_table()
+        x, y = app_methods.effort_impact(result)
+        colors = app_methods.deadline_colors(result)
+        new_result = app_methods.clean_result(result)
+        return render_template("chart.html", x=x, y=y, result=new_result, colors=colors, name=file.split(".")[0])
+    except FileNotFoundError:
+        return redirect(url_for("index"))
 
 
 # Update existing task

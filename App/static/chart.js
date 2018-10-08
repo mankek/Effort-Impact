@@ -135,7 +135,7 @@ chart.append("g")
 //    .call(xAxis);
 
 svg.append("text")
-    .attr("transform", "translate(" + ((width/2) + (1.5*margin.left/2)) + "," + (height + (1.5*margin.bottom)) + ")")
+    .attr("transform", "translate(" + ((width + margin.left + margin.right)/2) + "," + (height + (2*margin.bottom/3) + (margin.top)) + ")")
     .style("text-anchor", "middle")
     .style("font-size", "20px")
     .text("Effort");
@@ -148,7 +148,7 @@ svg.append("text")
 svg.append("text")
     .attr("transform", "rotate(-90)")
     .attr("y", (margin.left/10))
-    .attr("x", -((height/2) + (margin.top/2)))
+    .attr("x", -((height + margin.top + margin.bottom)/2))
     .attr("dy", "1em")
     .style("text-anchor", "middle")
     .style("font-size", "20px")
@@ -157,7 +157,7 @@ svg.append("text")
 //// Chart title
 
 svg.append("text")
-    .attr("transform", "translate(" + ((width/2) + (margin.left/2)) + "," + (margin.top/2) + ")")
+    .attr("transform", "translate(" + ((width + margin.left + margin.right)/2) + "," + (2*margin.top/3) + ")")
     .style("text-anchor", "middle")
     .style("text-anchor", "right")
     .style("font-size", "25px")

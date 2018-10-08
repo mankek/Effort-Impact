@@ -69,7 +69,7 @@ def deadline_colors(tasks):
 
 
 def new_table(new_name):
-    path = os.path.join(out_path, (new_name + ".xlsx"))
+    path = os.path.join(out_path, new_name)
     df = pandas.DataFrame(
         {'Task': [], 'Description': [], 'Effort': [], 'Impact': [], 'Deadline': [], 'Subject': [], 'Notes': []})
     writer = pandas.ExcelWriter(path, engine='xlsxwriter')
@@ -84,7 +84,6 @@ class Table:
         self.path = os.path.join(out_path, file_name)
         self.list = pandas.read_excel(self.path, index=0)
         self.fields = list(self.list)
-
 
     # Loads the excel sheet where tasks are stored, formats them as a list of dictionaries; also returns field names
     def load_table(self):
