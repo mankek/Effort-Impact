@@ -48,10 +48,11 @@ $(document).ready(function(){
                     }
                     var cir_id = '{ "Id": ' + focused.id + ' }';
                     $.ajax({
-                        type: "POST",
                         url: "/delete",
                         data: cir_id,
-                        contentType: "application/json;charset=UTF-8",
+                        success: function (response) {
+                            console.log(response);
+                        },
                         error: function (xhr, errorThrown){
                             console.log(xhr.responseText);
                             console.log(errorThrown);
@@ -113,21 +114,18 @@ $(document).ready(function(){
 
     function dragend(d, i){
         var circle = d3.select(this)
-        var new_loc = {
-            Effort: circle.attr("y"),
-            Impact: circle.attr("x"),
-            Id: i
-        };
         $.ajax({
-            type: "POST",
             url: "/update",
-            data: JSON.stringify(new_loc),
-            contentType: "application/json;charset=UTF-8",
+            data: {"Effort": circle.attr('y'),"Impact": circle.attr('x'),"Id": i},
+            success: function (response) {
+                console.log(response);
+            },
             error: function (xhr, errorThrown){
                 console.log(xhr.responseText);
                 console.log(errorThrown);
             }
         });
+        console.log({"Effort": JSON.stringify(circle.attr('y')),"Impact": JSON.stringify(circle.attr('x')),"Id": JSON.stringify(i)})
         console.log("Dragend!")
     }
     dragHandler(svg.selectAll("circle"));
@@ -165,15 +163,15 @@ $(document).ready(function(){
         $("#form2").hide();
         $("#form").show();
         $("#form").submit(function(){
-            var eff_data = {
-                Effort: $("#Effort").html(),
-                Impact: $("#Impact").html(),
-                };
             $.ajax({
-                type: "POST",
                 url: "/new",
-                data: JSON.stringify(eff_data),
-                contentType: "application/json;charset=UTF-8",
+                data: {
+                    "Effort": x_scale.invert(mouse[0] - margin.left),
+                    "Impact": y_scale.invert(mouse[1] - margin.top),
+                },
+                success: function (response) {
+                    console.log(response);
+                },
                 error: function (xhr, errorThrown){
                     console.log(xhr.responseText);
                     console.log(errorThrown);

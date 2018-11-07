@@ -133,6 +133,14 @@ class Table:
         writer.save()
         return "Table saved!"
 
+    # Deletes a selected task from the excel sheet
+    def delete_from_table(self, task_id):
+        self.list.drop(index=task_id, inplace=True)
+        self.list.reset_index(drop=True, inplace=True)
+        writer = pandas.ExcelWriter(self.path)
+        self.list.to_excel(writer)
+        writer.save()
+        return "Table saved"
 
 
 
@@ -146,14 +154,8 @@ class Table:
 
 
 
-# Deletes a selected task from the excel sheet
-def delete_from_table(task_id):
-    Table.task_list.drop(index=task_id, inplace=True)
-    Table.task_list.reset_index(drop=True, inplace=True)
-    writer = pandas.ExcelWriter(Table.path)
-    Table.task_list.to_excel(writer)
-    writer.save()
-    return "Table saved"
+
+
 
 
 

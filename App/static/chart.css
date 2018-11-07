@@ -1,7 +1,6 @@
 body {
     position: absolute;
     background-color: #8ab2f2;
-    float: left;
 }
 form {
     background-color: #b3cbf2;
@@ -22,6 +21,7 @@ td {
     border: 1px solid black;
 }
 #scatterplot {
+    position: relative;
     float: left;
 }
 #coord {
@@ -35,13 +35,14 @@ td {
 #form {
     border:2px solid black;
     text-align:center;
-    width:40%;
+    width:30%;
     display: none;
 }
 #form2 {
+    float: right;
     border:2px solid black;
     text-align:center;
-    width:40%;
+    width:30%;
     display: none;
 }
 .grid line {
