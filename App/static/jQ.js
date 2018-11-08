@@ -28,8 +28,8 @@ $(document).ready(function(){
 
     g.selectAll("circle")
         .on("click", function(d, i){
-            $("#form2").show();
-            $("#id").val(i);
+            $("#Update").show();
+            $("#id").val(this.id);
             focused = this;
         });
 
@@ -46,19 +46,18 @@ $(document).ready(function(){
                     for (b = 0; b < 5; b++) {
                         table.deleteRow(-1)
                     }
-                    var cir_id = '{ "Id": ' + focused.id + ' }';
                     $.ajax({
                         url: "/delete",
-                        data: cir_id,
-                        success: function (response) {
-                            console.log(response);
+                        data: { "Id": focused.id },
+                        success: function () {
+                            console.log("success!");
                         },
                         error: function (xhr, errorThrown){
                             console.log(xhr.responseText);
                             console.log(errorThrown);
                         }
                     })
-                    $("#form2").hide();
+                    $("#Update").hide();
                     focused = null;
                 }
             } else if (d3.event.keyCode === 13){
@@ -92,6 +91,18 @@ $(document).ready(function(){
             }
         });
 
+    // Hide Forms
+
+    $("#HideUpdate").on("click", function() {
+        $("#Update").hide();
+        focused = null;
+    })
+
+    $("#HideNew").on("click", function() {
+        $("#New").hide();
+        d3.selectAll("circle:last-of-type").remove();
+    })
+
     // Drag event
 
     var dragHandler = d3.drag()
@@ -116,16 +127,15 @@ $(document).ready(function(){
         var circle = d3.select(this)
         $.ajax({
             url: "/update",
-            data: {"Effort": circle.attr('y'),"Impact": circle.attr('x'),"Id": i},
-            success: function (response) {
-                console.log(response);
+            data: {"Effort": circle.attr('x'),"Impact": circle.attr('y'),"Id": i},
+            success: function () {
+                console.log("success!");
             },
             error: function (xhr, errorThrown){
                 console.log(xhr.responseText);
                 console.log(errorThrown);
             }
         });
-        console.log({"Effort": JSON.stringify(circle.attr('y')),"Impact": JSON.stringify(circle.attr('x')),"Id": JSON.stringify(i)})
         console.log("Dragend!")
     }
     dragHandler(svg.selectAll("circle"));
@@ -160,17 +170,17 @@ $(document).ready(function(){
                     }
                 }
             });
-        $("#form2").hide();
-        $("#form").show();
-        $("#form").submit(function(){
+        $("#Update").hide();
+        $("#New").show();
+        $("#New").submit(function(){
             $.ajax({
                 url: "/new",
                 data: {
                     "Effort": x_scale.invert(mouse[0] - margin.left),
                     "Impact": y_scale.invert(mouse[1] - margin.top),
                 },
-                success: function (response) {
-                    console.log(response);
+                success: function () {
+                    console.log("success!");
                 },
                 error: function (xhr, errorThrown){
                     console.log(xhr.responseText);

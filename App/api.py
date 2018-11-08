@@ -26,34 +26,33 @@ def view():
             new_name = request.form['new_name'] + ".xlsx"
             app_methods.new_table(new_name)
             file = new_name
-        chosen_file[0] = file
+        chosen_file["file"] = file
+        return redirect(url_for("view"))
+    if request.method == 'GET':
         try:
-            result, names = app_methods.Table(file).load_table()
+            result, names = app_methods.Table(chosen_file["file"]).load_table()
             x, y = app_methods.effort_impact(result)
             colors = app_methods.deadline_colors(result)
             new_result = app_methods.clean_result(result)
-            return render_template("chart.html", x=x, y=y, result=new_result, colors=colors, name=file.split(".")[0])
+            return render_template("chart.html", x=x, y=y, result=new_result, colors=colors, name=chosen_file["file"].split(".")[0])
         except FileNotFoundError:
             return redirect(url_for("index"))
-    elif request.method == 'GET':
-        result, names = app_methods.Table(chosen_file[0]).load_table()
-        x, y = app_methods.effort_impact(result)
-        colors = app_methods.deadline_colors(result)
-        new_result = app_methods.clean_result(result)
-        return render_template("chart.html", x=x, y=y, result=new_result, colors=colors, name=chosen_file[0].split(".")[0])
+        except KeyError:
+            return redirect(url_for("index"))
 
 
 # Update existing task
 @app.route('/update', methods=['GET', 'POST'])
 def update():
-    if request.args:
+    if request.method == "GET":
         change = request.args
         eff = change['Effort']
         im = change['Impact']
         task_id = change['Id']
-        app_methods.Table(chosen_file[0]).update_table(task_id, "Effort", eff)
-        app_methods.Table(chosen_file[0]).update_table(task_id, "Impact", im)
-    else:
+        app_methods.Table(chosen_file["file"]).update_table(task_id, "Effort", eff)
+        app_methods.Table(chosen_file["file"]).update_table(task_id, "Impact", im)
+        return redirect(url_for("view"))
+    if request.method == "POST":
         task_id = request.form["id"]
         field = request.form["Field"]
         content = request.form["Content"]
@@ -65,8 +64,8 @@ def update():
                 due_date = content.split('-')
                 diff = app_methods.due_day(int(due_date[0]), int(due_date[1]), int(due_date[2]), int(due_time[0]))
                 content = content + '_' + request.form["up_time"] + "_" + diff
-        app_methods.Table(chosen_file[0]).update_table(task_id, field, content)
-    return redirect(url_for("view"))
+        app_methods.Table(chosen_file["file"]).update_table(task_id, field, content)
+        return redirect(url_for("view"))
 
 
 # Add a task to the table
@@ -94,16 +93,16 @@ def add_new():
             else:
                 data = request.form[i]
             new_task[i] = data
-        app_methods.Table(chosen_file[0]).add_to_table(new_task)
+        app_methods.Table(chosen_file["file"]).add_to_table(new_task)
     return redirect(url_for("view"))
 
 
 # Delete a task from the table
-@app.route('/delete', methods=['POST'])
+@app.route('/delete', methods=['GET'])
 def delete_task():
     delete_info = request.args
     task_id = int(delete_info["Id"])
-    app_methods.Table(chosen_file[0]).delete_from_table(task_id)
+    app_methods.Table(chosen_file["file"]).delete_from_table(task_id)
     return "done!"
 
 
