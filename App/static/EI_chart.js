@@ -17,7 +17,7 @@ var xAxis = d3.axisBottom(x_scale);
 var yAxis = d3.axisLeft(y_scale);
 var cAxis = d3.axisRight(c_scale);
 var legendWidth = 25;
-var legendHeight = 25;
+var legendHeight = 10;
 
 // Chart background creation
 
@@ -167,14 +167,19 @@ svg.append("text")
 // Color Legend
 
 var legendsvg = svg.selectAll(".legend")
-    .data(c_scale.ticks(30).slice(1).reverse())
+    .data(c_scale.ticks(40).slice(1).reverse())
     .enter().append("g")
-    .attr("transform", function(d, i) { return "translate(" + (width + margin.left + 9) + "," + ((height/12) + i * 25) + ")"; });
+    .attr("transform", function(d, i) { return "translate(" + (width + margin.left + 9) + "," + ((height/12) + i * 10) + ")"; });
 
 legendsvg.append("rect")
     .attr("width", legendWidth)
     .attr("height", legendHeight)
-    .style("fill", c_scale);
+    .style("fill", c_scale)
+    .attr("class", "ColorScale")
+    .attr("color_val", function(d) {
+        return d
+    })
+
 
 //svg.append("text")
 //    .attr("transform", "rotate(90)")

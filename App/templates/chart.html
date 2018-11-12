@@ -6,7 +6,7 @@
     <script type="text/javascript" src="http://d3js.org/d3.v4.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="/static/chart.css">
+    <link rel="stylesheet" href="/static/EI_chart.css">
 </head>
 <body>
     <div id="Content">
@@ -18,7 +18,7 @@
                 var x_raw = {{ x|tojson|safe }};
                 var title = {{ name|tojson }};
             </script>
-            <script src="/static/chart.js"></script>
+            <script src="/static/EI_chart.js"></script>
             <script src="/static/jQ.js"></script>
         </div>
         <div id="Info">
@@ -54,7 +54,6 @@
                     </div>
                     <br>
                     <button type="button" onclick="change_type('date')">Click me to change the Deadline!</button><br>
-                    <button type="button" onclick="change_type('number')">Click me to select a number!</button><br>
                     <br>
                     <button type="submit">Transform!</button><button type="button" id="HideUpdate">Go back</button> <br>
                     <br>
@@ -67,18 +66,10 @@
 
         function change_type(new_type){
             $("#change").attr("type", new_type);
-            if (new_type == 'date'){
-                var new_time = $("<input>").attr("type", "time").attr("name", "up_time");
-                $("#inputs").append(new_time);
-                $("#field").hide();
-                $("#field-label").hide();
-                $("#field").attr("value", "Deadline");
-            } else {
-                $("#field").show();
-                $("#field-label").show();
-                $("[name=up_time]").hide();
-                $("#field").attr("value", "");
-            }
+            var new_time = $("<input>").attr("type", "time").attr("name", "up_time");
+            $("#inputs").append(new_time);
+            $("#field").prop("readOnly", true);
+            $("#field").attr("value", "Deadline");
         };
     </script>
 </body>

@@ -1,8 +1,6 @@
 # !/usr/bin/python
 from App import app_methods
-from flask import Flask, render_template, jsonify, request, redirect, url_for
-import json
-import time
+from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
@@ -17,6 +15,7 @@ def index():
 chosen_file = {}
 
 
+# Loads new or existing chart
 @app.route("/chart", methods=['GET', 'POST'])
 def view():
     if request.method == 'POST':

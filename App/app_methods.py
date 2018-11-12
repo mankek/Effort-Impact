@@ -5,7 +5,7 @@ import datetime
 import math
 
 
-out_path = ("\\").join(os.path.dirname(os.path.abspath(__file__)).split("\\")[0:3]) + r"\Desktop\Task Sheets"
+out_path = ("\\").join(os.path.dirname(os.path.abspath(__file__)).split("\\")[0:-1]) + r"\Task Sheets"
 
 
 # Changes Deadline date to days/hours until due
@@ -56,15 +56,19 @@ def deadline_colors(tasks):
     for i in tasks:
         due = i['Deadline'].split('_')[-1].split(" ")
         if due[1][0] == 'h':
-            colors.append(((math.log(int(due[0])/24)) * 0.1222) + 0.1858)
+            colors.append((int(due[0])/24) * 0.0027397260273973)
         elif due[1][0] == 'd':
-            colors.append(((math.log(int(due[0]))) * 0.1222) + 0.1858)
+            color_val = int(due[0]) * 0.0027397260273973
+            if color_val <= 1:
+                colors.append(color_val)
+            else:
+                colors.append(1)
         elif due[0][0] == 'N':
             colors.append(1)
         elif due[1][0] == 'i':
             colors.append(0)
         elif due[1][0] == 't':
-            colors.append(.125)
+            colors.append(.00136)
     return colors
 
 

@@ -3,7 +3,8 @@ body {
 }
 #Content {
     position: absolute;
-    width: 100%;
+    width: 98.5%;
+    height: 97%;
     background-color: #8ab2f2;
 }
 form {
@@ -32,7 +33,7 @@ td {
 }
 #Info {
     position: relative;
-    float: left;
+    float: right;
     width: 45%;
     height: 100%;
 }

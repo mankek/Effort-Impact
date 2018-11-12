@@ -2,7 +2,7 @@ $(document).ready(function(){
     var svg = d3.select("svg");
     var focused = null;
 
-    // Hover event (show task info)
+    // Hover event (show task info or color scale info)
 
     $("circle").hover(function(){
         var index = $(this).attr("id")
@@ -22,6 +22,37 @@ $(document).ready(function(){
         for (b = 0; b < 5; b++) {
             table.deleteRow(-1)
         }
+    });
+
+    function ColorScaleHTML(color_val){
+        days_due = (Number(color_val/0.0027397260273973))
+        if (days_due > 365){
+            years_due = Math.floor(days_due/365)
+            remaining_days = Math.round(days_due % 365)
+            return String(years_due) + " years and " + String(remaining_days) + " days until due"
+        } else if(days_due < 1){
+            hours_due = Math.round(days_due * 24)
+            return String(hours_due) + " hours until due"
+        } else{
+            return String(Math.round(days_due)) + " days until due"
+        }
+    }
+
+    $(".ColorScale").hover(function(){
+        var x_pos = Number($(this).position()["left"]) + 55
+        var y_pos = $(this).position()["top"]
+        var color_val = $(this).attr("color_val")
+        var html_value = ColorScaleHTML(color_val)
+        d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0.9)
+            .style("left", String(x_pos) + "px")
+            .style("top", y_pos + "px")
+            .html(html_value)
+    },
+    function(){
+        $("div.tooltip").remove();
+        console.log("done")
     });
 
     // Click/keypress events (update or delete circle)
