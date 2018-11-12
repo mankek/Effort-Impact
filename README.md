@@ -6,17 +6,18 @@ Using the Application
 This application comes with a virtual environment, EI_env, that provides all the dependencies needed. Once cloned
 and with the virtual environment running, the application can be run one of two ways:
 
-* Navigate into the application directory and run:
+Navigate into the application directory and run:
 
 
     py -3 app.py
 
 OR
 
-* Navigate into the application, set and run it as a flask app:
+Navigate into the application, set and run it as a flask app:
 
 
     set FLASK_APP=app.py
+    
     flask run
 
 The home page indicates that a task sheet must be selected from the Task Sheet folder; this folder is located
