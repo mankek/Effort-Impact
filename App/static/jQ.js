@@ -2,9 +2,10 @@ $(document).ready(function(){
     var svg = d3.select("svg");
     var focused = null;
 
+
     // Hover event (show task info or color scale info)
 
-    $("circle").hover(function(){
+    $("rect.Data").hover(function(){
         var index = $(this).attr("id")
         var table = document.getElementById("task_table")
         for (i in result[index]) {
@@ -14,6 +15,7 @@ $(document).ready(function(){
             cell1.innerHTML = JSON.stringify(i)
             cell2.innerHTML = JSON.stringify(result[index][i])
         }
+        $("#Instructions").hide();
         $("#task_table").show()
     },
     function(){
@@ -21,6 +23,13 @@ $(document).ready(function(){
         var table = document.getElementById("task_table")
         for (b = 0; b < 5; b++) {
             table.deleteRow(-1)
+        }
+        if ($("#Update").css('display') == "none" || $("#Update").css("visibility") == "hidden") {
+            if ($("#New").css('display') == "none" || $("#New").css("visibility") == "hidden") {
+                if ($("#id_table").css('display') == "none" || $("#id_table").css("visibility") == "hidden") {
+                    $("#Instructions").show();
+                }
+            }
         }
     });
 
@@ -57,8 +66,9 @@ $(document).ready(function(){
 
     // Click/keypress events (update or delete circle)
 
-    g.selectAll("circle")
+    g.selectAll("rect.Data")
         .on("click", function(d, i){
+            $("#Instructions").hide();
             $("#Update").show();
             $("#id").val(this.id);
             focused = this;
@@ -89,35 +99,38 @@ $(document).ready(function(){
                         }
                     })
                     $("#Update").hide();
+                    $("#Instructions").show();
                     focused = null;
                 }
             } else if (d3.event.keyCode === 13){
                 if ($("#id_table").css('display') == "none" || $("#id_table").css("visibility") == "hidden") {
                     var table = document.getElementById("id_table");
-                    for (b=0; b < $("circle").length; b++){
-                        var cir = $("circle")[b]
-                        var x_pos = Number(d3.select(cir).attr("cx")) + 55;
-                        var y_pos = d3.select(cir).attr("cy");
+                    for (b=0; b < $("rect.Data").length; b++){
+                        var cir = $("rect.Data")[b]
+                        var x_pos = Number(d3.select(cir).attr("x")) + 60;
+                        var y_pos = Number(d3.select(cir).attr("y")) + 30;
                         d3.select("body").append("div")
                             .attr("class", "tooltip")
                             .style("opacity", 0.9)
                             .style("left", String(x_pos) + "px")
-                            .style("top", (y_pos) + "px")
+                            .style("top", String(y_pos) + "px")
                             .html(d3.select(cir).attr("id"))
                         var row_a = table.insertRow(-1)
                         var cell_a = row_a.insertCell(0)
                         var cell_b = row_a.insertCell(1)
                         cell_a.innerHTML = d3.select(cir).attr("id")
-                        cell_b.innerHTML = JSON.stringify(result[b]["Task"])
+                        cell_b.innerHTML = JSON.stringify(result[b]["Description"])
                     };
+                    $("#Instructions").hide();
                     $("#id_table").show();
                 } else {
                     $("div.tooltip").remove();
                     var table = document.getElementById("id_table");
-                    for (b = 0; b < $("circle").length; b++) {
+                    for (b = 0; b < $("rect.Data").length; b++) {
                         table.deleteRow(-1)
                     }
                     $("#id_table").hide();
+                    $("#Instructions").show();
                 }
             }
         });
@@ -126,12 +139,14 @@ $(document).ready(function(){
 
     $("#HideUpdate").on("click", function() {
         $("#Update").hide();
+        $("#Instructions").show();
         focused = null;
     })
 
     $("#HideNew").on("click", function() {
         $("#New").hide();
-        d3.selectAll("circle:last-of-type").remove();
+        $("#Instructions").show();
+        d3.selectAll(".Data:last-of-type").remove();
     })
 
     // Drag event
@@ -146,19 +161,20 @@ $(document).ready(function(){
     };
 
     function dragged(d, i){
+        $("#task_table").hide();
         d3.select(this)
             .attr('transform', 'translate(' + 0 + ',' + 0 + ')')
-            .attr("cx", d3.event.x)
-            .attr("cy", d3.event.y)
-            .attr("x", x_scale.invert(d3.event.x).toFixed(1))
-            .attr("y", y_scale.invert(d3.event.y).toFixed(1))
+            .attr("x", d3.event.x)
+            .attr("y", d3.event.y)
+            .attr("dx", x_scale.invert(d3.event.x).toFixed(1))
+            .attr("dy", y_scale.invert(d3.event.y).toFixed(1))
     };
 
     function dragend(d, i){
         var circle = d3.select(this)
         $.ajax({
             url: "/update",
-            data: {"Effort": circle.attr('x'),"Impact": circle.attr('y'),"Id": i},
+            data: {"Effort": circle.attr('dx'),"Impact": circle.attr('dy'),"Id": i},
             success: function () {
                 console.log("success!");
             },
@@ -169,29 +185,33 @@ $(document).ready(function(){
         });
         console.log("Dragend!")
     }
-    dragHandler(svg.selectAll("circle"));
+    dragHandler(svg.selectAll(".Data"));
 
     // Double click event (add new circle)
 
     chart.on("dblclick", function(){
         var mouse = d3.mouse(this);
         g.selectAll("chart")
-            .data([mouse[1]])
+            .data([0])
             .enter()
-            .append("svg:circle")
-            .attr("cy", function (d) { return d; })
-            .attr("y", function (d) {
-                var c_y = d - margin.top
+            .append("svg:rect")
+            .attr("y", function (d) { return d; })
+            .attr("dy", function (d) {
+                var c_y = 0 - margin.top
                 return y_scale.invert(c_y); })
-            .attr("cx", function () { return mouse[0] })
-            .attr("x", function () {
-                var c_x = mouse[0] - margin.left
+            .attr("x", function () { return 0 })
+            .attr("dx", function () {
+                var c_x = 0 - margin.left
                 return x_scale.invert(c_x); })
-            .attr("r", 15)
+            .attr("width", 25)
+            .attr("height", 25)
             .attr("id", function(){
-                return $("circle").siblings().length - 1;
+                return $("rect.Data").siblings().length - 1;
             })
+            .attr("class", "Data")
             .style("fill", function () { return c_scale(1); })
+            .style("stroke", "grey")
+            .style("stroke-width", 2)
             .on("click", function () {
                 if (d3.event.ctrlKey){
                     d3.select(this).remove();
@@ -201,23 +221,8 @@ $(document).ready(function(){
                     }
                 }
             });
+        $("#Instructions").hide();
         $("#Update").hide();
         $("#New").show();
-        $("#New").submit(function(){
-            $.ajax({
-                url: "/new",
-                data: {
-                    "Effort": x_scale.invert(mouse[0] - margin.left),
-                    "Impact": y_scale.invert(mouse[1] - margin.top),
-                },
-                success: function () {
-                    console.log("success!");
-                },
-                error: function (xhr, errorThrown){
-                    console.log(xhr.responseText);
-                    console.log(errorThrown);
-                }
-            });
-        })
     })
 });

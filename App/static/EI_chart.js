@@ -77,38 +77,41 @@ var g = chart.selectAll('g')
     .enter()
     .append("g")
 
-g.append("circle")
-    .attr("cy", function (d) {
+g.append("rect")
+    .attr("y", function (d) {
         return y_scale(d);
     })
-    .attr("y", function (d) {
+    .attr("dy", function (d) {
         return d;
     })
-    .attr("cx", function (d, i) {
+    .attr("x", function (d, i) {
         return x_scale(x_raw[i]);
     })
-    .attr("x", function (d, i) {
+    .attr("dx", function (d, i) {
         return x_raw[i];
     })
-    .attr("r", 15)
+    .attr("width", 25)
+    .attr("height", 25)
     .style("fill", function (d, i) {
         return c_scale(colors[i]);
     })
+    .style("stroke", "grey")
+    .style("stroke-width", 2)
     .attr("id", function (d, i) {
         return i;
-    });
-
+    })
+    .attr("class", "Data");
 
 // Gridlines
 
 function make_x_gridlines(){
     return d3.axisBottom(x_scale)
-        .tickValues([0, 8, 16])
+        .tickValues([0, 16])
 }
 
 function make_y_gridlines(){
     return d3.axisLeft(y_scale)
-        .tickValues([0, 8, 16])
+        .tickValues([0,16])
 }
 
 chart.append("g")

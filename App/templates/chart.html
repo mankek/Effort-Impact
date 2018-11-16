@@ -22,12 +22,28 @@
             <script src="/static/jQ.js"></script>
         </div>
         <div id="Info">
+            <div id="Instructions">
+                <h1>Controls</h1>
+                <h2>Hover with the mouse</h2>
+                <p>Hover over squares in the graph to view their task information. Hover over the color scale to
+                see the corresponding values.</p>
+                <h2>Click with the mouse</h2>
+                <p>Click a square in the graph to bring up a form to change a certain field of the corresponding task.
+                Double-click anywhere on the graph to create a new square and submit the form that appears to add it.</p>
+                <h2>Drag with the mouse</h2>
+                <p>Click, hold, and drag a square anywhere on the graph to change its position.</p>
+                <h2>Press the Enter or Control button</h2>
+                <p>Press the Enter button to display each square's id and a table of the corresponding task
+                descriptions. When editing a square, the control button can be pressed to delete the square and all
+                of its information.</p>
+            </div>
             <div id="table">
                 <table id="task_table">
                 </table>
                 <table id="id_table">
                 </table>
             </div>
+
             <div id="New">
                 <form action="/new" method="post" id="form">
                     <br>
@@ -42,6 +58,7 @@
                     <br>
                 </form>
             </div>
+
             <div id="Update">
                 <form action="/update" method="post" id="form2">
                     <h2>Change Form</h2>
@@ -49,7 +66,13 @@
                     <div id="inputs">
                         <br>
                         Task ID #: <input type="number" name="id" id="id" readonly><br><br>
-                        <label id="field-label">Field to be Changed: </label><input type="text" id="field" name="Field"><br><br>
+                        <label id="field-label">Field to be Changed: </label>
+                        <input type="radio" value="Task" name="Field" onclick="change_type('text')">Task
+                        <input type="radio" value="Deadline" name="Field" onclick="change_type('date')" id="DL">Deadline
+                        <input type="radio" value="Description" name="Field" onclick="change_type('text')">Description
+                        <input type="radio" value="Subject" name="Field" onclick="change_type('text')">Subject
+                        <input type="radio" value="Notes" name="Field" onclick="change_type('text')">Notes
+                        <br><br>
                         Content: <input type="text" id="change" name="Content"><br><br>
                     </div>
                     <br>
@@ -66,10 +89,18 @@
 
         function change_type(new_type){
             $("#change").attr("type", new_type);
-            var new_time = $("<input>").attr("type", "time").attr("name", "up_time");
-            $("#inputs").append(new_time);
-            $("#field").prop("readOnly", true);
-            $("#field").attr("value", "Deadline");
+            var timeExists = document.getElementsByName("up_time");
+            if (new_type == "date"){
+                if (timeExists.length == 0){
+                    var new_time = $("<input>").attr("type", "time").attr("name", "up_time");
+                    $("#inputs").append(new_time);
+                }
+            } else{
+                if (timeExists.length !== 0){
+                    $("input[name='up_time']").remove();
+                }
+            }
+
         };
     </script>
 </body>

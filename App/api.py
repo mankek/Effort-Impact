@@ -73,26 +73,22 @@ new_task = {}
 
 @app.route('/new', methods=['POST'])
 def add_new():
-    ajax_names = ['Impact', 'Effort']
     form_names = ['Task', 'Description', 'Deadline', 'Subject', 'Notes']
-    if request.args:
-        for i in ajax_names:
-            data = request.args[i]
-            new_task[i] = data
-    else:
-        for i in form_names:
-            if i == 'Deadline':
-                if request.form[i] == "":
-                    data = "No Deadline"
-                else:
-                    due_date = request.form[i].split('-')
-                    due_time = request.form['time'].split(':')
-                    diff = app_methods.due_day(int(due_date[0]), int(due_date[1]), int(due_date[2]), int(due_time[0]))
-                    data = request.form[i] + '_' + request.form['time'] + '_' + diff
+    new_task["Impact"] = "16"
+    new_task["Effort"] = "0"
+    for i in form_names:
+        if i == 'Deadline':
+            if request.form[i] == "":
+                data = "No Deadline"
             else:
-                data = request.form[i]
-            new_task[i] = data
-        app_methods.Table(chosen_file["file"]).add_to_table(new_task)
+                due_date = request.form[i].split('-')
+                due_time = request.form['time'].split(':')
+                diff = app_methods.due_day(int(due_date[0]), int(due_date[1]), int(due_date[2]), int(due_time[0]))
+                data = request.form[i] + '_' + request.form['time'] + '_' + diff
+        else:
+            data = request.form[i]
+        new_task[i] = data
+    app_methods.Table(chosen_file["file"]).add_to_table(new_task)
     return redirect(url_for("view"))
 
 
@@ -102,6 +98,6 @@ def delete_task():
     delete_info = request.args
     task_id = int(delete_info["Id"])
     app_methods.Table(chosen_file["file"]).delete_from_table(task_id)
-    return "done!"
+    return "done"
 
 
