@@ -72,10 +72,9 @@ def deadline_colors(tasks):
     return colors
 
 
-def new_table(new_name):
+def new_table(new_name, fields):
     path = os.path.join(out_path, new_name)
-    df = pandas.DataFrame(
-        {'Task': [], 'Description': [], 'Effort': [], 'Impact': [], 'Deadline': [], 'Subject': [], 'Notes': []})
+    df = pandas.DataFrame(fields)
     writer = pandas.ExcelWriter(path, engine='xlsxwriter')
     df.to_excel(writer, sheet_name='Sheet1')
     writer.save()
@@ -89,21 +88,27 @@ class Table:
         self.list = pandas.read_excel(self.path, index=0)
         self.fields = list(self.list)
 
+        if "Deadline" in self.fields:
+            self.DL_flag = True
+        else:
+            self.DL_flag = False
+
     # Loads the excel sheet where tasks are stored, formats them as a list of dictionaries; also returns field names
     def load_table(self):
 
         # Update deadlines in task_list
-        for s in range(0, (self.list.shape[0])):
-            line = self.list['Deadline'][s]
-            if line == "No Deadline":
-                continue
-            else:
-                line = line.split('_')
-                date = line[0].split('-')
-                time = line[1].split(':')
-                new_diff = due_day(int(date[0]), int(date[1]), int(date[2]), int(time[0]))
-                line[2] = new_diff
-                self.list.loc[s, ['Deadline']] = '_'.join(line)
+        if self.DL_flag:
+            for s in range(0, (self.list.shape[0])):
+                line = self.list['Deadline'][s]
+                if line == "No Deadline":
+                    continue
+                else:
+                    line = line.split('_')
+                    date = line[0].split('-')
+                    time = line[1].split(':')
+                    new_diff = due_day(int(date[0]), int(date[1]), int(date[2]), int(time[0]))
+                    line[2] = new_diff
+                    self.list.loc[s, ['Deadline']] = '_'.join(line)
 
         # Form list of results
         tasks = []
@@ -115,7 +120,7 @@ class Table:
                 task[0].update(task[1])
                 del task[1]
             tasks.append(task[0])
-        return tasks, self.fields
+        return tasks, self.fields, self.DL_flag
 
     # Updates the specified field of the specified task
     def update_table(self, task_id, field, content):

@@ -4,36 +4,51 @@ from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
+chosen_file = {}
+chosen_fields = []
+
 
 # Get the table of tasks
 @app.route('/', methods=['GET'])
-@app.route('/index', methods=['GET'])
+@app.route('/index', methods=['GET', 'POST'])
 def index():
+    if request.method == 'POST':
+        chosen_fields.clear()
+        return render_template("index.html")
+    chosen_fields.clear()
     return render_template("index.html")
-
-
-chosen_file = {}
 
 
 # Loads new or existing chart
 @app.route("/chart", methods=['GET', 'POST'])
 def view():
+    optional_fields = ["DepField", "SubjectField", "DeadlineField", "NotesField"]
+    required_fields = {"Task": [], "Effort": [], "Impact": [], "Description": []}
+
     if request.method == 'POST':
         if request.form['action'] == 'submit':
             file = request.form['file']
         elif request.form['action'] == 'new':
             new_name = request.form['new_name'] + ".xlsx"
-            app_methods.new_table(new_name)
+            for i in optional_fields:
+                if request.form[i] != "No":
+                    required_fields[request.form[i]] = []
+            app_methods.new_table(new_name, required_fields)
             file = new_name
         chosen_file["file"] = file
         return redirect(url_for("view"))
     if request.method == 'GET':
         try:
-            result, names = app_methods.Table(chosen_file["file"]).load_table()
+            result, names, DL_flag = app_methods.Table(chosen_file["file"]).load_table()
+            for i in names:
+                chosen_fields.append(i)
             x, y = app_methods.effort_impact(result)
-            colors = app_methods.deadline_colors(result)
+            if DL_flag:
+                colors = app_methods.deadline_colors(result)
+            else:
+                colors = []
             new_result = app_methods.clean_result(result)
-            return render_template("chart.html", x=x, y=y, result=new_result, colors=colors, name=chosen_file["file"].split(".")[0])
+            return render_template("chart.html", x=x, y=y, result=new_result, colors=colors, name=chosen_file["file"].split(".")[0], DL_flag=DL_flag, fields=names)
         except FileNotFoundError:
             return redirect(url_for("index"))
         except KeyError:
@@ -73,10 +88,10 @@ new_task = {}
 
 @app.route('/new', methods=['POST'])
 def add_new():
-    form_names = ['Task', 'Description', 'Deadline', 'Subject', 'Notes']
+    print(chosen_fields)
     new_task["Impact"] = "16"
     new_task["Effort"] = "0"
-    for i in form_names:
+    for i in chosen_fields:
         if i == 'Deadline':
             if request.form[i] == "":
                 data = "No Deadline"
@@ -85,6 +100,8 @@ def add_new():
                 due_time = request.form['time'].split(':')
                 diff = app_methods.due_day(int(due_date[0]), int(due_date[1]), int(due_date[2]), int(due_time[0]))
                 data = request.form[i] + '_' + request.form['time'] + '_' + diff
+        elif (i == "Effort") or (i == "Impact"):
+            continue
         else:
             data = request.form[i]
         new_task[i] = data

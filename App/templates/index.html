@@ -15,6 +15,10 @@
             The first step to generating the Effort-Impact Matrix is selecting your task sheet. All task sheets are
             located in the Task Sheets folder within the application folder. If you do not yet have a Task sheet in the folder, you can
             click on the Create New Sheet button, which will create a new Task Sheet with a given name.
+        </p>
+        <p>
+            Non-optional fields for each entry are: Task, Description. Optional fields can be chosen when creating
+            a new sheet.
         </p><br>
     </div>
     <br>
@@ -22,19 +26,34 @@
     <div id="choose_file">
         <form action="/chart" method="post">
             <div id="choose">
-                <label>Choose Task Sheet</label><br><br>
+                Choose Task Sheet<br><br>
                 <input type="file" name="file"><br>
                 <br>
                 <button type="submit" name="action" value="submit">Submit</button><br>
             </div>
-            <br>
             <div id="make">
-                <br>
-                <label>New Sheet Name (no extension needed)</label><br><br>
+                New Sheet Name (no extension needed)<br><br>
                 <input type="text" name="new_name"><br><br>
+                Select Optional Fields<br><br>
+                <input id="DepartmentHidden" type="hidden" value="No" name="DepField">
+                <input id="Department" type="checkbox" name="DepField" value="Department" onclick="Check('Department')">Department
+                <input id="SubjectHidden" type="hidden" value="No" name="SubjectField">
+                <input id="Subject" type="checkbox" name="SubjectField" value="Subject" onclick="Check('Subject')">Subject
+                <input id="DeadlineHidden" type="hidden" value="No" name="DeadlineField">
+                <input id="Deadline" type="checkbox" name="DeadlineField" value="Deadline" onclick="Check('Deadline')">Deadline
+                <input id="NotesHidden" type="hidden" value="No" name="NotesField">
+                <input id="Notes" type="checkbox" name="NotesField" value="Notes" onclick="Check('Notes')">Notes<br><br>
                 <button type="submit" name="action" value="new">Create New Sheet</button>
             </div>
         </form>
     </div>
+
+    <script>
+        function Check(box_id){
+            if (document.getElementById(box_id).checked){
+                document.getElementById(box_id + "Hidden").disabled = true;
+            }
+        }
+    </script>
 </body>
 </html>

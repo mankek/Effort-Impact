@@ -10,8 +10,16 @@ var x_scale = d3.scaleLinear()
 var y_scale = d3.scaleLinear()
     .domain([0, 16])
     .range([height, 0]);
-var c_scale = d3.scaleSequential(d3.interpolateRdBu)
-    .domain([0, 1]);
+
+
+if (String(DL_flag) == "true"){
+    var c_scale = d3.scaleSequential(d3.interpolateRdBu)
+        .domain([0, 1]);
+} else {
+    var c_scale = d3.scaleSequential(d3.interpolateSinebow)
+        .domain([0, 1]);
+}
+
 
 var xAxis = d3.axisBottom(x_scale);
 var yAxis = d3.axisLeft(y_scale);
@@ -93,7 +101,11 @@ g.append("rect")
     .attr("width", 25)
     .attr("height", 25)
     .style("fill", function (d, i) {
-        return c_scale(colors[i]);
+        if (String(DL_flag) == "true"){
+            return c_scale(colors[i]);
+        } else{
+            return c_scale(i/10)
+        }
     })
     .style("stroke", "grey")
     .style("stroke-width", 2)
@@ -169,19 +181,21 @@ svg.append("text")
 
 // Color Legend
 
-var legendsvg = svg.selectAll(".legend")
-    .data(c_scale.ticks(40).slice(1).reverse())
-    .enter().append("g")
-    .attr("transform", function(d, i) { return "translate(" + (width + margin.left + 9) + "," + ((height/12) + i * 10) + ")"; });
+if (String(DL_flag) == "true"){
+    var legendsvg = svg.selectAll(".legend")
+        .data(c_scale.ticks(40).slice(1).reverse())
+        .enter().append("g")
+        .attr("transform", function(d, i) { return "translate(" + (width + margin.left + 9) + "," + ((height/12) + i * 10) + ")"; });
 
-legendsvg.append("rect")
-    .attr("width", legendWidth)
-    .attr("height", legendHeight)
-    .style("fill", c_scale)
-    .attr("class", "ColorScale")
-    .attr("color_val", function(d) {
-        return d
-    })
+    legendsvg.append("rect")
+        .attr("width", legendWidth)
+        .attr("height", legendHeight)
+        .style("fill", c_scale)
+        .attr("class", "ColorScale")
+        .attr("color_val", function(d) {
+            return d
+        })
+}
 
 
 //svg.append("text")

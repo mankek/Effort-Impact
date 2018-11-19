@@ -1,6 +1,6 @@
 This project is focused on the creation of an application (Python-Flask) to alter an Excel File containing information on tasks (fields: Effort, Impact, 
 Deadline, Subject, Notes); The other primary goal is to allow for display of this data in an interactive graph (D3).
-
+***This branch is for developing a more flexiable, user-input-based method for defining the task fields***
 Using the Application
 
 This application comes with a virtual environment, EI_env, that provides all the dependencies needed. Once cloned

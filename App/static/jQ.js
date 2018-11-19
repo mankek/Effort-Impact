@@ -21,7 +21,7 @@ $(document).ready(function(){
     function(){
         $("#task_table").hide()
         var table = document.getElementById("task_table")
-        for (b = 0; b < 5; b++) {
+        for (b = 0; b < table.rows.length; b++) {
             table.deleteRow(-1)
         }
         if ($("#Update").css('display') == "none" || $("#Update").css("visibility") == "hidden") {
@@ -209,7 +209,13 @@ $(document).ready(function(){
                 return $("rect.Data").siblings().length - 1;
             })
             .attr("class", "Data")
-            .style("fill", function () { return c_scale(1); })
+            .style("fill", function () {
+                if (String(DL_flag) == "True"){
+                    return c_scale(colors[i]);
+                } else{
+                    return c_scale(i/10)
+                }
+            })
             .style("stroke", "grey")
             .style("stroke-width", 2)
             .on("click", function () {
