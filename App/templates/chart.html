@@ -18,19 +18,20 @@
                 var x_raw = {{ x|tojson|safe }};
                 var title = {{ name|tojson }};
                 var DL_flag = {{ DL_flag|tojson|safe }};
+                var fields = {{ fields|tojson|safe }}
             </script>
             <script src="/static/EI_chart.js"></script>
             <script src="/static/jQ.js"></script>
         </div>
         <div id="Info">
             <div id="Instructions">
-                <form action="/index" method="post" id="logout">
+                <form action="/index" method="get" id="logout">
                     <button type="submit">Logout</button>
                 </form>
                 <h1>Controls</h1>
                 <h2>Hover with the mouse</h2>
-                <p>Hover over squares in the graph to view their task information. Hover over the color scale to
-                see the corresponding values.</p>
+                <p>Hover over squares in the graph to view their task information. If using the deadline field, hover
+                over the color scale to see the corresponding values.</p>
                 <h2>Click with the mouse</h2>
                 <p>Click a square in the graph to bring up a form to change a certain field of the corresponding task.
                 Double-click anywhere on the graph to create a new square and submit the form that appears to add it.</p>
@@ -38,22 +39,31 @@
                 <p>Click, hold, and drag a square anywhere on the graph to change its position.</p>
                 <h2>Press the Enter or Control button</h2>
                 <p>Press the Enter button to display each square's id and a table of the corresponding task
-                descriptions. When editing a square, the control button can be pressed to delete the square and all
+                names/descriptions. When editing a square, the control button can be pressed to delete the square and all
                 of its information.</p>
             </div>
+            <div id="id_check">
+                <form>
+                    <input id="Task_check" type="radio">Task
+                    <input id="Desc_check" type="radio"> Description
+                </form>
+            </div><br>
             <div id="table">
-                <table id="task_table">
-                </table>
-                <table id="id_table">
-                </table>
+                <div>
+                    <table id="task_table">
+                    </table>
+                </div>
+                <div id="id_div">
+                    <table id="id_table">
+                    </table>
+                </div>
             </div>
-
             <div id="New">
                 <form action="/new" method="post" id="form">
                     <br>
                     <div id="input">
                         Task: <input type="text" name="Task" required><br><br>
-                        Description: <input id="desc" type="text" name="Description" required><br><br>
+                        Description: <textarea id="desc" name="Description" required></textarea><br><br>
                     </div><br>
                     <button type="submit">Submit to me!</button><button type="button" id="HideNew">Go back</button> <br>
                     <br>
@@ -104,7 +114,7 @@
             if (fields[i] == "Subject" || fields[i] == "Department" || fields[i] == "Notes") {
                 // Form 1
                 var label = $("<label></label>").text(String(fields[i]) + ": ")
-                var new_in = $("<input>").attr("type", "text").attr("name", String(fields[i])).attr("value", "None")
+                var new_in = $("<input>").attr("type", "text").attr("name", String(fields[i])).attr("value", "None");
                 var space = $("<br>")
                 var space_2 = $("<br>")
                 $("#input").append(label, new_in, space, space_2)
@@ -118,7 +128,8 @@
         }
 
         function change_type(new_type){
-            $("#chaeExists = document.getElementsByName("up_time");
+            $("#change").attr("type", new_type);
+            var timeExists = document.getElementsByName("up_time");
             if (new_type == "date"){
                 console.log("date")
                 if (timeExists.length == 0){

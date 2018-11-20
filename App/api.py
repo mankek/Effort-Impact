@@ -5,17 +5,12 @@ from flask import Flask, render_template, request, redirect, url_for
 app = Flask(__name__)
 
 chosen_file = {}
-chosen_fields = []
 
 
 # Get the table of tasks
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
-    if request.method == 'POST':
-        chosen_fields.clear()
-        return render_template("index.html")
-    chosen_fields.clear()
     return render_template("index.html")
 
 
@@ -40,8 +35,6 @@ def view():
     if request.method == 'GET':
         try:
             result, names, DL_flag = app_methods.Table(chosen_file["file"]).load_table()
-            for i in names:
-                chosen_fields.append(i)
             x, y = app_methods.effort_impact(result)
             if DL_flag:
                 colors = app_methods.deadline_colors(result)
@@ -88,10 +81,9 @@ new_task = {}
 
 @app.route('/new', methods=['POST'])
 def add_new():
-    print(chosen_fields)
     new_task["Impact"] = "16"
     new_task["Effort"] = "0"
-    for i in chosen_fields:
+    for i in app_methods.Table(chosen_file["file"]).fields:
         if i == 'Deadline':
             if request.form[i] == "":
                 data = "No Deadline"

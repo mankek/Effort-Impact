@@ -80,7 +80,7 @@ def new_table(new_name, fields):
     writer.save()
 
 
-class Table:
+class Table(object):
 
     def __init__(self, file_name):
         self.name = file_name

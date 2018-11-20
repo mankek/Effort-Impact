@@ -2,6 +2,8 @@ $(document).ready(function(){
     var svg = d3.select("svg");
     var focused = null;
 
+    $("#id_check").hide();
+
 
     // Hover event (show task info or color scale info)
 
@@ -21,12 +23,12 @@ $(document).ready(function(){
     function(){
         $("#task_table").hide()
         var table = document.getElementById("task_table")
-        for (b = 0; b < table.rows.length; b++) {
+        for (b = 0; b < (fields.length - 2); b++) {
             table.deleteRow(-1)
         }
         if ($("#Update").css('display') == "none" || $("#Update").css("visibility") == "hidden") {
             if ($("#New").css('display') == "none" || $("#New").css("visibility") == "hidden") {
-                if ($("#id_table").css('display') == "none" || $("#id_table").css("visibility") == "hidden") {
+                if ($("#id_div").css('display') == "none" || $("#id_div").css("visibility") == "hidden") {
                     $("#Instructions").show();
                 }
             }
@@ -68,11 +70,46 @@ $(document).ready(function(){
 
     g.selectAll("rect.Data")
         .on("click", function(d, i){
+            $("#table").hide();
             $("#Instructions").hide();
             $("#Update").show();
             $("#id").val(this.id);
+
             focused = this;
         });
+
+    function ID_table_hide(){
+        $("div.tooltip").remove();
+        var table = document.getElementById("id_table");
+        for (b = 0; b < $("rect.Data").length; b++) {
+            table.deleteRow(-1)
+        }
+        $("#id_div").hide();
+        $("#Instructions").show();
+    }
+
+    function ID_table_show(field){
+        var table = document.getElementById("id_table");
+        for (b=0; b < $("rect.Data").length; b++){
+            var cir = $("rect.Data")[b]
+            var x_pos = Number(d3.select(cir).attr("x")) + 60;
+            var y_pos = Number(d3.select(cir).attr("y")) + 30;
+            d3.select("body").append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0.9)
+                .style("left", String(x_pos) + "px")
+                .style("top", String(y_pos) + "px")
+                .html(d3.select(cir).attr("id"))
+            var row_a = table.insertRow(-1)
+            var cell_a = row_a.insertCell(0)
+            var cell_b = row_a.insertCell(1)
+            cell_a.innerHTML = d3.select(cir).attr("id")
+            cell_b.innerHTML = JSON.stringify(result[b][field])
+        }
+        $("#Instructions").hide();
+        $("#id_div").show();
+    }
+
 
     d3.select("body")
         .on('keydown', function (){
@@ -103,34 +140,22 @@ $(document).ready(function(){
                     focused = null;
                 }
             } else if (d3.event.keyCode === 13){
-                if ($("#id_table").css('display') == "none" || $("#id_table").css("visibility") == "hidden") {
-                    var table = document.getElementById("id_table");
-                    for (b=0; b < $("rect.Data").length; b++){
-                        var cir = $("rect.Data")[b]
-                        var x_pos = Number(d3.select(cir).attr("x")) + 60;
-                        var y_pos = Number(d3.select(cir).attr("y")) + 30;
-                        d3.select("body").append("div")
-                            .attr("class", "tooltip")
-                            .style("opacity", 0.9)
-                            .style("left", String(x_pos) + "px")
-                            .style("top", String(y_pos) + "px")
-                            .html(d3.select(cir).attr("id"))
-                        var row_a = table.insertRow(-1)
-                        var cell_a = row_a.insertCell(0)
-                        var cell_b = row_a.insertCell(1)
-                        cell_a.innerHTML = d3.select(cir).attr("id")
-                        cell_b.innerHTML = JSON.stringify(result[b]["Description"])
-                    };
-                    $("#Instructions").hide();
-                    $("#id_table").show();
+                if ($("#id_div").css('display') == "none" || $("#id_div").css("visibility") == "hidden") {
+                    $("#id_check").show()
+                    $("#Task_check").on("click", function(){
+                        $("#Desc_check").prop("checked", false)
+                        ID_table_hide()
+                        ID_table_show("Task")
+                    })
+                    $("#Desc_check").on("click", function(){
+                        $("#Task_check").prop("checked", false)
+                        ID_table_hide()
+                        ID_table_show("Description")
+                    })
+                    $("#Task_check").click()
                 } else {
-                    $("div.tooltip").remove();
-                    var table = document.getElementById("id_table");
-                    for (b = 0; b < $("rect.Data").length; b++) {
-                        table.deleteRow(-1)
-                    }
-                    $("#id_table").hide();
-                    $("#Instructions").show();
+                   ID_table_hide()
+                   $("#id_check").hide();
                 }
             }
         });
@@ -228,6 +253,7 @@ $(document).ready(function(){
                 }
             });
         $("#Instructions").hide();
+        $("#table").hide();
         $("#Update").hide();
         $("#New").show();
     })
