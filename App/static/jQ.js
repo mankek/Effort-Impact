@@ -7,8 +7,8 @@ $(document).ready(function(){
 
     // Hover event (show task info or color scale info)
 
-    $("rect.Data").hover(function(){
-        var index = $(this).attr("id")
+    function hover_start(sqr){
+        var index = $(sqr).attr("id")
         var table = document.getElementById("task_table")
         for (i in result[index]) {
             var row = table.insertRow(-1)
@@ -20,8 +20,9 @@ $(document).ready(function(){
         $("#Instructions").hide();
         $("#table").show();
         $("#task_table").show()
-    },
-    function(){
+    }
+
+    function hover_end(){
         $("#task_table").hide()
         $("#table").hide();
         var table = document.getElementById("task_table")
@@ -35,6 +36,13 @@ $(document).ready(function(){
                 }
             }
         }
+    }
+
+    $("rect.Data").hover(function(){
+        hover_start(this);
+    },
+    function(){
+        hover_end();
     });
 
     function ColorScaleHTML(color_val){
@@ -145,6 +153,7 @@ $(document).ready(function(){
                 }
             } else if (d3.event.keyCode === 13){
                 if ($("#id_div").css('display') == "none" || $("#id_div").css("visibility") == "hidden") {
+                    $("rect.Data").off()
                     $("#id_check").show()
                     $("#Task_check").on("click", function(){
                         $("#Desc_check").prop("checked", false)
@@ -160,6 +169,12 @@ $(document).ready(function(){
                 } else {
                    ID_table_hide()
                    $("#id_check").hide();
+                   $("rect.Data").hover(function(){
+                        hover_start(this);
+                    },
+                    function(){
+                        hover_end();
+                    });
                 }
             }
         });

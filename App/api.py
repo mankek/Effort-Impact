@@ -26,7 +26,6 @@ def view():
         elif request.form['action'] == 'new':
             new_name = request.form['new_name'] + ".xlsx"
             for i in optional_fields:
-                print(request.form[i])
                 if request.form[i] != "No":
                     required_fields[request.form[i]] = []
             app_methods.new_table(new_name, required_fields)
@@ -36,7 +35,6 @@ def view():
     if request.method == 'GET':
         try:
             result, names, DL_flag = app_methods.Table(chosen_file["file"]).load_table()
-            print(names)
             x, y = app_methods.effort_impact(result)
             if DL_flag:
                 colors = app_methods.deadline_colors(result)
@@ -78,15 +76,12 @@ def update():
 
 
 # Add a task to the table
-
-
 @app.route('/new', methods=['POST'])
 def add_new():
     new_task = dict()
     new_task["Impact"] = "16"
     new_task["Effort"] = "0"
     for i in app_methods.Table(chosen_file["file"]).fields:
-        print(i)
         if i == 'Deadline':
             if request.form[i] == "":
                 data = "No Deadline"
@@ -100,7 +95,6 @@ def add_new():
         else:
             data = request.form[i]
         new_task[i] = data
-    print(new_task)
     app_methods.Table(chosen_file["file"]).add_to_table(new_task)
     return redirect(url_for("view"))
 
