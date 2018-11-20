@@ -18,10 +18,12 @@ $(document).ready(function(){
             cell2.innerHTML = JSON.stringify(result[index][i])
         }
         $("#Instructions").hide();
+        $("#table").show();
         $("#task_table").show()
     },
     function(){
         $("#task_table").hide()
+        $("#table").hide();
         var table = document.getElementById("task_table")
         for (b = 0; b < (fields.length - 2); b++) {
             table.deleteRow(-1)
@@ -85,6 +87,7 @@ $(document).ready(function(){
             table.deleteRow(-1)
         }
         $("#id_div").hide();
+        $("#table").hide()
         $("#Instructions").show();
     }
 
@@ -107,6 +110,7 @@ $(document).ready(function(){
             cell_b.innerHTML = JSON.stringify(result[b][field])
         }
         $("#Instructions").hide();
+        $("#table").show();
         $("#id_div").show();
     }
 
@@ -164,12 +168,14 @@ $(document).ready(function(){
 
     $("#HideUpdate").on("click", function() {
         $("#Update").hide();
+        $("#table").hide();
         $("#Instructions").show();
         focused = null;
     })
 
     $("#HideNew").on("click", function() {
         $("#New").hide();
+        $("#table").hide();
         $("#Instructions").show();
         d3.selectAll(".Data:last-of-type").remove();
     })
