@@ -1,6 +1,8 @@
 This project is focused on the creation of an application (Python-Flask) to alter an Excel File containing information on tasks (fields: Effort, Impact, 
 Deadline, Subject, Notes); The other primary goal is to allow for display of this data in an interactive graph (D3).
 ***This branch is for developing a more flexible, user-input-based method for defining the task fields***
+
+
 Using the Application
 
 This application comes with a virtual environment, EI_env, that provides all the dependencies needed. Once cloned
@@ -21,10 +23,8 @@ Navigate into the application, set and run it as a flask app:
     flask run
 
 The home page indicates that a task sheet must be selected from the Task Sheet folder; this folder is located
-in the application directory and may be empty; any new sheets created automatically go into this folder.
-When a new sheet is created a user has the opportunity to add up to 4 optional fields (Department, Subject, Deadline, Notes) in  
-addition to the 2 non-optional fields (Task, Description). If the deadline field is selected, a color scale corresponding to due 
-date automatically appears; otherwise, colors are random.
+in the application directory and may be empty; any new sheets created automatically go into this folder. When a new sheet is created a user has the opportunity to add up to 4 optional fields (Department, Subject, Deadline, Notes) 
+in addition to the 2 non-optional fields (Task, Description). If the deadline field is selected, a color scale corresponding to due date automatically appears; otherwise, colors are random.
 It is recommended that new sheets be made using the application rather than externally in Excel, to ensure that it is
 parsed properly by the program.
 
