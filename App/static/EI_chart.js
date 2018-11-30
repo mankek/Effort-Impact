@@ -82,6 +82,7 @@ chart.append("rect")
 
 // Adding data to chart
 
+
 var g = chart.selectAll('g')
     .data(y_raw)
     .enter()
@@ -115,6 +116,14 @@ g.append("rect")
         return i;
     })
     .attr("class", "Data");
+
+if(chart.selectAll(".Data").empty()) {
+    console.log("empty")
+    var g = chart.selectAll("g")
+        .data([0])
+        .enter()
+        .append("g")
+}
 
 // Gridlines
 

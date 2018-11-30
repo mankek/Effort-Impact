@@ -237,23 +237,20 @@ $(document).ready(function(){
     // Double click event (add new circle)
 
     chart.on("dblclick", function(){
-        console.log("step 1")
         var mouse = d3.mouse(this);
-        console.log("Step 2")
+
         g.selectAll("chart")
             .data([0])
             .enter()
             .append("svg:rect")
             .attr("y", function (d) {
-                console.log("y is here")
                 return d; })
             .attr("dy", function (d) {
-                console.log("dy is here")
-                var c_y = 0 - margin.top
+                var c_y = 0
                 return y_scale.invert(c_y); })
             .attr("x", function () { return 0 })
             .attr("dx", function () {
-                var c_x = 0 - margin.left
+                var c_x = 0
                 return x_scale.invert(c_x); })
             .attr("width", 25)
             .attr("height", 25)

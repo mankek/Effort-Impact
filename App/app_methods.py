@@ -95,32 +95,35 @@ class Table(object):
 
     # Loads the excel sheet where tasks are stored, formats them as a list of dictionaries; also returns field names
     def load_table(self):
+        try:
+            # Update deadlines in task_list
+            if self.DL_flag:
+                for s in range(0, (self.list.shape[0])):
+                    line = self.list['Deadline'][s]
+                    if line == "No Deadline":
+                        continue
+                    else:
+                        line = line.split('_')
+                        date = line[0].split('-')
+                        time = line[1].split(':')
+                        new_diff = due_day(int(date[0]), int(date[1]), int(date[2]), int(time[0]))
+                        line[2] = new_diff
+                        self.list.loc[s, ['Deadline']] = '_'.join(line)
 
-        # Update deadlines in task_list
-        if self.DL_flag:
-            for s in range(0, (self.list.shape[0])):
-                line = self.list['Deadline'][s]
-                if line == "No Deadline":
-                    continue
-                else:
-                    line = line.split('_')
-                    date = line[0].split('-')
-                    time = line[1].split(':')
-                    new_diff = due_day(int(date[0]), int(date[1]), int(date[2]), int(time[0]))
-                    line[2] = new_diff
-                    self.list.loc[s, ['Deadline']] = '_'.join(line)
-
-        # Form list of results
-        tasks = []
-        for t in range(0, (self.list.shape[0])):
-            task = []
-            for i in self.fields:
-                task.append({i: str(self.list[i][t])})
-            while len(task) != 1:
-                task[0].update(task[1])
-                del task[1]
-            tasks.append(task[0])
-        return tasks, self.fields, self.DL_flag
+            # Form list of results
+            tasks = []
+            for t in range(0, (self.list.shape[0])):
+                task = []
+                for i in self.fields:
+                    task.append({i: str(self.list[i][t])})
+                while len(task) != 1:
+                    task[0].update(task[1])
+                    del task[1]
+                tasks.append(task[0])
+            return tasks, self.fields, self.DL_flag
+        except AttributeError:
+            print(s)
+            print(self.list['Deadline'][s])
 
     # Updates the specified field of the specified task
     def update_table(self, task_id, field, content):
