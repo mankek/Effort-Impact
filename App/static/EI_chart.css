@@ -2,10 +2,10 @@ body {
     background-color: grey;
 }
 #Content {
-    position: absolute;
-    width: 98.5%;
-    height: 97%;
-    background-color: #8ab2f2;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    height: 600px;
 }
 form {
     background-color: #b3cbf2;
@@ -26,19 +26,19 @@ td {
 #scatterplot {
     position: relative;
     float: left;
-    width: 47%;
-    height: 98%;
-    padding-top: 13px;
-    padding-left: 13px;
-    border-right: solid grey 5px;
+    width: 50%;
+    height: 580px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #8ab2f2;
 }
 #Info {
     position: relative;
-    float: left;
-    width: 50%;
-    height: 99%;
-    padding-left: 10px;
-    padding-top: 10px;
+    float: right;
+    width: 48%;
+    height: 580px;
+    padding: 10px;
+    background-color: #8ab2f2;
 }
 #Instructions{
     text-align:center;

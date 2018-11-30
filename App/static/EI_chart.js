@@ -1,5 +1,5 @@
 // Variables for chart creation
-var margin = {top: 40, right: 40, bottom: 40, left: 40}
+var margin = {top: 40, right: 65, bottom: 40, left: 40}
 var width = 500
 var height = 500
 
@@ -24,7 +24,7 @@ if (String(DL_flag) == "true"){
 var xAxis = d3.axisBottom(x_scale);
 var yAxis = d3.axisLeft(y_scale);
 var cAxis = d3.axisRight(c_scale);
-var legendWidth = 25;
+var legendWidth = 20;
 var legendHeight = 10;
 
 // Chart background creation
@@ -35,6 +35,7 @@ var svg = d3.select('#scatterplot')
   .attr('height', height + margin.top + margin.bottom)
   .attr('class', 'chart')
   .style("background-color", "white")
+  .attr("transform", 'translate(' + 10 + ",0)")
 
 // Chart creation
 
@@ -42,6 +43,7 @@ var chart = svg.append('g')
     .attr('width', width)
     .attr('height', height)
     .attr("transform", 'translate(' + (margin.left) + "," + (margin.top) + ")")
+    .attr('class', 'quadrants')
 
 // Adding quadrant squares
 
@@ -104,7 +106,7 @@ g.append("rect")
         if (String(DL_flag) == "true"){
             return c_scale(colors[i]);
         } else{
-            return c_scale(i/10)
+            return c_scale(i/100)
         }
     })
     .style("stroke", "grey")
@@ -183,9 +185,9 @@ svg.append("text")
 
 if (String(DL_flag) == "true"){
     var legendsvg = svg.selectAll(".legend")
-        .data(c_scale.ticks(40).slice(1).reverse())
+        .data(c_scale.ticks(50).slice(1).reverse())
         .enter().append("g")
-        .attr("transform", function(d, i) { return "translate(" + (width + margin.left + 9) + "," + ((height/12) + i * 10) + ")"; });
+        .attr("transform", function(d, i) { return "translate(" + (width + margin.left) + "," + ((legendHeight * i) + margin.top) + ")"; });
 
     legendsvg.append("rect")
         .attr("width", legendWidth)
@@ -195,16 +197,18 @@ if (String(DL_flag) == "true"){
         .attr("color_val", function(d) {
             return d
         })
+
+    svg.append("text")
+    .attr("transform", "rotate(90)")
+    .attr("x", (margin.top + margin.bottom + height/3))
+    .attr("y", 0 - (width + margin.right + legendWidth))
+    .attr("dy", "0.35em")
+    .style("font-size", "20px")
+    .text("Deadline")
 }
 
 
-//svg.append("text")
-//    .attr("transform", "rotate(90)")
-//    .attr("x", 0 + ((height/2) - 25))
-//    .attr("y", 0 - (width + (margin.right + 20)))
-//    .attr("dy", "0.35em")
-//    .style("font-size", "20px")
-//    .text("Deadline")
+
 
 
 

@@ -73,7 +73,6 @@ $(document).ready(function(){
     },
     function(){
         $("div.tooltip").remove();
-        console.log("done")
     });
 
     // Click/keypress events (update or delete circle)
@@ -203,11 +202,11 @@ $(document).ready(function(){
         .on("end", dragend);
 
     function dragstarted(){
-        $("#task_table").hide();
+        hover_end();
     };
 
     function dragged(d, i){
-        $("#task_table").hide();
+        hover_end();
         d3.select(this)
             .attr('transform', 'translate(' + 0 + ',' + 0 + ')')
             .attr("x", d3.event.x)
@@ -217,6 +216,7 @@ $(document).ready(function(){
     };
 
     function dragend(d, i){
+        hover_start(this)
         var circle = d3.select(this)
         $.ajax({
             url: "/update",
@@ -231,18 +231,24 @@ $(document).ready(function(){
         });
         console.log("Dragend!")
     }
+
     dragHandler(svg.selectAll(".Data"));
 
     // Double click event (add new circle)
 
     chart.on("dblclick", function(){
+        console.log("step 1")
         var mouse = d3.mouse(this);
+        console.log("Step 2")
         g.selectAll("chart")
             .data([0])
             .enter()
             .append("svg:rect")
-            .attr("y", function (d) { return d; })
+            .attr("y", function (d) {
+                console.log("y is here")
+                return d; })
             .attr("dy", function (d) {
+                console.log("dy is here")
                 var c_y = 0 - margin.top
                 return y_scale.invert(c_y); })
             .attr("x", function () { return 0 })
@@ -252,14 +258,18 @@ $(document).ready(function(){
             .attr("width", 25)
             .attr("height", 25)
             .attr("id", function(){
-                return $("rect.Data").siblings().length - 1;
+                if($("rect.Data").siblings().length) {
+                    console.log($("rect.Data").siblings().length)
+                    return $("rect.Data").siblings().length - 1;
+                }
+                return 0;
             })
             .attr("class", "Data")
-            .style("fill", function () {
+            .style("fill", function (d, i) {
                 if (String(DL_flag) == "True"){
                     return c_scale(colors[i]);
                 } else{
-                    return c_scale(i/10)
+                    return c_scale(i/100)
                 }
             })
             .style("stroke", "grey")
