@@ -105,6 +105,6 @@ def delete_task():
     delete_info = request.args
     task_id = int(delete_info["Id"])
     app_methods.Table(chosen_file["file"]).delete_from_table(task_id)
-    return "done"
+    return redirect(url_for("view"))
 
 
