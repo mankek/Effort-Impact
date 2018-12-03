@@ -5,10 +5,10 @@ var height = 500
 
 
 var x_scale = d3.scaleLinear()
-    .domain([0, 16])
+    .domain([-0.05, 16.9])
     .range([0, width]);
 var y_scale = d3.scaleLinear()
-    .domain([0, 16])
+    .domain([-0.85, 16.05])
     .range([height, 0]);
 
 
@@ -129,12 +129,12 @@ if(chart.selectAll(".Data").empty()) {
 
 function make_x_gridlines(){
     return d3.axisBottom(x_scale)
-        .tickValues([0, 16])
+        .tickValues([-0.05, 16.9])
 }
 
 function make_y_gridlines(){
     return d3.axisLeft(y_scale)
-        .tickValues([0,16])
+        .tickValues([-0.85,16.05])
 }
 
 chart.append("g")

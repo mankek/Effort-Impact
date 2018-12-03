@@ -209,14 +209,45 @@ $(document).ready(function(){
         hover_end();
         d3.select(this)
             .attr('transform', 'translate(' + 0 + ',' + 0 + ')')
-            .attr("x", d3.event.x)
-            .attr("y", d3.event.y)
-            .attr("dx", x_scale.invert(d3.event.x).toFixed(1))
-            .attr("dy", y_scale.invert(d3.event.y).toFixed(1))
+            .attr("x", function(d) {
+                if (d3.event.x > x_scale(16)){
+                    return x_scale(16)
+                }else if (d3.event.x < x_scale(0)) {
+                    return x_scale(0)
+                }else {
+                    return d3.event.x
+                }
+            })
+            .attr("y", function(d) {
+                if (d3.event.y < y_scale(16)) {
+                    return y_scale(16)
+                }else if (d3.event.y > y_scale(0)) {
+                    return y_scale(0)
+                }else {
+                    return d3.event.y
+                }
+            })
+            .attr("dx", function(d) {
+                if (d3.event.x > x_scale(16)){
+                    return 16
+                }else if (d3.event.x < x_scale(0)) {
+                    return 0
+                }else {
+                    return x_scale.invert(d3.event.x).toFixed(1)
+                }
+            })
+            .attr("dy", function(d) {
+                if (d3.event.y < y_scale(16)) {
+                    return 16
+                }else if (d3.event.y > y_scale(0)) {
+                    return 0
+                }else {
+                    return y_scale.invert(d3.event.y).toFixed(1)
+                }
+            })
     };
 
     function dragend(d, i){
-        hover_start(this)
         var circle = d3.select(this)
         $.ajax({
             url: "/update",
@@ -266,7 +297,7 @@ $(document).ready(function(){
                 if (String(DL_flag) == "True"){
                     return c_scale(colors[i]);
                 } else{
-                    return c_scale(i/100)
+                    return c_scale(i)
                 }
             })
             .style("stroke", "grey")

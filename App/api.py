@@ -54,7 +54,15 @@ def update():
     if request.method == "GET":
         change = request.args
         eff = change['Effort']
+        if float(eff) > 16:
+            eff = str(16)
+        elif float(eff) < 0:
+            eff = str(0)
         im = change['Impact']
+        if float(im) > 16:
+            im = str(16)
+        elif float(im) < 0:
+            im = str(0)
         task_id = change['Id']
         app_methods.Table(chosen_file["file"]).update_table(task_id, "Effort", eff)
         app_methods.Table(chosen_file["file"]).update_table(task_id, "Impact", im)

@@ -132,7 +132,9 @@ class Table(object):
             else:
                 print("improper field")
         else:
-            print("index doesn't exist")
+            new_task_id = str(int(task_id) - 1)
+            self.update_table(new_task_id, field, content)
+            print("index " + str(task_id) + " was not present, so went with next lowest index")
 
     # Takes the new task and adds it to the excel sheet
     def add_to_table(self, new_task):
@@ -146,12 +148,17 @@ class Table(object):
 
     # Deletes a selected task from the excel sheet
     def delete_from_table(self, task_id):
-        self.list.drop(index=task_id, inplace=True)
-        self.list.reset_index(drop=True, inplace=True)
-        writer = pandas.ExcelWriter(self.path)
-        self.list.to_excel(writer)
-        writer.save()
-        return "Table saved"
+        if task_id in self.list.index:
+            self.list.drop(index=task_id, inplace=True)
+            self.list.reset_index(drop=True, inplace=True)
+            writer = pandas.ExcelWriter(self.path)
+            self.list.to_excel(writer)
+            writer.save()
+            return "Table saved"
+        else:
+            new_task_id = task_id - 1
+            self.delete_from_table(new_task_id)
+            print("index " + str(task_id) + " was not present, so went with next lowest index")
 
 
 
