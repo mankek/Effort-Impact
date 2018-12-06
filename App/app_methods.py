@@ -72,6 +72,18 @@ def deadline_colors(tasks):
     return colors
 
 
+# Sanitizes file name input
+def file_name(name):
+    bad_characters = ["?", "/", "\\", "*", ":", "|", "<", ">", '"']
+    for i in bad_characters:
+        if name.find(i) != -1:
+            name = name.replace(i, " ")
+            file_name(name)
+        else:
+            continue
+    return name
+
+
 def new_table(new_name, fields):
     path = os.path.join(out_path, new_name)
     df = pandas.DataFrame(fields)
@@ -159,6 +171,9 @@ class Table(object):
             new_task_id = task_id - 1
             self.delete_from_table(new_task_id)
             print("index " + str(task_id) + " was not present, so went with next lowest index")
+
+
+
 
 
 

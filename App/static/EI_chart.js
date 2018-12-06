@@ -107,7 +107,7 @@ g.append("rect")
         if (String(DL_flag) == "true"){
             return c_scale(colors[i]);
         } else{
-            return c_scale(i/100)
+            return c_scale(i/10)
         }
     })
     .style("stroke", "grey")
