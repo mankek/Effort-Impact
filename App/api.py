@@ -26,11 +26,12 @@ def view():
         elif request.form['action'] == 'new':
             new_name = request.form['new_name'] + ".xlsx"
             clean_new_name = app_methods.file_name(new_name)
+            existing_clean_new_name = app_methods.file_exist(clean_new_name)
             for i in optional_fields:
                 if request.form[i] != "No":
                     required_fields[request.form[i]] = []
-            app_methods.new_table(clean_new_name, required_fields)
-            file = clean_new_name
+            app_methods.new_table(existing_clean_new_name, required_fields)
+            file = existing_clean_new_name
         chosen_file["file"] = file
         return redirect(url_for("view"))
     if request.method == 'GET':

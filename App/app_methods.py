@@ -84,6 +84,19 @@ def file_name(name):
     return name
 
 
+# Checks if new file already exists
+def file_exist(file):
+    index = 2
+    while os.path.exists(os.path.join(out_path, file)):
+        if index == 2:
+            file_title = file.split(".")[0] + "_" + str(index)
+        else:
+            file_title = "_".join(file.split("_")[0:-1]) + "_" + str(index)
+        file = file_title + ".xlsx"
+        index = index + 1
+    return file
+
+
 def new_table(new_name, fields):
     path = os.path.join(out_path, new_name)
     df = pandas.DataFrame(fields)
