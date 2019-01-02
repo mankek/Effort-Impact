@@ -97,6 +97,22 @@ def file_exist(file):
     return file
 
 
+def file_check(file):
+    if not os.path.exists(os.path.join(out_path, file)):
+        print("file is not from Task Sheet folder")
+        return False
+    if file.split(".")[-1] != "xlsx":
+        print("file is not an excel file with the .xlsx extension")
+        return False
+    file_frame = pandas.read_excel(os.path.join(out_path, file), index=0)
+    frame_fields = list(file_frame)
+    if ("Description" not in frame_fields) or ("Task" not in frame_fields):
+        print("file is invalid")
+        return False
+    else:
+        return True
+
+
 def new_table(new_name, fields):
     path = os.path.join(out_path, new_name)
     df = pandas.DataFrame(fields)

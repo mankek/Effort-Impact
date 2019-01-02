@@ -22,7 +22,10 @@ def view():
 
     if request.method == 'POST':
         if request.form['action'] == 'submit':
-            file = request.form['file']
+            if app_methods.file_check(request.form['file']):
+                file = request.form['file']
+            else:
+                return redirect(url_for("index"))
         elif request.form['action'] == 'new':
             new_name = request.form['new_name'] + ".xlsx"
             clean_new_name = app_methods.file_name(new_name)
