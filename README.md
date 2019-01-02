@@ -53,3 +53,12 @@ Hovering:
 
 * When hovering on squares, their task info is displayed. When hovering on the color scale, the corresponding time
   until due date is displayed for that color block.
+
+Testing 
+
+For testing I used a suite of Postman request tests that test the application's ability to create a new file, add tasks, 
+update tasks, move tasks, and delete tasks. These tests are split into 4 folders; **NOTE**, the *Add two, update two, remove 
+two*, *Delete error*, and *Update bounds* tests will fail if the *New Task Sheet* test is not run first, so it's best to run the 
+entire collection together. One the tests are finished the created test sheet will remain in the Task Sheet directory.
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/1d6164d3fda1580c7fcd)
