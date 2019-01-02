@@ -4,7 +4,7 @@ Deadline, Subject, Notes); The other primary goal is to allow for display of thi
 
 **Starting and Using the Application**
 
-This application comes with a virtual environment, EI_env, that provides all the dependencies needed. Once cloned
+This application comes with a requirements file that provides all the dependencies needed. Once cloned
 and with the virtual environment running, the application can be run one of two ways:
 
 Navigate into the application directory and run:
