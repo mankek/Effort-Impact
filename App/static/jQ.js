@@ -25,12 +25,12 @@ $(document).ready(function(){
     }
 
     function hover_end(){
-        $("#task_table").hide()
-        $("#table").hide();
-        var table = document.getElementById("task_table")
-        for (b = 0; b < (fields.length - 2); b++) {
-            table.deleteRow(-1)
-        }
+        // $("#task_table").hide()
+        // $("#table").hide();
+//        var table = document.getElementById("task_table")
+//        for (b = 0; b < (fields.length - 2); b++) {
+//            table.deleteRow(-1)
+//        }
         if ($("#Update").css('display') == "none" || $("#Update").css("visibility") == "hidden") {
             if ($("#New").css('display') == "none" || $("#New").css("visibility") == "hidden") {
                 if ($("#id_div").css('display') == "none" || $("#id_div").css("visibility") == "hidden") {
@@ -247,6 +247,9 @@ $(document).ready(function(){
                     return y_scale.invert(d3.event.y).toFixed(1)
                 }
             })
+        if ($("#id_div").css("display") == "block"){
+            $("div.tooltip").remove();
+        }
     };
 
     function dragend(d, i){
@@ -262,6 +265,19 @@ $(document).ready(function(){
                 console.log(errorThrown);
             }
         });
+        if ($("#id_div").css("display") == "block") {
+            for (b=0; b < $("rect.Data").length; b++){
+                var cir = $("rect.Data")[b]
+                var x_pos = Number(d3.select(cir).attr("x")) + 60;
+                var y_pos = Number(d3.select(cir).attr("y")) + 30;
+                d3.select("body").append("div")
+                    .attr("class", "tooltip")
+                    .style("opacity", 0.9)
+                    .style("left", String(x_pos) + "px")
+                    .style("top", String(y_pos) + "px")
+                    .html(d3.select(cir).attr("id"))
+            }
+        }
         console.log("Dragend!")
     }
 
