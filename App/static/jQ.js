@@ -18,8 +18,10 @@ $(document).ready(function(){
             cell2.innerHTML = JSON.stringify(result[index][i])
         }
         $("#Instructions").hide();
-        $("#table").show();
-        $("#task_table").show()
+        if ($("#New").css("display") == "none" && $("#Update").css("display") == "none"){
+            $("#table").show();
+            $("#task_table").show()
+        }
     }
 
     function hover_end(){
@@ -150,7 +152,7 @@ $(document).ready(function(){
                     $("#Instructions").show();
                     focused = null;
                 }
-            } else if (d3.event.keyCode === 13){
+            } else if (d3.event.keyCode === 13 && $("#New").css("display") == "none"){
                 if ($("#id_div").css('display') == "none" || $("#id_div").css("visibility") == "hidden") {
                     $("rect.Data").off()
                     $("#id_check").show()

@@ -2,7 +2,6 @@
 import pandas
 import os
 import datetime
-import math
 
 
 out_path = ("\\").join(os.path.dirname(os.path.abspath(__file__)).split("\\")[0:-1]) + r"\Task Sheets"
