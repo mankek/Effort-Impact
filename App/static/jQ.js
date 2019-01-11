@@ -3,6 +3,7 @@ $(document).ready(function(){
     var focused = null;
 
     $("#id_check").hide();
+    $("#table").hide();
 
 
     // Hover event (show task info or color scale info)
@@ -25,16 +26,16 @@ $(document).ready(function(){
     }
 
     function hover_end(){
-        // $("#task_table").hide()
-        // $("#table").hide();
-//        var table = document.getElementById("task_table")
-//        for (b = 0; b < (fields.length - 2); b++) {
-//            table.deleteRow(-1)
-//        }
+         $("#task_table").hide()
+        var table = document.getElementById("task_table")
+        for (b = 0; b < (fields.length - 2); b++) {
+            table.deleteRow(-1)
+        }
         if ($("#Update").css('display') == "none" || $("#Update").css("visibility") == "hidden") {
             if ($("#New").css('display') == "none" || $("#New").css("visibility") == "hidden") {
                 if ($("#id_div").css('display') == "none" || $("#id_div").css("visibility") == "hidden") {
                     $("#Instructions").show();
+                    $("#table").hide();
                 }
             }
         }

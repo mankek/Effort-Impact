@@ -26,7 +26,7 @@ td {
 #scatterplot {
     position: relative;
     float: left;
-    width: 50%;
+    width: 626px;
     height: 580px;
     padding-top: 10px;
     padding-bottom: 10px;
@@ -35,12 +35,13 @@ td {
 #Info {
     position: relative;
     float: right;
-    width: 48%;
+    width: 600px;
     height: 580px;
     padding: 10px;
     background-color: #8ab2f2;
 }
 #Instructions{
+    width: 100%;
     text-align:center;
 }
 #table {
@@ -50,7 +51,7 @@ td {
 }
 #task_table{
     display: none;
-    width:100%;
+    width: 100%;
 }
 #id_div{
     display: none;
