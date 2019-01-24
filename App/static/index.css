@@ -27,6 +27,13 @@ body {
     padding: 10px;
     text-align: center;
 }
+#choose_list{
+    margin: auto;
+    width: 75%;
+    height: 130px;
+    overflow: auto;
+    background-color: white;
+}
 #make {
     position: relative;
     float: right;
