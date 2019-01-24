@@ -31,7 +31,11 @@
         <form action="/chart" method="post">
             <div id="choose">
                 Choose Task Sheet<br><br>
-                <input type="file" name="file"><br>
+                {% for file in sheet_list %}
+                <input type="radio" name="file" value="{{ file }}"> {{ file }}
+                {% endfor %}
+                <br>
+                <!--<input type="file" name="file"><br>-->
                 <br>
                 <button type="submit" name="action" value="submit">Submit</button><br>
             </div>

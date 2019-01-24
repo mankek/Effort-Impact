@@ -96,6 +96,15 @@ def file_exist(file):
     return file
 
 
+def file_find():
+    task_sheets = []
+    for _, _, file_name in os.walk(out_path):
+        for file in file_name:
+            if file.split(".")[-1] == "xlsx":
+                task_sheets.append(file)
+    return task_sheets
+
+
 def file_check(file):
     if not os.path.exists(os.path.join(out_path, file)):
         print("file is not from Task Sheet folder")

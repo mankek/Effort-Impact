@@ -11,7 +11,8 @@ chosen_file = {}
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
-    return render_template("index.html")
+    sheet_list = app_methods.file_find()
+    return render_template("index.html", sheet_list=sheet_list)
 
 
 # Loads new or existing chart
