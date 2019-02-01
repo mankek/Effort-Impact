@@ -31,11 +31,13 @@ var legendHeight = 10;
 
 var svg = d3.select('#scatterplot')
   .append('svg')
-  .attr('width', width + margin.left + margin.right)
-  .attr('height', height + margin.top + margin.bottom)
+  .attr("preserveAspectRatio", "xMinYMin meet")
+  .attr("viewBox", "0 0 610 610")
+//  .attr('width', width + margin.left + margin.right)
+//  .attr('height', height + margin.top + margin.bottom)
   .attr('class', 'chart')
   .style("background-color", "white")
-  .attr("transform", 'translate(' + 10 + ",0)")
+  .attr("transform", "translate(0,0)")
 
 // Chart creation
 

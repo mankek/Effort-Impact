@@ -24,19 +24,27 @@ td {
     border: 1px solid black;
 }
 #scatterplot {
+    display: inline-block;
     position: relative;
     float: left;
-    width: 626px;
-    height: 580px;
+    width: 50%;
+    height: 97%;
     padding-top: 10px;
     padding-bottom: 10px;
     background-color: #8ab2f2;
+    overflow: hidden;
+}
+.chart {
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 #Info {
     position: relative;
     float: right;
-    width: 600px;
-    height: 580px;
+    width: 47%;
+    height: 97%;
     padding: 10px;
     background-color: #8ab2f2;
 }
