@@ -3,8 +3,61 @@ import pandas
 import os
 import datetime
 
-
+# Defines path to Task sheets within application directory
 out_path = ("\\").join(os.path.dirname(os.path.abspath(__file__)).split("\\")[0:-1]) + r"\Task Sheets"
+
+
+# Finds all task sheets with proper extension and adds them to a list. Returns list
+def file_find():
+    task_sheets = []
+    for _, _, filename in os.walk(out_path):
+        for file in filename:
+            if file.split(".")[-1] == "xlsx":
+                task_sheets.append(file)
+    return task_sheets
+
+
+# Checks if the chosen file is in the Task Sheet folder, has the proper extension, and the required fields
+def file_check(file):
+    if not os.path.exists(os.path.join(out_path, file)):
+        print("file is not from Task Sheet folder")
+        return False
+    if file.split(".")[-1] != "xlsx":
+        print("file is not an excel file with the .xlsx extension")
+        return False
+    file_frame = pandas.read_excel(os.path.join(out_path, file), index=0)
+    frame_fields = list(file_frame)
+    if ("Description" not in frame_fields) or ("Task" not in frame_fields) or ("Effort" not in frame_fields) or \
+            ("Impact" not in frame_fields):
+        print("file is missing required fields")
+        return False
+    else:
+        return True
+
+
+# Sanitizes file name input
+def file_name(name):
+    bad_characters = ["?", "/", "\\", "*", ":", "|", "<", ">", '"']
+    for i in bad_characters:
+        if name.find(i) != -1:
+            name = name.replace(i, " ")
+            file_name(name)
+        else:
+            continue
+    return name
+
+
+# Checks if new file already exists; appends name with number if it does
+def file_exist(file):
+    index = 2
+    while os.path.exists(os.path.join(out_path, file)):
+        if index == 2:
+            file_title = file.split(".")[0] + "_" + str(index)
+        else:
+            file_title = "_".join(file.split("_")[0:-1]) + "_" + str(index)
+        file = file_title + ".xlsx"
+        index = index + 1
+    return file
 
 
 # Changes Deadline date to days/hours until due
@@ -69,56 +122,6 @@ def deadline_colors(tasks):
         elif due[1][0] == 't':
             colors.append(.00136)
     return colors
-
-
-# Sanitizes file name input
-def file_name(name):
-    bad_characters = ["?", "/", "\\", "*", ":", "|", "<", ">", '"']
-    for i in bad_characters:
-        if name.find(i) != -1:
-            name = name.replace(i, " ")
-            file_name(name)
-        else:
-            continue
-    return name
-
-
-# Checks if new file already exists
-def file_exist(file):
-    index = 2
-    while os.path.exists(os.path.join(out_path, file)):
-        if index == 2:
-            file_title = file.split(".")[0] + "_" + str(index)
-        else:
-            file_title = "_".join(file.split("_")[0:-1]) + "_" + str(index)
-        file = file_title + ".xlsx"
-        index = index + 1
-    return file
-
-
-def file_find():
-    task_sheets = []
-    for _, _, file_name in os.walk(out_path):
-        for file in file_name:
-            if file.split(".")[-1] == "xlsx":
-                task_sheets.append(file)
-    return task_sheets
-
-
-def file_check(file):
-    if not os.path.exists(os.path.join(out_path, file)):
-        print("file is not from Task Sheet folder")
-        return False
-    if file.split(".")[-1] != "xlsx":
-        print("file is not an excel file with the .xlsx extension")
-        return False
-    file_frame = pandas.read_excel(os.path.join(out_path, file), index=0)
-    frame_fields = list(file_frame)
-    if ("Description" not in frame_fields) or ("Task" not in frame_fields):
-        print("file is invalid")
-        return False
-    else:
-        return True
 
 
 def new_table(new_name, fields):

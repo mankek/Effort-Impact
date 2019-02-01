@@ -30,7 +30,7 @@ body {
 #choose_list{
     margin: auto;
     width: 75%;
-    height: 130px;
+    height: 95px;
     overflow: auto;
     background-color: white;
 }

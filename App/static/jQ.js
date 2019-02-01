@@ -139,7 +139,7 @@ $(document).ready(function(){
                         table.deleteRow(-1)
                     }
                     $.ajax({
-                        url: "/delete",
+                        url: "/delete/" + filename,
                         data: { "Id": focused.id },
                         success: function () {
                             console.log("success!");
@@ -256,7 +256,7 @@ $(document).ready(function(){
     function dragend(d, i){
         var circle = d3.select(this)
         $.ajax({
-            url: "/update",
+            url: "/update/" + filename,
             data: {"Effort": circle.attr('dx'),"Impact": circle.attr('dy'),"Id": i},
             success: function () {
                 console.log("success!");

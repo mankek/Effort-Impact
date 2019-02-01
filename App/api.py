@@ -4,8 +4,6 @@ from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
-chosen_file = {}
-
 
 # Get the table of tasks
 @app.route('/', methods=['GET'])
@@ -16,47 +14,57 @@ def index():
 
 
 # Loads new or existing chart
-@app.route("/chart", methods=['GET', 'POST'])
+@app.route("/chart", methods=['POST'])
 def view():
+    # Defines which fields are optional for task sheet and which must be each in task sheet
     optional_fields = ["DepField", "SubjectField", "DeadlineField", "NotesField"]
     required_fields = {"Task": [], "Effort": [], "Impact": [], "Description": []}
 
-    if request.method == 'POST':
-        if request.form['action'] == 'submit':
-            if app_methods.file_check(request.form['file']):
-                file = request.form['file']
-            else:
-                return redirect(url_for("index"))
-        elif request.form['action'] == 'new':
-            new_name = request.form['new_name'] + ".xlsx"
-            clean_new_name = app_methods.file_name(new_name)
-            existing_clean_new_name = app_methods.file_exist(clean_new_name)
-            for i in optional_fields:
-                if request.form[i] != "No":
-                    required_fields[request.form[i]] = []
-            app_methods.new_table(existing_clean_new_name, required_fields)
-            file = existing_clean_new_name
-        chosen_file["file"] = file
-        return redirect(url_for("view"))
-    if request.method == 'GET':
-        try:
-            result, names, DL_flag = app_methods.Table(chosen_file["file"]).load_table()
-            x, y = app_methods.effort_impact(result)
-            if DL_flag:
-                colors = app_methods.deadline_colors(result)
-            else:
-                colors = []
-            new_result = app_methods.clean_result(result)
-            return render_template("chart.html", x=x, y=y, result=new_result, colors=colors, name=chosen_file["file"].split(".")[0], DL_flag=DL_flag, fields=names)
-        except FileNotFoundError:
+    # If request is to load a chosen existing file:
+    if request.form['action'] == 'submit':
+        # checks the file location, extension, and fields
+        if app_methods.file_check(request.form['file']):
+            file = request.form['file']
+            return redirect(url_for("show", filename=file))
+        # if file fails checks, redirects to home page
+        else:
             return redirect(url_for("index"))
-        except KeyError:
-            return redirect(url_for("index"))
+    # If request is to create new file:
+    elif request.form['action'] == 'new':
+        # sanitizes the input file name
+        new_name = request.form['new_name'] + ".xlsx"
+        # checks if a file with the same name already exists
+        clean_new_name = app_methods.file_name(new_name)
+        existing_clean_new_name = app_methods.file_exist(clean_new_name)
+        # checks if any of the optional fields were chosen
+        for i in optional_fields:
+            if request.form[i] != "No":
+                required_fields[request.form[i]] = []
+        # creates a new task sheet
+        app_methods.new_table(existing_clean_new_name, required_fields)
+        file = existing_clean_new_name
+        return redirect(url_for("show", filename=file))
+
+
+@app.route("/chart/<filename>", methods=['GET'])
+def show(filename):
+    try:
+        result, names, DL_flag = app_methods.Table(filename).load_table()
+        x, y = app_methods.effort_impact(result)
+        if DL_flag:
+            colors = app_methods.deadline_colors(result)
+        else:
+            colors = []
+        new_result = app_methods.clean_result(result)
+        return render_template("chart.html", x=x, y=y, result=new_result, colors=colors, name=filename.split(".")[0],
+                               DL_flag=DL_flag, fields=names, file=filename)
+    except FileNotFoundError:
+        return redirect(url_for("index"))
 
 
 # Update existing task
-@app.route('/update', methods=['GET', 'POST'])
-def update():
+@app.route('/update/<filename>', methods=['GET', 'POST'])
+def update(filename):
     if request.method == "GET":
         change = request.args
         eff = change['Effort']
@@ -70,9 +78,9 @@ def update():
         elif float(im) < 0:
             im = str(0)
         task_id = change['Id']
-        app_methods.Table(chosen_file["file"]).update_table(task_id, "Effort", eff)
-        app_methods.Table(chosen_file["file"]).update_table(task_id, "Impact", im)
-        return redirect(url_for("view"))
+        app_methods.Table(filename).update_table(task_id, "Effort", eff)
+        app_methods.Table(filename).update_table(task_id, "Impact", im)
+        return redirect(url_for("show", filename=filename))
     if request.method == "POST":
         task_id = request.form["id"]
         field = request.form["Field"]
@@ -85,17 +93,17 @@ def update():
                 due_date = content.split('-')
                 diff = app_methods.due_day(int(due_date[0]), int(due_date[1]), int(due_date[2]), int(due_time[0]))
                 content = content + '_' + request.form["up_time"] + "_" + diff
-        app_methods.Table(chosen_file["file"]).update_table(task_id, field, content)
-        return redirect(url_for("view"))
+        app_methods.Table(filename).update_table(task_id, field, content)
+        return redirect(url_for("show", filename=filename))
 
 
 # Add a task to the table
-@app.route('/new', methods=['POST'])
-def add_new():
+@app.route('/new/<filename>', methods=['POST'])
+def add_new(filename):
     new_task = dict()
     new_task["Impact"] = "16"
     new_task["Effort"] = "0"
-    for i in app_methods.Table(chosen_file["file"]).fields:
+    for i in app_methods.Table(filename).fields:
         if i == 'Deadline':
             if request.form[i] == "":
                 data = "No Deadline"
@@ -109,16 +117,16 @@ def add_new():
         else:
             data = request.form[i]
         new_task[i] = data
-    app_methods.Table(chosen_file["file"]).add_to_table(new_task)
-    return redirect(url_for("view"))
+    app_methods.Table(filename).add_to_table(new_task)
+    return redirect(url_for("show", filename=filename))
 
 
 # Delete a task from the table
-@app.route('/delete', methods=['GET'])
-def delete_task():
+@app.route('/delete/<filename>', methods=['GET'])
+def delete_task(filename):
     delete_info = request.args
     task_id = int(delete_info["Id"])
-    app_methods.Table(chosen_file["file"]).delete_from_table(task_id)
-    return redirect(url_for("view"))
+    app_methods.Table(filename).delete_from_table(task_id)
+    return redirect(url_for("show", filename=filename))
 
 

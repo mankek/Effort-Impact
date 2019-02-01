@@ -18,7 +18,8 @@
                 var x_raw = {{ x|tojson|safe }};
                 var title = {{ name|tojson }};
                 var DL_flag = {{ DL_flag|tojson|safe }};
-                var fields = {{ fields|tojson|safe }}
+                var fields = {{ fields|tojson|safe }};
+                var filename = {{ file|tojson|safe }};
             </script>
             <script src="/static/EI_chart.js"></script>
             <script src="/static/jQ.js"></script>
@@ -59,7 +60,7 @@
                 </div>
             </div>
             <div id="New">
-                <form action="/new" method="post" id="form">
+                <form action="/new/{{ file }}" method="post" id="form">
                     <br>
                     <div id="input">
                         Task: <input type="text" name="Task" required><br><br>
@@ -71,7 +72,7 @@
             </div>
 
             <div id="Update">
-                <form action="/update" method="post" id="form2">
+                <form action="/update/{{ file }}" method="post" id="form2">
                     <h2>Change Form</h2>
                     <h3>Press the Ctrl button to delete this task!</h3>
                     <div id="inputs">
