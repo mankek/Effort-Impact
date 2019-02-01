@@ -12,20 +12,20 @@ var y_scale = d3.scaleLinear()
     .range([height, 0]);
 
 
-if (String(DL_flag) == "true"){
-    var c_scale = d3.scaleSequential(d3.interpolateRdBu)
+if ( fields.includes("Deadline") ){
+    var c1_scale = d3.scaleSequential(d3.interpolateRdBu)
         .domain([0, 1]);
+    var cAxis = d3.axisRight(c1_scale)
 } else {
-    var c_scale = d3.scaleSequential(d3.interpolateSinebow)
+    var c2_scale = d3.scaleSequential(d3.interpolateSinebow)
         .domain([0, 1]);
+    var cAxis = d3.axisRight(c2_scale);
 }
 
 
 var xAxis = d3.axisBottom(x_scale);
 var yAxis = d3.axisLeft(y_scale);
-var cAxis = d3.axisRight(c_scale);
 var legendWidth = 20;
-var legendHeight = 10;
 
 // Chart background creation
 
@@ -106,10 +106,15 @@ g.append("rect")
     .attr("width", 25)
     .attr("height", 25)
     .style("fill", function (d, i) {
-        if (String(DL_flag) == "true"){
-            return c_scale(colors[i]);
-        } else{
-            return c_scale(i/10)
+        if (dl_colors && dl_colors.length){
+            console.log("dl")
+            return c1_scale(dl_colors[i]);
+        } else if (sj_colors && sj_colors.length){
+            console.log("sj")
+            return c2_scale(sj_colors[i]);
+        } else {
+            console.log("no color scale")
+            return c2_scale(i/10);
         }
     })
     .style("stroke", "grey")
@@ -194,28 +199,52 @@ svg.append("text")
 
 // Color Legend
 
-if (String(DL_flag) == "true"){
-    var legendsvg = svg.selectAll(".legend")
-        .data(c_scale.ticks(50).slice(1).reverse())
+if (String(color_flag) == "true"){
+    if (fields.includes("Deadline")) {
+        var legendsvg = svg.selectAll(".legend")
+        .data(c1_scale.ticks(50).slice(1).reverse())
         .enter().append("g")
-        .attr("transform", function(d, i) { return "translate(" + (width + margin.left) + "," + ((legendHeight * i) + margin.top) + ")"; });
+        .attr("transform", function(d, i) { return "translate(" + (width + margin.left) + "," + ((10 * i) + margin.top) + ")"; });
 
-    legendsvg.append("rect")
-        .attr("width", legendWidth)
-        .attr("height", legendHeight)
-        .style("fill", c_scale)
-        .attr("class", "ColorScale")
-        .attr("color_val", function(d) {
-            return d
-        })
+        legendsvg.append("rect")
+            .attr("width", legendWidth)
+            .attr("height", 10)
+            .style("fill", c1_scale)
+            .attr("class", "ColorScale")
+            .attr("color_val", function(d) {
+                return d
+            })
 
-    svg.append("text")
-    .attr("transform", "rotate(90)")
-    .attr("x", (margin.top + margin.bottom + height/3))
-    .attr("y", 0 - (width + margin.right + legendWidth))
-    .attr("dy", "0.35em")
-    .style("font-size", "20px")
-    .text("Deadline")
+        svg.append("text")
+        .attr("transform", "rotate(90)")
+        .attr("x", (margin.top + margin.bottom + height/3))
+        .attr("y", 0 - (width + margin.right + legendWidth))
+        .attr("dy", "0.35em")
+        .style("font-size", "20px")
+        .text("Deadline")
+    } else {
+        var legendsvg = svg.selectAll(".legend")
+        .data(c2_scale.ticks(20).slice(1).reverse())
+        .enter().append("g")
+        .attr("transform", function(d, i) { return "translate(" + (width + margin.left) + "," + ((25 * i) + margin.top) + ")"; });
+
+        legendsvg.append("rect")
+            .attr("width", legendWidth)
+            .attr("height", 25)
+            .style("fill", c2_scale)
+            .attr("class", "ColorScale")
+            .attr("color_val", function(d) {
+                return d
+            })
+
+        svg.append("text")
+        .attr("transform", "rotate(90)")
+        .attr("x", (margin.top + margin.bottom + height/3))
+        .attr("y", 0 - (width + margin.right + legendWidth))
+        .attr("dy", "0.35em")
+        .style("font-size", "20px")
+        .text("Subject")
+    }
 }
 
 

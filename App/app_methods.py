@@ -60,70 +60,6 @@ def file_exist(file):
     return file
 
 
-# Changes Deadline date to days/hours until due
-def due_day(year, month, day, hour):
-    x = datetime.datetime(year, month, day, hour)
-    y = datetime.datetime.today()
-    u = datetime.date(year, month, day)
-    v = datetime.date.today()
-    if u > v:
-        t = x - y
-        one_day = datetime.timedelta(days=1)
-        if t < one_day:
-            return str(round(t.seconds/3600)) + ' hours left!'
-        elif t == one_day:
-            return str(t.days) + ' day left'
-        else:
-            return str(t.days) + ' days and ' + str(round((int(t.seconds)/3600))) + ' hours left!'
-    elif v > u or y > x:
-        return "Task is past due"
-    elif v == u:
-        return "Due today!"
-
-
-# Extracts the Effort, Impact data and returns it as [x], [y] lists
-def effort_impact(dict_list):
-    effort = []
-    impact = []
-    for i in dict_list:
-        eff = i["Effort"]
-        im = i["Impact"]
-        effort.append(float(eff))
-        impact.append(float(im))
-    return effort, impact
-
-
-# Removes Effort, Impact values
-def clean_result(dict_list):
-    new_result = dict_list
-    for i in new_result:
-        i.pop("Effort")
-        i.pop("Impact")
-    return new_result
-
-
-# Provides deadline info for color scale
-def deadline_colors(tasks):
-    colors = []
-    for i in tasks:
-        due = i['Deadline'].split('_')[-1].split(" ")
-        if due[1][0] == 'h':
-            colors.append((int(due[0])/24) * 0.0027397260273973)
-        elif due[1][0] == 'd':
-            color_val = int(due[0]) * 0.0027397260273973
-            if color_val <= 1:
-                colors.append(color_val)
-            else:
-                colors.append(1)
-        elif due[0][0] == 'N':
-            colors.append(1)
-        elif due[1][0] == 'i':
-            colors.append(0)
-        elif due[1][0] == 't':
-            colors.append(.00136)
-    return colors
-
-
 def new_table(new_name, fields):
     path = os.path.join(out_path, new_name)
     df = pandas.DataFrame(fields)
@@ -134,21 +70,21 @@ def new_table(new_name, fields):
 
 class Table(object):
 
-    def __init__(self, file_name):
-        self.name = file_name
-        self.path = os.path.join(out_path, file_name)
+    def __init__(self, filename):
+        self.name = filename
+        self.path = os.path.join(out_path, filename)
         self.list = pandas.read_excel(self.path, index=0)
         self.fields = list(self.list)
 
-        if "Deadline" in self.fields:
-            self.DL_flag = True
+        if ("Deadline" in self.fields) or ("Subject" in self.fields):
+            self.color_flag = True
         else:
-            self.DL_flag = False
+            self.color_flag = False
 
     # Loads the excel sheet where tasks are stored, formats them as a list of dictionaries; also returns field names
     def load_table(self):
         # Update deadlines in task_list
-        if self.DL_flag:
+        if "Deadline" in self.fields:
             for s in range(0, (self.list.shape[0])):
                 line = self.list['Deadline'][s]
                 if line == "No Deadline":
@@ -171,7 +107,7 @@ class Table(object):
                 task[0].update(task[1])
                 del task[1]
             tasks.append(task[0])
-        return tasks, self.fields, self.DL_flag
+        return tasks, self.fields, self.color_flag
 
     # Updates the specified field of the specified task
     def update_table(self, task_id, field, content):
@@ -213,10 +149,92 @@ class Table(object):
             print("index " + str(task_id) + " was not present, so went with next lowest index")
 
 
+# Extracts the Effort, Impact data and returns it as [x], [y] lists
+def effort_impact(dict_list):
+    effort = []
+    impact = []
+    for i in dict_list:
+        eff = i["Effort"]
+        im = i["Impact"]
+        effort.append(float(eff))
+        impact.append(float(im))
+    return effort, impact
 
 
+# Provides deadline info for color scale
+def colors(tasks):
+    dl_colors = []
+    sj_col = []
+    if len(tasks) == 0:
+        return dl_colors, sj_col
+
+    for i in tasks:
+        if 'Deadline' in i.keys():
+            due = i['Deadline'].split('_')[-1].split(" ")
+            if due[1][0] == 'h':
+                dl_colors.append((int(due[0])/24) * 0.0027397260273973)
+            elif due[1][0] == 'd':
+                color_val = int(due[0]) * 0.0027397260273973
+                if color_val <= 1:
+                    dl_colors.append(color_val)
+                else:
+                    dl_colors.append(1)
+            elif due[0][0] == 'N':
+                dl_colors.append(1)
+            elif due[1][0] == 'i':
+                dl_colors.append(0)
+            elif due[1][0] == 't':
+                dl_colors.append(.00136)
+        else:
+            break
+
+    sj = set()
+    for s in tasks:
+        if 'Subject' in s.keys():
+            sj.add(s['Subject'])
+        else:
+            return dl_colors, sj_col
+    col_div = 1/20
+    sj_col_index = dict()
+    index = 1
+    for t in sj:
+        sj_col_index[t] = index * col_div
+        index += 1
+    for u in tasks:
+        sub = u['Subject']
+        sj_col.append(sj_col_index[sub])
+
+    return dl_colors, sj_col
 
 
+# Changes Deadline date to days/hours until due
+def due_day(year, month, day, hour):
+    x = datetime.datetime(year, month, day, hour)
+    y = datetime.datetime.today()
+    u = datetime.date(year, month, day)
+    v = datetime.date.today()
+    if u > v:
+        t = x - y
+        one_day = datetime.timedelta(days=1)
+        if t < one_day:
+            return str(round(t.seconds/3600)) + ' hours left!'
+        elif t == one_day:
+            return str(t.days) + ' day left'
+        else:
+            return str(t.days) + ' days and ' + str(round((int(t.seconds)/3600))) + ' hours left!'
+    elif v > u or y > x:
+        return "Task is past due"
+    elif v == u:
+        return "Due today!"
+
+
+# Removes Effort, Impact values
+def clean_result(dict_list):
+    new_result = dict_list
+    for i in new_result:
+        i.pop("Effort")
+        i.pop("Impact")
+    return new_result
 
 
 

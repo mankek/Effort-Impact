@@ -49,15 +49,16 @@ def view():
 @app.route("/chart/<filename>", methods=['GET'])
 def show(filename):
     try:
-        result, names, DL_flag = app_methods.Table(filename).load_table()
+        # Gets the task and field data and deadline flag for the chosen/created sheet
+        result, names, color_flag = app_methods.Table(filename).load_table()
+        # Gets the effort and Impact values for each task
         x, y = app_methods.effort_impact(result)
-        if DL_flag:
-            colors = app_methods.deadline_colors(result)
-        else:
-            colors = []
+        # Determines color scale values for data
+        dl_colors, sj_colors = app_methods.colors(result)
+        # Removes effort, impact values from results so they aren't displayed with the task info
         new_result = app_methods.clean_result(result)
-        return render_template("chart.html", x=x, y=y, result=new_result, colors=colors, name=filename.split(".")[0],
-                               DL_flag=DL_flag, fields=names, file=filename)
+        return render_template("chart.html", x=x, y=y, result=new_result, dl_colors=dl_colors, sj_colors=sj_colors,
+                               name=filename.split(".")[0], color_flag=color_flag, fields=names, file=filename)
     except FileNotFoundError:
         return redirect(url_for("index"))
 

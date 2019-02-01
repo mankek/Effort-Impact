@@ -48,35 +48,35 @@ $(document).ready(function(){
         hover_end();
     });
 
-    function ColorScaleHTML(color_val){
-        days_due = (Number(color_val/0.0027397260273973))
-        if (days_due > 365){
-            years_due = Math.floor(days_due/365)
-            remaining_days = Math.round(days_due % 365)
-            return String(years_due) + " years and " + String(remaining_days) + " days until due"
-        } else if(days_due < 1){
-            hours_due = Math.round(days_due * 24)
-            return String(hours_due) + " hours until due"
-        } else{
-            return String(Math.round(days_due)) + " days until due"
-        }
-    }
-
-    $(".ColorScale").hover(function(){
-        var x_pos = Number($(this).position()["left"]) + 55
-        var y_pos = $(this).position()["top"]
-        var color_val = $(this).attr("color_val")
-        var html_value = ColorScaleHTML(color_val)
-        d3.select("body").append("div")
-            .attr("class", "tooltip")
-            .style("opacity", 0.9)
-            .style("left", String(x_pos) + "px")
-            .style("top", y_pos + "px")
-            .html(html_value)
-    },
-    function(){
-        $("div.tooltip").remove();
-    });
+//    function ColorScaleHTML(color_val){
+//        days_due = (Number(color_val/0.0027397260273973))
+//        if (days_due > 365){
+//            years_due = Math.floor(days_due/365)
+//            remaining_days = Math.round(days_due % 365)
+//            return String(years_due) + " years and " + String(remaining_days) + " days until due"
+//        } else if(days_due < 1){
+//            hours_due = Math.round(days_due * 24)
+//            return String(hours_due) + " hours until due"
+//        } else{
+//            return String(Math.round(days_due)) + " days until due"
+//        }
+//    }
+//
+//    $(".ColorScale").hover(function(){
+//        var x_pos = Number($(this).position()["left"]) + 55
+//        var y_pos = $(this).position()["top"]
+//        var color_val = $(this).attr("color_val")
+//        var html_value = ColorScaleHTML(color_val)
+//        d3.select("body").append("div")
+//            .attr("class", "tooltip")
+//            .style("opacity", 0.9)
+//            .style("left", String(x_pos) + "px")
+//            .style("top", y_pos + "px")
+//            .html(html_value)
+//    },
+//    function(){
+//        $("div.tooltip").remove();
+//    });
 
     // Click/keypress events (update or delete circle)
 
@@ -313,10 +313,13 @@ $(document).ready(function(){
             })
             .attr("class", "Data")
             .style("fill", function (d, i) {
-                if (String(DL_flag) == "True"){
-                    return c_scale(colors[i]);
-                } else{
-                    return c_scale(i)
+                if (dl_colors && dl_colors.length){
+                    return c1_scale(dl_colors[i]);
+                } else if (sj_colors && dl_colors.length){
+                    return c2_scale(sj_colors[i]);
+                } else {
+                    console.log("no color scale")
+                    return c2_scale(i/10);
                 }
             })
             .style("stroke", "grey")

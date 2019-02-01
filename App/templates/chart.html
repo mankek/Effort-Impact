@@ -13,11 +13,12 @@
         <div id="scatterplot">
             <script>
                 var result = {{ result|tojson|safe }};
-                var colors = {{ colors|tojson|safe }};
+                var dl_colors = {{ dl_colors|tojson|safe }};
+                var sj_colors = {{ sj_colors|tojson|safe }};
                 var y_raw = {{ y|tojson|safe }};
                 var x_raw = {{ x|tojson|safe }};
                 var title = {{ name|tojson }};
-                var DL_flag = {{ DL_flag|tojson|safe }};
+                var color_flag = {{ color_flag|tojson|safe }};
                 var fields = {{ fields|tojson|safe }};
                 var filename = {{ file|tojson|safe }};
             </script>
@@ -64,7 +65,7 @@
                     <br>
                     <div id="input">
                         Task: <input type="text" name="Task" required><br><br>
-                        Description: <textarea id="desc" name="Description" required></textarea><br><br>
+                        Description: <textarea id="desc" name="Description" required>None</textarea><br><br>
                     </div><br>
                     <button type="submit">Submit to me!</button><button type="button" id="HideNew">Go back</button> <br>
                     <br>
