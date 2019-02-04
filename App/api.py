@@ -29,6 +29,11 @@ def view():
         # if file fails checks, redirects to home page
         else:
             return redirect(url_for("index"))
+    # If request is to delete a chosen existing file
+    elif request.form['action'] == 'delete':
+        file = request.form['file']
+        app_methods.Table(file).delete_table()
+        return redirect(url_for('index'))
     # If request is to create new file:
     elif request.form['action'] == 'new':
         # sanitizes the input file name

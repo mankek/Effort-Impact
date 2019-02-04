@@ -76,7 +76,6 @@ class Table(object):
         self.list = pandas.read_excel(self.path, index=0)
         self.fields = list(self.list)
 
-
     # Loads the excel sheet where tasks are stored, formats them as a list of dictionaries; also returns field names
     def load_table(self):
         # Update deadlines in task_list
@@ -143,6 +142,9 @@ class Table(object):
             new_task_id = task_id - 1
             self.delete_from_table(new_task_id)
             print("index " + str(task_id) + " was not present, so went with next lowest index")
+
+    def delete_table(self):
+        os.remove(self.path)
 
 
 # Extracts the Effort, Impact data and returns it as [x], [y] lists
