@@ -161,7 +161,7 @@ def effort_impact(dict_list):
     return effort, impact
 
 
-# Provides deadline info for color scale
+# Provides deadline/subject info for color scale
 def colors(tasks):
     dl_colors = []
     sj_col = []
@@ -188,21 +188,22 @@ def colors(tasks):
         else:
             break
 
-    sj = set()
+    sj_list = list()
     for s in tasks:
         if 'Subject' in s.keys():
-            sj.add(s['Subject'])
+            if s['Subject'] not in sj_list:
+                sj_list.append(s['Subject'])
         else:
             return dl_colors, sj_col
     col_div = 1/20
     sj_col_index = dict()
     index = 1
-    for t in sj:
+    for t in sj_list:
         sj_col_index[t] = index * col_div
         index += 1
     for u in tasks:
         sub = u['Subject']
-        sj_col.append(sj_col_index[sub])
+        sj_col.append(round(sj_col_index[sub], 2))
 
     return dl_colors, sj_col
 

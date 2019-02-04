@@ -48,35 +48,50 @@ $(document).ready(function(){
         hover_end();
     });
 
-//    function ColorScaleHTML(color_val){
-//        days_due = (Number(color_val/0.0027397260273973))
-//        if (days_due > 365){
-//            years_due = Math.floor(days_due/365)
-//            remaining_days = Math.round(days_due % 365)
-//            return String(years_due) + " years and " + String(remaining_days) + " days until due"
-//        } else if(days_due < 1){
-//            hours_due = Math.round(days_due * 24)
-//            return String(hours_due) + " hours until due"
-//        } else{
-//            return String(Math.round(days_due)) + " days until due"
-//        }
-//    }
-//
-//    $(".ColorScale").hover(function(){
-//        var x_pos = Number($(this).position()["left"]) + 55
-//        var y_pos = $(this).position()["top"]
-//        var color_val = $(this).attr("color_val")
-//        var html_value = ColorScaleHTML(color_val)
-//        d3.select("body").append("div")
-//            .attr("class", "tooltip")
-//            .style("opacity", 0.9)
-//            .style("left", String(x_pos) + "px")
-//            .style("top", y_pos + "px")
-//            .html(html_value)
-//    },
-//    function(){
-//        $("div.tooltip").remove();
-//    });
+    function DeadlineScaleHTML(color_val){
+        days_due = (Number(color_val/0.0027397260273973))
+        if (days_due > 365){
+            years_due = Math.floor(days_due/365)
+            remaining_days = Math.round(days_due % 365)
+            return String(years_due) + " years and " + String(remaining_days) + " days until due"
+        } else if(days_due < 1){
+            hours_due = Math.round(days_due * 24)
+            return String(hours_due) + " hours until due"
+        } else{
+            return String(Math.round(days_due)) + " days until due"
+        }
+    }
+
+    function SubjectScaleHTML(color_val){
+        color_val = Number(color_val)
+        color_place = sj_colors.indexOf(color_val)
+        if (color_place == -1){
+            sub_text = "No Subject yet"
+        }else {
+            sub_text = result[color_place]["Subject"]
+        }
+        return sub_text
+    }
+
+    $(".ColorScale").hover(function(d, i){
+        var x_pos = Number($(this).position()["left"]) + 55
+        var y_pos = $(this).position()["top"]
+        var color_val = $(this).attr("color_val")
+        if (fields.includes("Deadline")){
+            var html_value = DeadlineScaleHTML(color_val)
+        } else{
+            var html_value = SubjectScaleHTML(color_val)
+        }
+        d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0.9)
+            .style("left", String(x_pos) + "px")
+            .style("top", y_pos + "px")
+            .html(html_value)
+    },
+    function(){
+        $("div.tooltip").remove();
+    });
 
     // Click/keypress events (update or delete circle)
 

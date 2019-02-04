@@ -199,31 +199,34 @@ svg.append("text")
 
 // Color Legend
 
-if (String(color_flag) == "true"){
-    if (fields.includes("Deadline")) {
-        var legendsvg = svg.selectAll(".legend")
+// deadline legend
+
+function dl_legend() {
+    var legendsvg = svg.selectAll(".legend")
         .data(c1_scale.ticks(50).slice(1).reverse())
         .enter().append("g")
         .attr("transform", function(d, i) { return "translate(" + (width + margin.left) + "," + ((10 * i) + margin.top) + ")"; });
 
-        legendsvg.append("rect")
-            .attr("width", legendWidth)
-            .attr("height", 10)
-            .style("fill", c1_scale)
-            .attr("class", "ColorScale")
-            .attr("color_val", function(d) {
-                return d
-            })
+    legendsvg.append("rect")
+        .attr("width", legendWidth)
+        .attr("height", 10)
+        .style("fill", c1_scale)
+        .attr("class", "ColorScale")
+        .attr("color_val", function(d) {
+            return d
+        })
 
-        svg.append("text")
-        .attr("transform", "rotate(90)")
-        .attr("x", (margin.top + margin.bottom + height/3))
-        .attr("y", 0 - (width + margin.right + legendWidth))
-        .attr("dy", "0.35em")
-        .style("font-size", "20px")
-        .text("Deadline")
-    } else {
-        var legendsvg = svg.selectAll(".legend")
+    svg.append("text")
+    .attr("transform", "rotate(90)")
+    .attr("x", (margin.top + margin.bottom + height/3))
+    .attr("y", 0 - (width + margin.right + legendWidth))
+    .attr("dy", "0.35em")
+    .style("font-size", "20px")
+    .text("Deadline")
+}
+
+function sj_legend(){
+    var legendsvg = svg.selectAll(".legend")
         .data(c2_scale.ticks(20).slice(1).reverse())
         .enter().append("g")
         .attr("transform", function(d, i) { return "translate(" + (width + margin.left) + "," + ((25 * i) + margin.top) + ")"; });
@@ -244,6 +247,15 @@ if (String(color_flag) == "true"){
         .attr("dy", "0.35em")
         .style("font-size", "20px")
         .text("Subject")
+}
+
+
+
+if (String(color_flag) == "true"){
+    if (fields.includes("Deadline")) {
+        dl_legend()
+    } else {
+        sj_legend()
     }
 }
 
