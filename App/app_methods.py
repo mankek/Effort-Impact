@@ -76,10 +76,6 @@ class Table(object):
         self.list = pandas.read_excel(self.path, index=0)
         self.fields = list(self.list)
 
-        if ("Deadline" in self.fields) or ("Subject" in self.fields):
-            self.color_flag = True
-        else:
-            self.color_flag = False
 
     # Loads the excel sheet where tasks are stored, formats them as a list of dictionaries; also returns field names
     def load_table(self):
@@ -107,7 +103,7 @@ class Table(object):
                 task[0].update(task[1])
                 del task[1]
             tasks.append(task[0])
-        return tasks, self.fields, self.color_flag
+        return tasks, self.fields
 
     # Updates the specified field of the specified task
     def update_table(self, task_id, field, content):

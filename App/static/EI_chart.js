@@ -225,6 +225,8 @@ function dl_legend() {
     .text("Deadline")
 }
 
+// subject legend
+
 function sj_legend(){
     var legendsvg = svg.selectAll(".legend")
         .data(c2_scale.ticks(20).slice(1).reverse())
@@ -250,14 +252,12 @@ function sj_legend(){
 }
 
 
-
-if (String(color_flag) == "true"){
-    if (fields.includes("Deadline")) {
-        dl_legend()
-    } else {
-        sj_legend()
-    }
+if (fields.includes("Deadline")) {
+    dl_legend()
+} else if (fields.includes("Subject") && !fields.includes("Deadline")) {
+    sj_legend()
 }
+
 
 
 
