@@ -105,6 +105,23 @@ $(document).ready(function(){
             focused = this;
         });
 
+    $(".ColorScale").on("click", function(){
+        if (fields.includes("Deadline") && fields.includes("Subject")){
+            if ($(this).attr("axis-type") == "DL"){
+                $(".ColorScale").remove()
+                $("div.tooltip").remove()
+                $(".axis_text").remove()
+                sj_legend()
+            }
+            else{
+                $(".ColorScale").remove()
+                $("div.tooltip").remove()
+                $(".axis_text").remove()
+                dl_legend()
+            }
+        }
+    })
+
     function ID_table_hide(){
         $("div.tooltip").remove();
         var table = document.getElementById("id_table");
@@ -328,9 +345,9 @@ $(document).ready(function(){
             })
             .attr("class", "Data")
             .style("fill", function (d, i) {
-                if (dl_colors && dl_colors.length){
+                if (fields.includes("Deadline")){
                     return c1_scale(dl_colors[i]);
-                } else if (sj_colors && dl_colors.length){
+                } else if (!fields.includes("Deadline") && fields.includes("Subject")){
                     return c2_scale(sj_colors[i]);
                 } else {
                     console.log("no color scale")
