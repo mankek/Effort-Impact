@@ -73,11 +73,11 @@ $(document).ready(function(){
         return sub_text
     }
 
-    $(".ColorScale").hover(function(d, i){
-        var x_pos = Number($(this).position()["left"]) + 55
-        var y_pos = $(this).position()["top"]
-        var color_val = $(this).attr("color_val")
-        if (fields.includes("Deadline")){
+    function ColorHover(this_sqr){
+        var x_pos = Number($(this_sqr).position()["left"]) + 55
+        var y_pos = $(this_sqr).position()["top"]
+        var color_val = $(this_sqr).attr("color_val")
+        if (scale_flag == "DL"){
             var html_value = DeadlineScaleHTML(color_val)
         } else{
             var html_value = SubjectScaleHTML(color_val)
@@ -88,6 +88,11 @@ $(document).ready(function(){
             .style("left", String(x_pos) + "px")
             .style("top", y_pos + "px")
             .html(html_value)
+    }
+
+
+    $(".ColorScale").hover(function(d, i){
+        ColorHover(this)
     },
     function(){
         $("div.tooltip").remove();
@@ -105,21 +110,58 @@ $(document).ready(function(){
             focused = this;
         });
 
-    $(".ColorScale").on("click", function(){
+    function ColorClick(){
         if (fields.includes("Deadline") && fields.includes("Subject")){
-            if ($(this).attr("axis-type") == "DL"){
-                $(".ColorScale").remove()
+            if (scale_flag == "DL"){
+                $(".legend").remove()
                 $("div.tooltip").remove()
                 $(".axis_text").remove()
                 sj_legend()
-            }
-            else{
-                $(".ColorScale").remove()
+                scale_flag = "SJ"
+                render_graph(scale_flag)
+                $("rect.Data").hover(function(){
+                    hover_start(this);
+                },
+                function(){
+                    hover_end();
+                });
+                $(".ColorScale").hover(function(d, i){
+                    ColorHover(this)
+                },
+                function(){
+                    $("div.tooltip").remove();
+                });
+                $(".ColorScale").on("click", function(){
+                    ColorClick();
+                })
+            }else if (scale_flag == "SJ"){
+                $(".legend").remove()
                 $("div.tooltip").remove()
                 $(".axis_text").remove()
                 dl_legend()
+                scale_flag = "DL"
+                render_graph(scale_flag)
+                $("rect.Data").hover(function(){
+                    hover_start(this);
+                },
+                function(){
+                    hover_end();
+                });
+                $(".ColorScale").hover(function(d, i){
+                    ColorHover(this)
+                },
+                function(){
+                    $("div.tooltip").remove();
+                });
+                $(".ColorScale").on("click", function(){
+                    ColorClick();
+                })
             }
         }
+    }
+
+    $(".ColorScale").on("click", function(){
+        ColorClick();
     })
 
     function ID_table_hide(){

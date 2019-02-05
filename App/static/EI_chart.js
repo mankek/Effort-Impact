@@ -16,6 +16,14 @@ var c1_scale = d3.scaleSequential(d3.interpolateRdBu)
 var c2_scale = d3.scaleSequential(d3.interpolateSinebow)
     .domain([0, 1]);
 
+if (fields.includes("Deadline")){
+    scale_flag = "DL"
+} else if (!fields.includes("Deadline") && fields.includes("Subject")){
+    scale_flag = "SJ"
+} else {
+    scale_flag = "None"
+}
+
 if ( fields.includes("Deadline") ){
     var cAxis = d3.axisRight(c1_scale)
 } else {
@@ -90,7 +98,8 @@ var g = chart.selectAll('g')
     .enter()
     .append("g")
 
-g.append("rect")
+function render_graph(scale_flag_in){
+    g.append("rect")
     .attr("y", function (d) {
         return y_scale(d);
     })
@@ -106,14 +115,11 @@ g.append("rect")
     .attr("width", 25)
     .attr("height", 25)
     .style("fill", function (d, i) {
-        if (fields.includes("Deadline")){
-            console.log("dl")
+        if (scale_flag_in == "DL"){
             return c1_scale(dl_colors[i]);
-        } else if (!fields.includes("Deadline") && fields.includes("Subject")){
-            console.log("sj")
+        } else if (scale_flag_in == "SJ"){
             return c2_scale(sj_colors[i]);
-        } else {
-            console.log("no color scale")
+        } else if (scale_flag_in == "None"){
             return c2_scale(i/10);
         }
     })
@@ -123,6 +129,9 @@ g.append("rect")
         return i;
     })
     .attr("class", "Data");
+}
+
+render_graph(scale_flag)
 
 if(chart.selectAll(".Data").empty()) {
     console.log("empty")
@@ -205,14 +214,14 @@ function dl_legend() {
     var legendsvg = svg.selectAll(".legend")
         .data(c1_scale.ticks(50).slice(1).reverse())
         .enter().append("g")
-        .attr("transform", function(d, i) { return "translate(" + (width + margin.left) + "," + ((10 * i) + margin.top) + ")"; });
+        .attr("transform", function(d, i) { return "translate(" + (width + margin.left) + "," + ((10 * i) + margin.top) + ")"; })
+        .attr("class", "legend")
 
     legendsvg.append("rect")
         .attr("width", legendWidth)
         .attr("height", 10)
         .style("fill", c1_scale)
         .attr("class", "ColorScale")
-        .attr("axis-type", "DL")
         .attr("color_val", function(d) {
             return d
         })
@@ -233,26 +242,26 @@ function sj_legend(){
     var legendsvg = svg.selectAll(".legend")
         .data(c2_scale.ticks(20).slice(1).reverse())
         .enter().append("g")
-        .attr("transform", function(d, i) { return "translate(" + (width + margin.left) + "," + ((25 * i) + margin.top) + ")"; });
+        .attr("transform", function(d, i) { return "translate(" + (width + margin.left) + "," + ((25 * i) + margin.top) + ")"; })
+        .attr("class", "legend")
 
-        legendsvg.append("rect")
-            .attr("width", legendWidth)
-            .attr("height", 25)
-            .style("fill", c2_scale)
-            .attr("class", "ColorScale")
-            .attr("axis-type", "SJ")
-            .attr("color_val", function(d) {
-                return d
-            })
+    legendsvg.append("rect")
+        .attr("width", legendWidth)
+        .attr("height", 25)
+        .style("fill", c2_scale)
+        .attr("class", "ColorScale")
+        .attr("color_val", function(d) {
+            return d
+        })
 
-        svg.append("text")
-        .attr("transform", "rotate(90)")
-        .attr("x", (margin.top + margin.bottom + height/3))
-        .attr("y", 0 - (width + margin.right + legendWidth))
-        .attr("dy", "0.35em")
-        .attr("class", "axis_text")
-        .style("font-size", "20px")
-        .text("Subject")
+    svg.append("text")
+    .attr("transform", "rotate(90)")
+    .attr("x", (margin.top + margin.bottom + height/3))
+    .attr("y", 0 - (width + margin.right + legendWidth))
+    .attr("dy", "0.35em")
+    .attr("class", "axis_text")
+    .style("font-size", "20px")
+    .text("Subject")
 }
 
 
