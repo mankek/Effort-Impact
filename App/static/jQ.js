@@ -73,14 +73,27 @@ $(document).ready(function(){
         return sub_text
     }
 
+    function DepartmentScaleHTML(color_val){
+        color_val = Number(color_val)
+        color_place = dp_colors.indexOf(color_val)
+        if (color_place == -1){
+            sub_text = "No Department yet"
+        }else {
+            sub_text = result[color_place]["Department"]
+        }
+        return sub_text
+    }
+
     function ColorHover(this_sqr){
         var x_pos = Number($(this_sqr).position()["left"]) + 55
         var y_pos = $(this_sqr).position()["top"]
         var color_val = $(this_sqr).attr("color_val")
         if (scale_flag == "DL"){
             var html_value = DeadlineScaleHTML(color_val)
-        } else{
+        } else if (scale_flag == "SJ"){
             var html_value = SubjectScaleHTML(color_val)
+        } else if (scale_flag == "DP"){
+            var html_value = DepartmentScaleHTML(color_val)
         }
         d3.select("body").append("div")
             .attr("class", "tooltip")
@@ -110,52 +123,84 @@ $(document).ready(function(){
             focused = this;
         });
 
+    function RendertoSubject(){
+        $(".legend").remove()
+        $("div.tooltip").remove()
+        $(".axis_text").remove()
+        scale_flag = "SJ"
+        sj_or_dp_legend()
+        render_graph(scale_flag)
+        $(".ColorScale").hover(function(d, i){
+            ColorHover(this)
+        },
+        function(){
+            $("div.tooltip").remove();
+        });
+        $(".ColorScale").on("click", function(){
+            ColorClick();
+        })
+    }
+
+    function RendertoDepartment(){
+        $(".legend").remove()
+        $("div.tooltip").remove()
+        $(".axis_text").remove()
+        scale_flag = "DP"
+        sj_or_dp_legend()
+        render_graph(scale_flag)
+        $(".ColorScale").hover(function(d, i){
+            ColorHover(this)
+        },
+        function(){
+            $("div.tooltip").remove();
+        });
+        $(".ColorScale").on("click", function(){
+            ColorClick();
+        })
+    }
+
+    function RendertoDeadline(){
+        $(".legend").remove()
+        $("div.tooltip").remove()
+        $(".axis_text").remove()
+        scale_flag = "DL"
+        dl_legend()
+        render_graph(scale_flag)
+        $(".ColorScale").hover(function(d, i){
+            ColorHover(this)
+        },
+        function(){
+            $("div.tooltip").remove();
+        });
+        $(".ColorScale").on("click", function(){
+            ColorClick();
+        })
+    }
+
     function ColorClick(){
-        if (fields.includes("Deadline") && fields.includes("Subject")){
-            if (scale_flag == "DL"){
-                $(".legend").remove()
-                $("div.tooltip").remove()
-                $(".axis_text").remove()
-                sj_legend()
-                scale_flag = "SJ"
-                render_graph(scale_flag)
-                $("rect.Data").hover(function(){
-                    hover_start(this);
-                },
-                function(){
-                    hover_end();
-                });
-                $(".ColorScale").hover(function(d, i){
-                    ColorHover(this)
-                },
-                function(){
-                    $("div.tooltip").remove();
-                });
-                $(".ColorScale").on("click", function(){
-                    ColorClick();
-                })
-            }else if (scale_flag == "SJ"){
-                $(".legend").remove()
-                $("div.tooltip").remove()
-                $(".axis_text").remove()
-                dl_legend()
-                scale_flag = "DL"
-                render_graph(scale_flag)
-                $("rect.Data").hover(function(){
-                    hover_start(this);
-                },
-                function(){
-                    hover_end();
-                });
-                $(".ColorScale").hover(function(d, i){
-                    ColorHover(this)
-                },
-                function(){
-                    $("div.tooltip").remove();
-                });
-                $(".ColorScale").on("click", function(){
-                    ColorClick();
-                })
+        if (scale_flag == "DL"){
+            if (fields.includes("Subject")){
+                RendertoSubject()
+            } else if (fields.includes("Department")){
+                RendertoDepartment()
+            }else{
+                console.log("No other Scales")
+            }
+        }else if (scale_flag == "SJ"){
+            if (fields.includes("Department")){
+                RendertoDepartment()
+            } else if (fields.includes("Deadline")){
+                RendertoDeadline()
+            }else{
+                console.log("No other Scales")
+            }
+        }else if (scale_flag == "DP"){
+            if (fields.includes("Deadline")){
+                RendertoDeadline()
+            } else if (fields.includes("Subject")){
+                RendertoSubject()
+            }else{
+                console.log("No other Scales")
             }
         }
     }

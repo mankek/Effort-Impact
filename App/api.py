@@ -59,11 +59,11 @@ def show(filename):
         # Gets the effort and Impact values for each task
         x, y = app_methods.effort_impact(result)
         # Determines color scale values for data
-        dl_colors, sj_colors = app_methods.colors(result)
+        dl_colors, sj_colors, dp_colors = app_methods.colors(result)
         # Removes effort, impact values from results so they aren't displayed with the task info
         new_result = app_methods.clean_result(result)
         return render_template("chart.html", x=x, y=y, result=new_result, dl_colors=dl_colors, sj_colors=sj_colors,
-                               name=filename.split(".")[0], fields=names, file=filename)
+                               dp_colors=dp_colors, name=filename.split(".")[0], fields=names, file=filename)
     except FileNotFoundError:
         return redirect(url_for("index"))
 

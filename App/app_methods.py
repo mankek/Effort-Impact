@@ -163,8 +163,10 @@ def effort_impact(dict_list):
 def colors(tasks):
     dl_colors = []
     sj_col = []
+    dp_col = []
+
     if len(tasks) == 0:
-        return dl_colors, sj_col
+        return dl_colors, sj_col, dp_col
 
     for i in tasks:
         if 'Deadline' in i.keys():
@@ -186,24 +188,41 @@ def colors(tasks):
         else:
             break
 
+    col_div = 1 / 20
     sj_list = list()
     for s in tasks:
         if 'Subject' in s.keys():
             if s['Subject'] not in sj_list:
                 sj_list.append(s['Subject'])
         else:
-            return dl_colors, sj_col
-    col_div = 1/20
-    sj_col_index = dict()
-    index = 1
-    for t in sj_list:
-        sj_col_index[t] = index * col_div
-        index += 1
-    for u in tasks:
-        sub = u['Subject']
-        sj_col.append(round(sj_col_index[sub], 2))
+            break
+    if len(sj_list) > 0:
+        sj_col_index = dict()
+        index = 1
+        for t in sj_list:
+            sj_col_index[t] = index * col_div
+            index += 1
+        for u in tasks:
+            sub = u['Subject']
+            sj_col.append(round(sj_col_index[sub], 2))
 
-    return dl_colors, sj_col
+    dp_list = list()
+    for a in tasks:
+        if 'Department' in a.keys():
+            if a['Department'] not in dp_list:
+                dp_list.append(a['Department'])
+        else:
+            return dl_colors, sj_col, dp_col
+    dp_col_index = dict()
+    index2 = 1
+    for b in dp_list:
+        dp_col_index[b] = index2 * col_div
+        index2 += 1
+    for c in tasks:
+        dep = c['Department']
+        dp_col.append(round(dp_col_index[dep], 2))
+
+    return dl_colors, sj_col, dp_col
 
 
 # Changes Deadline date to days/hours until due

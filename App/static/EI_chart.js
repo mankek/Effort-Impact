@@ -20,6 +20,8 @@ if (fields.includes("Deadline")){
     scale_flag = "DL"
 } else if (!fields.includes("Deadline") && fields.includes("Subject")){
     scale_flag = "SJ"
+} else if (!fields.includes("Deadline") && !fields.includes("Subject") && fields.includes("Department")){
+    scale_flag = "DP"
 } else {
     scale_flag = "None"
 }
@@ -98,8 +100,7 @@ var g = chart.selectAll('g')
     .enter()
     .append("g")
 
-function render_graph(scale_flag_in){
-    g.append("rect")
+g.append("rect")
     .attr("y", function (d) {
         return y_scale(d);
     })
@@ -115,11 +116,13 @@ function render_graph(scale_flag_in){
     .attr("width", 25)
     .attr("height", 25)
     .style("fill", function (d, i) {
-        if (scale_flag_in == "DL"){
+        if (scale_flag == "DL"){
             return c1_scale(dl_colors[i]);
-        } else if (scale_flag_in == "SJ"){
+        } else if (scale_flag == "SJ"){
             return c2_scale(sj_colors[i]);
-        } else if (scale_flag_in == "None"){
+        } else if (scale_flag == "DP"){
+            return c2_scale(dp_colors[i]);
+        } else if (scale_flag == "None"){
             return c2_scale(i/10);
         }
     })
@@ -129,9 +132,23 @@ function render_graph(scale_flag_in){
         return i;
     })
     .attr("class", "Data");
+
+
+function render_graph(scale_flag_in){
+    g.selectAll("rect")
+        .style("fill", function (d, i) {
+            if (scale_flag_in == "DL"){
+                return c1_scale(dl_colors[i]);
+            } else if (scale_flag_in == "SJ"){
+                return c2_scale(sj_colors[i]);
+            } else if (scale_flag_in == "DP"){
+                return c2_scale(dp_colors[i]);
+            } else if (scale_flag_in == "None"){
+                return c2_scale(i/10);
+            }
+        })
 }
 
-render_graph(scale_flag)
 
 if(chart.selectAll(".Data").empty()) {
     console.log("empty")
@@ -238,7 +255,7 @@ function dl_legend() {
 
 // subject legend
 
-function sj_legend(){
+function sj_or_dp_legend(){
     var legendsvg = svg.selectAll(".legend")
         .data(c2_scale.ticks(20).slice(1).reverse())
         .enter().append("g")
@@ -254,22 +271,34 @@ function sj_legend(){
             return d
         })
 
-    svg.append("text")
-    .attr("transform", "rotate(90)")
-    .attr("x", (margin.top + margin.bottom + height/3))
-    .attr("y", 0 - (width + margin.right + legendWidth))
-    .attr("dy", "0.35em")
-    .attr("class", "axis_text")
-    .style("font-size", "20px")
-    .text("Subject")
+    if (scale_flag == "SJ"){
+        svg.append("text")
+        .attr("transform", "rotate(90)")
+        .attr("x", (margin.top + margin.bottom + height/3))
+        .attr("y", 0 - (width + margin.right + legendWidth))
+        .attr("dy", "0.35em")
+        .attr("class", "axis_text")
+        .style("font-size", "20px")
+        .text("Subject")
+    } else if (scale_flag == "DP"){
+        svg.append("text")
+        .attr("transform", "rotate(90)")
+        .attr("x", (margin.top + margin.bottom + height/3))
+        .attr("y", 0 - (width + margin.right + legendWidth))
+        .attr("dy", "0.35em")
+        .attr("class", "axis_text")
+        .style("font-size", "20px")
+        .text("Department")
+    }
 }
 
 
-if (fields.includes("Deadline")) {
+if (scale_flag == "DL") {
     dl_legend()
-} else if (fields.includes("Subject") && !fields.includes("Deadline")) {
-    sj_legend()
+} else if (scale_flag == "SJ" || scale_flag == "DP") {
+    sj_or_dp_legend()
 }
+
 
 
 
