@@ -96,7 +96,7 @@ $(document).ready(function(){
             var html_value = DepartmentScaleHTML(color_val)
         }
         d3.select("body").append("div")
-            .attr("class", "tooltip")
+            .attr("class", "tooltip colortip")
             .style("opacity", 0.9)
             .style("left", String(x_pos) + "px")
             .style("top", y_pos + "px")
@@ -108,7 +108,7 @@ $(document).ready(function(){
         ColorHover(this)
     },
     function(){
-        $("div.tooltip").remove();
+        $("div.colortip").remove();
     });
 
     // Click/keypress events (update or delete circle)
@@ -125,7 +125,7 @@ $(document).ready(function(){
 
     function RendertoSubject(){
         $(".legend").remove()
-        $("div.tooltip").remove()
+        $("div.colortip").remove()
         $(".axis_text").remove()
         scale_flag = "SJ"
         sj_or_dp_legend()
@@ -134,7 +134,7 @@ $(document).ready(function(){
             ColorHover(this)
         },
         function(){
-            $("div.tooltip").remove();
+            $("div.colortip").remove();
         });
         $(".ColorScale").on("click", function(){
             ColorClick();
@@ -143,7 +143,7 @@ $(document).ready(function(){
 
     function RendertoDepartment(){
         $(".legend").remove()
-        $("div.tooltip").remove()
+        $("div.colortip").remove()
         $(".axis_text").remove()
         scale_flag = "DP"
         sj_or_dp_legend()
@@ -152,7 +152,7 @@ $(document).ready(function(){
             ColorHover(this)
         },
         function(){
-            $("div.tooltip").remove();
+            $("div.colortip").remove();
         });
         $(".ColorScale").on("click", function(){
             ColorClick();
@@ -161,7 +161,7 @@ $(document).ready(function(){
 
     function RendertoDeadline(){
         $(".legend").remove()
-        $("div.tooltip").remove()
+        $("div.colortip").remove()
         $(".axis_text").remove()
         scale_flag = "DL"
         dl_legend()
@@ -170,7 +170,7 @@ $(document).ready(function(){
             ColorHover(this)
         },
         function(){
-            $("div.tooltip").remove();
+            $("div.colortip").remove();
         });
         $(".ColorScale").on("click", function(){
             ColorClick();
