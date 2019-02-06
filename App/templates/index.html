@@ -44,14 +44,14 @@
         <form action="/chart" method="post">
             <div id="make">
                 New Sheet Name (no extension needed)<br><br>
-                <input type="text" name="new_name" id="new_name"><br><br>
+                <input type="text" name="new_name" id="new_name" required><br><br>
                 Select Optional Fields<br><br>
-                <input id="DepartmentHidden" type="hidden" value="No" name="DepField">
-                <input id="Department" type="checkbox" name="DepField" value="Department" onclick="Check('Department')">Department
-                <input id="SubjectHidden" type="hidden" value="No" name="SubjectField">
-                <input id="Subject" type="checkbox" name="SubjectField" value="Subject" onclick="Check('Subject')">Subject
                 <input id="DeadlineHidden" type="hidden" value="No" name="DeadlineField">
                 <input id="Deadline" type="checkbox" name="DeadlineField" value="Deadline" onclick="Check('Deadline')">Deadline
+                <input id="SubjectHidden" type="hidden" value="No" name="SubjectField">
+                <input id="Subject" type="checkbox" name="SubjectField" value="Subject" onclick="Check('Subject')">Subject
+                <input id="DepartmentHidden" type="hidden" value="No" name="DepField">
+                <input id="Department" type="checkbox" name="DepField" value="Department" onclick="Check('Department')">Department
                 <input id="NotesHidden" type="hidden" value="No" name="NotesField">
                 <input id="Notes" type="checkbox" name="NotesField" value="Notes" onclick="Check('Notes')">Notes<br><br>
                 <button type="submit" name="action" value="new">Create New Sheet</button>
