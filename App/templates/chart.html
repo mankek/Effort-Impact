@@ -105,7 +105,7 @@
                 // Form 1
                 var DL_label = $("<label></label>").text("Deadline: ");
                 var new_date = $("<input>").attr("type", "date").attr("name", "Deadline");
-                var new_time = $("<input>").attr("type", "time").attr("name", "time");
+                var new_time = $("<input>").attr("type", "time").attr("name", "time").attr("required", "");
                 var DL_text = $("<h2></h2>").text("Leave Deadline Fields blank for no deadline!");
                 $("#input").append(DL_label, new_date, new_time, DL_text)
 
