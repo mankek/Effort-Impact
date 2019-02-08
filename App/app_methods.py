@@ -33,6 +33,8 @@ def file_check(file):
     if file.split(".")[-1] != "xlsx":
         print("file is not an excel file with the .xlsx extension")
         return False
+    if file.split(".")[0] == "test_1":
+        return False
     file_frame = pandas.read_excel(os.path.join(out_path, file), index=0)
     frame_fields = list(file_frame)
     if ("Description" not in frame_fields) or ("Task" not in frame_fields) or ("Effort" not in frame_fields) or \
@@ -48,7 +50,7 @@ def file_name(name):
     bad_characters = ["?", "/", "\\", "*", ":", "|", "<", ">", '"']
     for i in bad_characters:
         if name.find(i) != -1:
-            name = name.replace(i, " ")
+            name = name.replace(i, "")
             file_name(name)
         else:
             continue

@@ -150,10 +150,10 @@ $(document).ready(function(){
         render_graph(scale_flag)
         $(".ColorScale").hover(function(d, i){
             ColorHover(this)
-        },
-        function(){
-            $("div.colortip").remove();
-        });
+            },
+            function(){
+                $("div.colortip").remove();
+            });
         $(".ColorScale").on("click", function(){
             ColorClick();
         })
@@ -248,7 +248,7 @@ $(document).ready(function(){
     d3.select("body")
         .on('keydown', function (){
             console.log(d3.event.keyCode);
-            if (d3.event.keyCode === 17){
+            if (d3.event.keyCode === 46){
                 if (focused == null){
                     alert("No task selected. Click a task to select.")
                 } else{

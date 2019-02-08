@@ -137,7 +137,7 @@ g.append("rect")
 
 
 function render_graph(scale_flag_in){
-    g.selectAll("rect")
+    g.select("rect.Data")
         .style("fill", function (d, i) {
             if (scale_flag_in == "DL"){
                 return c1_scale(dl_colors[i]);
@@ -221,7 +221,7 @@ svg.append("text")
     .attr("transform", "translate(" + ((width + margin.left + margin.right)/2) + "," + (2*margin.top/3) + ")")
     .style("text-anchor", "middle")
     .style("text-anchor", "right")
-    .style("font-size", "30px")
+    .style("font-size", "35px")
     .text(title)
 
 
