@@ -25,7 +25,7 @@ The application will start up on port 5000.
 
 The home page indicates that a task sheet must be selected from the Task Sheet folder; this folder is located
 in the application directory and may be empty; any new sheets created automatically go into this folder. When a new sheet is created a user has the opportunity to add up to 4 optional fields (Department, Subject, Deadline, Notes) 
-in addition to the 2 non-optional fields (Task, Description). If the deadline field is selected, a color scale corresponding to due date automatically appears; otherwise, colors are random.
+in addition to the 2 non-optional fields (Task, Description). If the deadline, subject, or department field is selected, a color scale corresponding to the date automatically appears; otherwise, colors are random.
 It is recommended that new sheets be made using the application rather than externally in Excel, to ensure that it is
 parsed properly by the program.
 
@@ -41,7 +41,7 @@ Updating/Deleting a Task:
   To change task information, click on a square and a field will appear that allows you to choose the field you want
   to update and the value you wish to update it with. If you click the "Click me to change the Deadline!" button, the
   input changes to allow you to choose a date and the Field to Be Changed field is automatically populated.
-  Pressing the Ctrl button while having the update form open will delete the selected square.
+  Pressing the Delete button while having the update form open will delete the selected square.
 
 See All Tasks:
 
@@ -57,8 +57,8 @@ Hovering:
 **Testing** 
 
 For testing I used a suite of Postman request tests that test the application's ability to create a new file, add tasks, 
-update tasks, move tasks, and delete tasks. These tests are split into 4 folders; **NOTE**, the *Add two, update two, remove 
-two*, *Delete error*, and *Update bounds* tests will fail if the *New Task Sheet* test is not run first, so it's best to run the 
-entire collection together. One the tests are finished the created test sheet will remain in the Task Sheet directory.
+update tasks, move tasks, delete tasks, and delete a task sheet. These tests are split into 5 folders; **NOTE**, the *Add two, update two, remove
+two*, *Delete error*, *Update bounds*, and *Delete Task Sheet* tests will fail if the *New Task Sheet* test is not run first, so it's best to run the
+entire collection together.
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/1d6164d3fda1580c7fcd#?env%5Btest_env%5D=W3sia2V5IjoiZmlsZW5hbWUiLCJ2YWx1ZSI6InRlc3RfMS54bHN4IiwiZGVzY3JpcHRpb24iOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImZpbGVuYW1lX3RleHQiLCJ2YWx1ZSI6InRlc3RfMS54bHN4IiwiZGVzY3JpcHRpb24iOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImZpbGVuYW1lX3Rlc3RuYW1lIiwidmFsdWUiOiJ0ZXN0P18xKiIsImRlc2NyaXB0aW9uIjoiIiwiZW5hYmxlZCI6dHJ1ZX1d)
