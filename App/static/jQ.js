@@ -210,7 +210,7 @@ $(document).ready(function(){
     })
 
     function ID_table_hide(){
-        $("div.tooltip").remove();
+        $(".id_text").remove();
         var table = document.getElementById("id_table");
         for (b = 0; b < $("rect.Data").length; b++) {
             table.deleteRow(-1)
@@ -224,14 +224,15 @@ $(document).ready(function(){
         var table = document.getElementById("id_table");
         for (b=0; b < $("rect.Data").length; b++){
             var cir = $("rect.Data")[b]
-            var x_pos = Number(d3.select(cir).attr("x")) + 60;
-            var y_pos = Number(d3.select(cir).attr("y")) + 30;
-            d3.select("body").append("div")
-                .attr("class", "tooltip")
-                .style("opacity", 0.9)
-                .style("left", String(x_pos) + "px")
-                .style("top", String(y_pos) + "px")
-                .html(d3.select(cir).attr("id"))
+            var x_pos = Number(d3.select(cir).attr("x")) + 5;
+            var y_pos = Number(d3.select(cir).attr("y"));
+            d3.select(".quadrants").append("text")
+                .attr("y", y_pos)
+                .attr("x", x_pos)
+                .attr("dy", "1em")
+                .attr("class", "id_text")
+                .style("font", "bold")
+                .text(d3.select(cir).attr("id"))
             var row_a = table.insertRow(-1)
             var cell_a = row_a.insertCell(0)
             var cell_b = row_a.insertCell(1)

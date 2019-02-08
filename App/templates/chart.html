@@ -63,6 +63,7 @@
             </div>
             <div id="New">
                 <form action="/new/{{ file }}" method="post" id="form">
+                    <h2>New Task Form</h2>
                     <br>
                     <div id="input">
                         Task: <input type="text" name="Task" required><br><br>
@@ -84,7 +85,7 @@
                         <input type="radio" value="Task" name="Field" onclick="change_type('text')" checked>Task
                         <input type="radio" value="Description" name="Field" onclick="change_type('text')">Description
                         <br id="before"><br>
-                        Content: <input type="text" id="change" name="Content" required><br><br>
+                        <label>Content</label> <input type="text" id="change" name="Content" required><br><br>
                     </div>
                     <br>
                     <br>

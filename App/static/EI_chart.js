@@ -1,6 +1,6 @@
 // Variables for chart creation
 var margin = {top: 40, right: 65, bottom: 40, left: 40}
-var width = 500
+var width = 700
 var height = 500
 
 
@@ -32,6 +32,7 @@ if ( fields.includes("Deadline") ){
     var cAxis = d3.axisRight(c2_scale);
 }
 
+var chart_margins = (margin.left + margin.right)/2
 
 var xAxis = d3.axisBottom(x_scale);
 var yAxis = d3.axisLeft(y_scale);
@@ -41,13 +42,14 @@ var legendWidth = 20;
 
 var svg = d3.select('#scatterplot')
   .append('svg')
-  .attr("preserveAspectRatio", "xMinYMin meet")
-  .attr("viewBox", "0 0 610 610")
 //  .attr('width', width + margin.left + margin.right)
 //  .attr('height', height + margin.top + margin.bottom)
+  .attr("preserveAspectRatio", "xMidYMid")
+//  .attr("viewBox", " 0 0 " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom))
+  .attr("viewBox", -chart_margins + " " + -margin.top + " 930 900")
   .attr('class', 'chart')
   .style("background-color", "white")
-  .attr("transform", "translate(0,0)")
+//  .attr("transform", "translate(" + (margin.left + margin.right)/2 + "," + margin.top + ")")
 
 // Chart creation
 
@@ -196,7 +198,7 @@ chart.append("g")
 svg.append("text")
     .attr("transform", "translate(" + ((width + margin.left + margin.right)/2) + "," + (height + (2*margin.bottom/3) + (margin.top)) + ")")
     .style("text-anchor", "middle")
-    .style("font-size", "20px")
+    .style("font-size", "25px")
     .text("Effort");
 
 //svg.append('g')
@@ -210,7 +212,7 @@ svg.append("text")
     .attr("x", -((height + margin.top + margin.bottom)/2))
     .attr("dy", "1em")
     .style("text-anchor", "middle")
-    .style("font-size", "20px")
+    .style("font-size", "25px")
     .text("Impact");
 
 //// Chart title
@@ -219,7 +221,7 @@ svg.append("text")
     .attr("transform", "translate(" + ((width + margin.left + margin.right)/2) + "," + (2*margin.top/3) + ")")
     .style("text-anchor", "middle")
     .style("text-anchor", "right")
-    .style("font-size", "25px")
+    .style("font-size", "30px")
     .text(title)
 
 
@@ -249,7 +251,7 @@ function dl_legend() {
     .attr("y", 0 - (width + margin.right + legendWidth))
     .attr("dy", "0.35em")
     .attr("class", "axis_text")
-    .style("font-size", "20px")
+    .style("font-size", "25px")
     .text("Deadline")
 }
 
@@ -278,7 +280,7 @@ function sj_or_dp_legend(){
         .attr("y", 0 - (width + margin.right + legendWidth))
         .attr("dy", "0.35em")
         .attr("class", "axis_text")
-        .style("font-size", "20px")
+        .style("font-size", "25px")
         .text("Subject")
     } else if (scale_flag == "DP"){
         svg.append("text")
@@ -287,7 +289,7 @@ function sj_or_dp_legend(){
         .attr("y", 0 - (width + margin.right + legendWidth))
         .attr("dy", "0.35em")
         .attr("class", "axis_text")
-        .style("font-size", "20px")
+        .style("font-size", "25px")
         .text("Department")
     }
 }
