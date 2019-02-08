@@ -10,6 +10,7 @@ app = Flask(__name__)
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     sheet_list = app_methods.file_find()
+    app_methods.sheet_dir()
     return render_template("index.html", sheet_list=sheet_list)
 
 

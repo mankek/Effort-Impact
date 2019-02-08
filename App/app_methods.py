@@ -7,6 +7,14 @@ import datetime
 out_path = ("\\").join(os.path.dirname(os.path.abspath(__file__)).split("\\")[0:-1]) + r"\Task Sheets"
 
 
+# Checks for Task Sheet directory; create if it doesn't exist
+def sheet_dir():
+    if os.path.exists(out_path):
+        return "yes"
+    else:
+        os.mkdir(out_path)
+
+
 # Finds all task sheets with proper extension and adds them to a list. Returns list
 def file_find():
     task_sheets = []

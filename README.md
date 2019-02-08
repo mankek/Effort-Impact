@@ -21,7 +21,7 @@ Navigate into the application, set and run it as a flask app:
     
     flask run
 
-The application will start up on port 3000.
+The application will start up on port 5000.
 
 The home page indicates that a task sheet must be selected from the Task Sheet folder; this folder is located
 in the application directory and may be empty; any new sheets created automatically go into this folder. When a new sheet is created a user has the opportunity to add up to 4 optional fields (Department, Subject, Deadline, Notes) 
@@ -51,8 +51,8 @@ See All Tasks:
 
 Hovering:
 
-* When hovering on squares, their task info is displayed. When hovering on the color scale, the corresponding time
-  until due date is displayed for that color block.
+* When hovering on squares, their task info is displayed. When hovering on a color scale, the corresponding information
+ for that color block is displayed.
 
 **Testing** 
 
