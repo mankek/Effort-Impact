@@ -95,6 +95,52 @@
             </div>
         </div>
     </div>
+    <div id="storage">
+        <div id="completed">
+            <h2>Completed</h2>
+            <table id="complete_table">
+                <tr>
+                    <th>Task</th>
+                    <th>Description</th>
+                    <th>Subject</th>
+                    <th>Notes</th>
+                    <th>Completed</th>
+                </tr>
+                {% for task in completed %}
+                <tr style="background-color:white">
+                    <td>{{ task["Task"] }}</td>
+                    <td>{{ task["Description"] }}</td>
+                    <td>{{ task["Subject"] }}</td>
+                    <td>{{ task["Notes"] }}</td>
+                    <td>{{ task["Completed"] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div id="unplaced">
+            <h2>Unassigned</h2>
+            <table id="unplaced_table">
+                <tr>
+                    <th>Task</th>
+                    <th>Effort</th>
+                    <th>Impact</th>
+                    <th>Description</th>
+                    <th>Subject</th>
+                    <th>Notes</th>
+                </tr>
+                {% for task in completed %}
+                <tr style="background-color:white">
+                    <td>{{ task["Task"] }}</td>
+                    <td>{{ task["Effort"] }}</td>
+                    <td>{{ task["Impact"] }}</td>
+                    <td>{{ task["Description"] }}</td>
+                    <td>{{ task["Subject"] }}</td>
+                    <td>{{ task["Notes"] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
     <script>
 
         // Creates form1 and form2 based on fields

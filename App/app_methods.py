@@ -74,7 +74,11 @@ def new_table(new_name, fields):
     path = os.path.join(out_path, new_name)
     df = pandas.DataFrame(fields)
     writer = pandas.ExcelWriter(path, engine='xlsxwriter')
-    df.to_excel(writer, sheet_name='Sheet1')
+    df.to_excel(writer, sheet_name='Graph')
+    df.to_excel(writer, sheet_name='Unplaced')
+    fields["Completed"] = []
+    df2 = pandas.DataFrame(fields)
+    df2.to_excel(writer, sheet_name='Completed')
     writer.save()
 
 
@@ -83,8 +87,12 @@ class Table(object):
     def __init__(self, filename):
         self.name = filename
         self.path = os.path.join(out_path, filename)
-        self.list = pandas.read_excel(self.path, index=0)
+        self.list = pandas.read_excel(self.path, "Graph", index=0)
         self.fields = list(self.list)
+        self.comp = pandas.read_excel(self.path, "Completed", index=0)
+        self.comp_fields = list(self.comp)
+        self.unplaced = pandas.read_excel(self.path, "Unplaced", index=0)
+        self.unplaced_fields = list(self.unplaced)
 
     # Loads the excel sheet where tasks are stored, formats them as a list of dictionaries; also returns field names
     def load_table(self):
@@ -105,14 +113,23 @@ class Table(object):
         # Form list of results
         tasks = []
         for t in range(0, (self.list.shape[0])):
-            task = []
+            tasks.append(dict())
             for i in self.fields:
-                task.append({i: str(self.list[i][t])})
-            while len(task) != 1:
-                task[0].update(task[1])
-                del task[1]
-            tasks.append(task[0])
-        return tasks, self.fields
+                tasks[t][i] = str(self.list[i][t])
+        # Form list of completed
+        completed = []
+        for t in range(0, (self.comp.shape[0])):
+            completed.append(dict())
+            for i in self.comp_fields:
+                completed[t][i] = str(self.comp[i][t])
+        # From list of unplaced
+        unplaced = []
+        for t in range(0, (self.unplaced.shape[0])):
+            unplaced.append(dict())
+            for i in self.unplaced_fields:
+                unplaced[t][i] = str(self.unplaced[i][t])
+
+        return tasks, self.fields, completed, unplaced
 
     # Updates the specified field of the specified task
     def update_table(self, task_id, field, content):
@@ -120,7 +137,7 @@ class Table(object):
             if str(field) in self.fields:
                 self.list.loc[int(task_id), field] = content
                 writer = pandas.ExcelWriter(self.path)
-                self.list.to_excel(writer)
+                self.list.to_excel(writer, "Graph")
                 writer.save()
             else:
                 print("improper field")
@@ -135,7 +152,7 @@ class Table(object):
         for t in new_task.keys():
             self.list.loc[row_number, t] = new_task[t]
         writer = pandas.ExcelWriter(self.path)
-        self.list.to_excel(writer)
+        self.list.to_excel(writer, "Graph")
         writer.save()
         return "Table saved!"
 
@@ -145,7 +162,7 @@ class Table(object):
             self.list.drop(index=task_id, inplace=True)
             self.list.reset_index(drop=True, inplace=True)
             writer = pandas.ExcelWriter(self.path)
-            self.list.to_excel(writer)
+            self.list.to_excel(writer, "Graph")
             writer.save()
             return "Table saved"
         else:
