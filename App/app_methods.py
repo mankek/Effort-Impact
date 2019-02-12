@@ -1,5 +1,6 @@
 # !/usr/bin/python
 import pandas
+import openpyxl
 import os
 import datetime
 
@@ -87,19 +88,19 @@ class Table(object):
     def __init__(self, filename):
         self.name = filename
         self.path = os.path.join(out_path, filename)
-        self.list = pandas.read_excel(self.path, "Graph", index=0)
-        self.fields = list(self.list)
-        self.comp = pandas.read_excel(self.path, "Completed", index=0)
-        self.comp_fields = list(self.comp)
-        self.unplaced = pandas.read_excel(self.path, "Unplaced", index=0)
-        self.unplaced_fields = list(self.unplaced)
+        self.book = openpyxl.load_workbook(self.path)
+        self.writer = pandas.ExcelWriter(self.path, engine='openpyxl')
+        self.writer.book = self.book
+        self.writer.sheets = dict((ws.title, ws) for ws in self.book.worksheets)
+        self.list = pandas.read_excel(self.path, sheet_name=None, index=0)
+        self.fields = list(self.list['Graph'])
 
     # Loads the excel sheet where tasks are stored, formats them as a list of dictionaries; also returns field names
     def load_table(self):
         # Update deadlines in task_list
         if "Deadline" in self.fields:
-            for s in range(0, (self.list.shape[0])):
-                line = self.list['Deadline'][s]
+            for s in range(0, (self.list['Graph'].shape[0])):
+                line = self.list['Graph']['Deadline'][s]
                 if line == "No Deadline":
                     continue
                 else:
@@ -108,37 +109,36 @@ class Table(object):
                     time = line[1].split(':')
                     new_diff = due_day(int(date[0]), int(date[1]), int(date[2]), int(time[0]))
                     line[2] = new_diff
-                    self.list.loc[s, ['Deadline']] = '_'.join(line)
+                    self.list['Graph'].loc[s, ['Deadline']] = '_'.join(line)
 
         # Form list of results
         tasks = []
-        for t in range(0, (self.list.shape[0])):
+        for t in range(0, (self.list['Graph'].shape[0])):
             tasks.append(dict())
             for i in self.fields:
-                tasks[t][i] = str(self.list[i][t])
+                tasks[t][i] = str(self.list['Graph'][i][t])
         # Form list of completed
         completed = []
-        for t in range(0, (self.comp.shape[0])):
+        for t in range(0, (self.list['Completed'].shape[0])):
             completed.append(dict())
-            for i in self.comp_fields:
-                completed[t][i] = str(self.comp[i][t])
+            for i in list(self.list['Completed']):
+                completed[t][i] = str(self.list['Completed'][i][t])
         # From list of unplaced
         unplaced = []
-        for t in range(0, (self.unplaced.shape[0])):
+        for t in range(0, (self.list['Unplaced'].shape[0])):
             unplaced.append(dict())
-            for i in self.unplaced_fields:
-                unplaced[t][i] = str(self.unplaced[i][t])
+            for i in list(self.list['Unplaced']):
+                unplaced[t][i] = str(self.list['Unplaced'][i][t])
 
         return tasks, self.fields, completed, unplaced
 
     # Updates the specified field of the specified task
     def update_table(self, task_id, field, content):
-        if int(task_id) in self.list.index:
+        if int(task_id) in self.list['Graph'].index:
             if str(field) in self.fields:
-                self.list.loc[int(task_id), field] = content
-                writer = pandas.ExcelWriter(self.path)
-                self.list.to_excel(writer, "Graph")
-                writer.save()
+                self.list['Graph'].loc[int(task_id), field] = content
+                self.list['Graph'].to_excel(self.writer, sheet_name="Graph")
+                self.writer.save()
             else:
                 print("improper field")
         else:
@@ -148,22 +148,20 @@ class Table(object):
 
     # Takes the new task and adds it to the excel sheet
     def add_to_table(self, new_task):
-        row_number = self.list.shape[0]
+        row_number = self.list['Graph'].shape[0]
         for t in new_task.keys():
-            self.list.loc[row_number, t] = new_task[t]
-        writer = pandas.ExcelWriter(self.path)
-        self.list.to_excel(writer, "Graph")
-        writer.save()
+            self.list['Graph'].loc[row_number, t] = new_task[t]
+        self.list['Graph'].to_excel(self.writer, sheet_name="Graph")
+        self.writer.save()
         return "Table saved!"
 
     # Deletes a selected task from the excel sheet
     def delete_from_table(self, task_id):
-        if task_id in self.list.index:
-            self.list.drop(index=task_id, inplace=True)
-            self.list.reset_index(drop=True, inplace=True)
-            writer = pandas.ExcelWriter(self.path)
-            self.list.to_excel(writer, "Graph")
-            writer.save()
+        if task_id in self.list['Graph'].index:
+            self.list['Graph'].drop(index=task_id, inplace=True)
+            self.list['Graph'].reset_index(drop=True, inplace=True)
+            self.list['Graph'].to_excel(self.writer, sheet_name="Graph")
+            self.writer.save()
             return "Table saved"
         else:
             new_task_id = task_id - 1
