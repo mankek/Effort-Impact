@@ -1,19 +1,26 @@
 $(document).ready(function(){
+
+    // svg element that holds chart
     var svg = d3.select("svg");
+
+    // focused variable holds a reference to the most recently clicked square; used for deletion
     var focused = null;
 
+    // Initially all info divs except Instructions are hidden
     $("#id_div").hide();
     $("#task_div").hide();
     $("#New").hide();
     $("#Update").hide();
 
 
-    // Hover event (show task info or color scale info)
 
+    // Square Hover functions
+
+    // defines on hover behavior for a square in the graph
     function hover_start(sqr){
-        var index = $(sqr).attr("id")
+        var index = $(sqr).attr("id") // square id corresponds to the position of it's task in results
         var table = document.getElementById("task_table")
-        for (i in result[index]) {
+        for (i in result[index]) { // task table is populated with square's task info
             var row = table.insertRow(-1)
             var cell1 = row.insertCell(0)
             var cell2 = row.insertCell(1)
@@ -22,34 +29,31 @@ $(document).ready(function(){
         }
         $("#Instructions").hide();
         if ($("#New").css("display") == "none" && $("#Update").css("display") == "none"){
-            $("#task_div").show();
+            $("#task_div").show(); // if no forms are showing, shows task table
         }
     }
 
+    // defines off hover behavior for a square in the graph
     function hover_end(){
         var table = document.getElementById("task_table")
-        for (b = 0; b < (fields.length - 2); b++) {
+        for (b = 0; b < (fields.length - 2); b++) { // contents of task table are deleted
             table.deleteRow(-1)
         }
         if ($("#Update").css('display') == "none" || $("#Update").css("visibility") == "hidden") {
             if ($("#New").css('display') == "none" || $("#New").css("visibility") == "hidden") {
                 if ($("#id_div").css('display') == "none" || $("#id_div").css("visibility") == "hidden") {
                     $("#Instructions").show();
-                    $("#task_div").hide();
+                    $("#task_div").hide(); // if no forms are open and id table isn't open, shows Instructions and hides task table
                 }
             }
         }
     }
 
-    $("rect.Data").hover(function(){
-        hover_start(this);
-    },
-    function(){
-        hover_end();
-    });
+    // Color Scale Hover Functions
 
+    // calculates the "time until deadline" value for each color in the deadline color scale
     function DeadlineScaleHTML(color_val){
-        days_due = (Number(color_val/0.0027397260273973))
+        days_due = (Number(color_val/0.0027397260273973)) // matches equation used in backend to calculate time until due for tasks
         if (days_due > 365){
             years_due = Math.floor(days_due/365)
             remaining_days = Math.round(days_due % 365)
@@ -62,28 +66,31 @@ $(document).ready(function(){
         }
     }
 
+    // returns value for colors in subject color scale
     function SubjectScaleHTML(color_val){
-        color_val = Number(color_val)
-        color_place = sj_colors.indexOf(color_val)
+        color_val = Number(color_val) // converts scale value of color to number
+        color_place = sj_colors.indexOf(color_val) // finds position of scale value in results subject color values list
         if (color_place == -1){
-            sub_text = "No Subject yet"
+            sub_text = "No Subject yet" // if scale value isn't in list, that value isn't being used by a task yet
         }else {
-            sub_text = result[color_place]["Subject"]
+            sub_text = result[color_place]["Subject"] // if scale value is in list, finds corresponding subject in results
         }
         return sub_text
     }
 
+    // returns value for colors in department color scale
     function DepartmentScaleHTML(color_val){
-        color_val = Number(color_val)
-        color_place = dp_colors.indexOf(color_val)
+        color_val = Number(color_val) // converts scale value of color to number
+        color_place = dp_colors.indexOf(color_val) // finds position of scale value in results department color values list
         if (color_place == -1){
-            sub_text = "No Department yet"
+            sub_text = "No Department yet" // if scale value isn't in list, that value isn't being used by a task yet
         }else {
-            sub_text = result[color_place]["Department"]
+            sub_text = result[color_place]["Department"] // if scale value is in list, finds corresponding department in results
         }
         return sub_text
     }
 
+    // defines on hover behavior for the rectangles in the color scales
     function ColorHover(this_sqr){
         var x_pos = Number($(this_sqr).position()["left"]) + 55
         var y_pos = $(this_sqr).position()["top"]
@@ -95,7 +102,7 @@ $(document).ready(function(){
         } else if (scale_flag == "DP"){
             var html_value = DepartmentScaleHTML(color_val)
         }
-        d3.select("body").append("div")
+        d3.select("body").append("div") // creates and adds object that appears on hovering with value info
             .attr("class", "tooltip colortip")
             .style("opacity", 0.9)
             .style("left", String(x_pos) + "px")
@@ -103,26 +110,43 @@ $(document).ready(function(){
             .html(html_value)
     }
 
+    // Hover Events
 
+    // attaches hover event to all task squares on the graph
+    $("rect.Data").hover(function(){
+        hover_start(this);
+    },
+    function(){
+        hover_end();
+    });
+
+    // attaches hover event to color scale
     $(".ColorScale").hover(function(d, i){
         ColorHover(this)
     },
     function(){
-        $("div.colortip").remove();
+        $("div.colortip").remove(); // removes the object with the value info
     });
 
-    // Click/keypress events (update or delete circle)
 
+
+    // Task Square Click Event
+
+    // attaches a click event to all task squares in chart
     g.selectAll("rect.Data")
         .on("click", function(d, i){
-            $("#task_div").hide();
-            $("#Instructions").hide();
-            $("#Update").show();
-            $("#id").val(this.id);
-
-            focused = this;
+            if ($("#id_div").css('display') == "none" || $("#id_div").css("visibility") == "hidden") {
+                $("#task_div").hide();
+                $("#Instructions").hide();
+                $("#Update").show(); // hides all other info divs and shows task change form
+                $("#id").val(this.id); // populates id field in change form
+                focused = this; // clicked square becomes saved under focused variable (for use in deletion)
+            }
         });
 
+    // Color Scale Click Functions
+
+    // defines change to subject color scale
     function RendertoSubject(){
         $(".legend").remove()
         $("div.colortip").remove()
@@ -141,6 +165,7 @@ $(document).ready(function(){
         })
     }
 
+    // defines change to department color scale
     function RendertoDepartment(){
         $(".legend").remove()
         $("div.colortip").remove()
@@ -159,6 +184,7 @@ $(document).ready(function(){
         })
     }
 
+    // defines change to deadline scale
     function RendertoDeadline(){
         $(".legend").remove()
         $("div.colortip").remove()
@@ -177,6 +203,7 @@ $(document).ready(function(){
         })
     }
 
+    // defines click behavior for color scale - switching between color scales
     function ColorClick(){
         if (scale_flag == "DL"){
             if (fields.includes("Subject")){
@@ -205,28 +232,25 @@ $(document).ready(function(){
         }
     }
 
+    // Color Scale Click Event
+
+    // attaches click event to color scale
     $(".ColorScale").on("click", function(){
         ColorClick();
     })
 
-    function ID_table_hide(){
-        $(".id_text").remove();
-        var table = document.getElementById("id_table");
-        for (b = 0; b < $("rect.Data").length; b++) {
-            table.deleteRow(-1)
-        }
-        $("#id_div").hide();
-        $("#task_div").hide()
-        $("#Instructions").show();
-    }
 
+
+    // Button Press Functions
+
+    // defines showing the id table
     function ID_table_show(field){
         var table = document.getElementById("id_table");
-        for (b=0; b < $("rect.Data").length; b++){
+        for (b=0; b < $("rect.Data").length; b++){ // populates the id table with task info from all the tasks on the chart
             var cir = $("rect.Data")[b]
             var x_pos = Number(d3.select(cir).attr("x")) + 5;
             var y_pos = Number(d3.select(cir).attr("y"));
-            d3.select(".quadrants").append("text")
+            d3.select(".quadrants").append("text") // creates and adds text to each square, showing it's id
                 .attr("y", y_pos)
                 .attr("x", x_pos)
                 .attr("dy", "1em")
@@ -241,14 +265,27 @@ $(document).ready(function(){
         }
         $("#Instructions").hide();
         $("#task_div").hide();
-        $("#id_div").show();
+        $("#id_div").show(); // hides all other info divs and shows the id table
     }
 
+    // defines hiding the id table
+    function ID_table_hide(){
+        $(".id_text").remove(); // removes id text from task squares
+        var table = document.getElementById("id_table");
+        for (b = 0; b < $("rect.Data").length; b++) { // contents of id table are deleted
+            table.deleteRow(-1)
+        }
+        $("#id_div").hide();
+        $("#task_div").hide()
+        $("#Instructions").show(); // all other info divs are hidden and instructions are shown
+    }
+
+    // Button Press Events
 
     d3.select("body")
         .on('keydown', function (){
             console.log(d3.event.keyCode);
-            if (d3.event.keyCode === 46){
+            if (d3.event.keyCode === 46){ // If delete button is pressed, id for square in focused is sent to back-end for deletion
                 if (focused == null){
                     alert("No task selected. Click a task to select.")
                 } else{
@@ -273,23 +310,23 @@ $(document).ready(function(){
                     $("#Instructions").show();
                     focused = null;
                 }
-            } else if (d3.event.keyCode === 13 && $("#New").css("display") == "none"){
-                if ($("#id_div").css('display') == "none" || $("#id_div").css("visibility") == "hidden") {
-                    $("rect.Data").off()
-                    $("#Task_check").on("click", function(){
+            } else if (d3.event.keyCode === 13 && $("#New").css("display") == "none" && $("#Update").css("display") == "none"){
+                if ($("#id_div").css('display') == "none" || $("#id_div").css("visibility") == "hidden") { // If enter button is pressed and id table isn't visible ,id table is rendered and shown
+                    $("rect.Data").off() // removes task square events so task table can't appear
+                    $("#Task_check").on("click", function(){ // if task radio button is clicked, id table displays Task
                         $("#Desc_check").prop("checked", false)
                         ID_table_hide()
                         ID_table_show("Task")
                     })
-                    $("#Desc_check").on("click", function(){
+                    $("#Desc_check").on("click", function(){ // If description radio button is clicked, id table displays description
                         $("#Task_check").prop("checked", false)
                         ID_table_hide()
                         ID_table_show("Description")
                     })
                     $("#Task_check").click()
-                } else {
+                } else { // if id table is already visible, id table is hidden
                    ID_table_hide()
-                   $("rect.Data").hover(function(){
+                   $("rect.Data").hover(function(){ // re-attaches hover event to task squares
                         hover_start(this);
                     },
                     function(){
@@ -299,8 +336,7 @@ $(document).ready(function(){
             }
         });
 
-    // Hide Forms
-
+    // Hides change form when 'Go back' button is pressed
     $("#HideUpdate").on("click", function() {
         $("#Update").hide();
         $("#task_div").hide();
@@ -309,6 +345,7 @@ $(document).ready(function(){
         focused = null;
     })
 
+    // Hides new task form when 'Go back' button is pressed
     $("#HideNew").on("click", function() {
         $("#New").hide();
         $("#task_div").hide();
@@ -317,23 +354,23 @@ $(document).ready(function(){
         d3.selectAll(".Data:last-of-type").remove();
     })
 
-    // Drag event
 
-    var dragHandler = d3.drag()
-        .on("start", dragstarted)
-        .on("drag", dragged)
-        .on("end", dragend);
 
+
+    // Drag Functions
+
+    // defines behavior when drag starts
     function dragstarted(){
-        hover_end();
+        hover_end(); // stops task square hover behavior when dragging
     };
 
+    // defines behavior during dragging
     function dragged(d, i){
         hover_end();
         d3.select(this)
             .attr('transform', 'translate(' + 0 + ',' + 0 + ')')
-            .attr("x", function(d) {
-                if (d3.event.x > x_scale(16)){
+            .attr("x", function(d) { // replaces squares x coordinate with coordinates of event
+                if (d3.event.x > x_scale(16)){ // if coordinates go outside graph, they are limited to stay within graph
                     return x_scale(16)
                 }else if (d3.event.x < x_scale(0)) {
                     return x_scale(0)
@@ -341,7 +378,7 @@ $(document).ready(function(){
                     return d3.event.x
                 }
             })
-            .attr("y", function(d) {
+            .attr("y", function(d) { // replaces squares y coordinate with coordinates of event
                 if (d3.event.y < y_scale(16)) {
                     return y_scale(16)
                 }else if (d3.event.y > y_scale(0)) {
@@ -368,14 +405,15 @@ $(document).ready(function(){
                     return y_scale.invert(d3.event.y).toFixed(1)
                 }
             })
-        if ($("#id_div").css("display") == "block"){
+        if ($("#id_div").css("display") == "block"){ // if id table is up, id label is removed from square
             $("div.tooltip").remove();
         }
     };
 
+    // defines behavior when drag ends
     function dragend(d, i){
         var circle = d3.select(this)
-        $.ajax({
+        $.ajax({ // sends new effort impact data to back-end
             url: "/update/" + filename,
             data: {"Effort": circle.attr('dx'),"Impact": circle.attr('dy'),"Id": i},
             success: function () {
@@ -386,7 +424,7 @@ $(document).ready(function(){
                 console.log(errorThrown);
             }
         });
-        if ($("#id_div").css("display") == "block") {
+        if ($("#id_div").css("display") == "block") { // if id table is up, id label is re-applied to square
             for (b=0; b < $("rect.Data").length; b++){
                 var cir = $("rect.Data")[b]
                 var x_pos = Number(d3.select(cir).attr("x")) + 60;
@@ -402,13 +440,21 @@ $(document).ready(function(){
         console.log("Dragend!")
     }
 
+    // Drag Event
+
+    var dragHandler = d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragend);
+
     dragHandler(svg.selectAll(".Data"));
 
-    // Double click event (add new circle)
 
-    chart.on("dblclick", function(){
-        var mouse = d3.mouse(this);
 
+    // Double Click Functions
+
+    // Adds a new task square to the graph at the (screen) origin (upper left corner)
+    function Add_new(){
         g.selectAll("chart")
             .data([0])
             .enter()
@@ -457,5 +503,14 @@ $(document).ready(function(){
         $("#task_div").hide();
         $("#Update").hide();
         $("#New").show();
+    }
+
+    // Double Click Event
+
+    // Attaches double-click event to chart
+    chart.on("dblclick", function(){
+        if ($("#id_div").css('display') == "none" || $("#id_div").css("visibility") == "hidden") {
+            Add_new();
+        }
     })
 });

@@ -19,6 +19,7 @@ body{
 }
 /* File selection form container */
 #choose{
+    height: 100%;
     float: left;
 }
 /* Available File list */
