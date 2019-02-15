@@ -2,8 +2,10 @@ $(document).ready(function(){
     var svg = d3.select("svg");
     var focused = null;
 
-    $("#id_check").hide();
-    $("#table").hide();
+    $("#id_div").hide();
+    $("#task_div").hide();
+    $("#New").hide();
+    $("#Update").hide();
 
 
     // Hover event (show task info or color scale info)
@@ -20,13 +22,11 @@ $(document).ready(function(){
         }
         $("#Instructions").hide();
         if ($("#New").css("display") == "none" && $("#Update").css("display") == "none"){
-            $("#table").show();
-            $("#task_table").show()
+            $("#task_div").show();
         }
     }
 
     function hover_end(){
-         $("#task_table").hide()
         var table = document.getElementById("task_table")
         for (b = 0; b < (fields.length - 2); b++) {
             table.deleteRow(-1)
@@ -35,7 +35,7 @@ $(document).ready(function(){
             if ($("#New").css('display') == "none" || $("#New").css("visibility") == "hidden") {
                 if ($("#id_div").css('display') == "none" || $("#id_div").css("visibility") == "hidden") {
                     $("#Instructions").show();
-                    $("#table").hide();
+                    $("#task_div").hide();
                 }
             }
         }
@@ -115,7 +115,7 @@ $(document).ready(function(){
 
     g.selectAll("rect.Data")
         .on("click", function(d, i){
-            $("#table").hide();
+            $("#task_div").hide();
             $("#Instructions").hide();
             $("#Update").show();
             $("#id").val(this.id);
@@ -216,7 +216,7 @@ $(document).ready(function(){
             table.deleteRow(-1)
         }
         $("#id_div").hide();
-        $("#table").hide()
+        $("#task_div").hide()
         $("#Instructions").show();
     }
 
@@ -240,7 +240,7 @@ $(document).ready(function(){
             cell_b.innerHTML = JSON.stringify(result[b][field])
         }
         $("#Instructions").hide();
-        $("#table").show();
+        $("#task_div").hide();
         $("#id_div").show();
     }
 
@@ -276,7 +276,6 @@ $(document).ready(function(){
             } else if (d3.event.keyCode === 13 && $("#New").css("display") == "none"){
                 if ($("#id_div").css('display') == "none" || $("#id_div").css("visibility") == "hidden") {
                     $("rect.Data").off()
-                    $("#id_check").show()
                     $("#Task_check").on("click", function(){
                         $("#Desc_check").prop("checked", false)
                         ID_table_hide()
@@ -290,7 +289,6 @@ $(document).ready(function(){
                     $("#Task_check").click()
                 } else {
                    ID_table_hide()
-                   $("#id_check").hide();
                    $("rect.Data").hover(function(){
                         hover_start(this);
                     },
@@ -305,14 +303,16 @@ $(document).ready(function(){
 
     $("#HideUpdate").on("click", function() {
         $("#Update").hide();
-        $("#table").hide();
+        $("#task_div").hide();
+        $("#id_div").hide();
         $("#Instructions").show();
         focused = null;
     })
 
     $("#HideNew").on("click", function() {
         $("#New").hide();
-        $("#table").hide();
+        $("#task_div").hide();
+        $("#id_div").hide();
         $("#Instructions").show();
         d3.selectAll(".Data:last-of-type").remove();
     })
@@ -454,7 +454,7 @@ $(document).ready(function(){
                 }
             });
         $("#Instructions").hide();
-        $("#table").hide();
+        $("#task_div").hide();
         $("#Update").hide();
         $("#New").show();
     })

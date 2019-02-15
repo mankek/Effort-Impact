@@ -1,0 +1,17 @@
+/* Container for completed tasks and unassigned tasks divs */
+#storage{
+    width: 100%;
+    height: 200px;
+}
+/* container and table for complete tasks */
+#completed{
+    float: left;
+    height: 90%;
+    overflow: auto;
+}
+/* container and table for unassigned tasks */
+#unplaced{
+    float: right;
+    height: 90%;
+    overflow: auto;
+}

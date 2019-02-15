@@ -1,0 +1,86 @@
+/* Container for chart and right-hand info/form div */
+#Content {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    height: 700px;
+}
+/* Container for chart */
+#scatterplot {
+    display: inline-block;
+    float: left;
+    height: 90%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    overflow: hidden;
+}
+/* d3 chart object - make chart responsive to window size */
+.chart{
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+/* chart gridlines */
+.grid line {
+    stroke: lightgrey;
+    stroke-opacity: 0.7;
+    stroke-opacity: crispEdges;
+}
+.grid path {
+    stroke-width: 0;
+}
+/* hover label for color scale */
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    padding: 2px;
+    font: 15px sans-serif;
+    background: lightsteelblue;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+    word-wrap: break-word;
+}
+/* Container for info/form div */
+#Info {
+    float: right;
+    height: 90%;
+}
+/* class references all below divs that can appear in Info */
+.info_div{
+    width: 100%;
+    height: 100%;
+    font-size: 18px;
+    text-align: center;
+}
+#Instructions{
+    overflow: auto;
+}
+/* container and table for task hover */
+#task_div {
+    display: inline-block;
+    word-wrap: break-word;
+}
+#task_table{
+    width: 100%;
+}
+/* container and table for Enter button event */
+#id_div{
+    display: inline-block;
+    overflow-y: auto;
+}
+#id_table{
+    width: 100%;
+    height: 100%;
+}
+/* new task form */
+#New {
+    display: inline-block;
+}
+/* change task form */
+#Update {
+    display: inline-block;
+}
+
+

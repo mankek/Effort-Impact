@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Home Page</title>
-    <link rel="stylesheet" href="/static/index.css">
+    <link rel="stylesheet" href="/static/styles/EI_general.css">
+    <link rel="stylesheet" href="/static/styles/EI_index.css">
 </head>
 <body>
     <div id="heading">
         <h2>Welcome to the Effort-Impact Application!</h2>
     </div>
-    <div id="instructions">
+    <div id="instructions" class="container">
         <h3>Some instructions to get you started:</h3>
         <p>
             The first step to generating the Effort-Impact Matrix is selecting your task sheet. All task sheets are
@@ -29,7 +30,7 @@
     <br>
     <div id="choose_file">
         <form action="/chart" method="post">
-            <div id="choose">
+            <div id="choose" class="container">
                 Choose Task Sheet<br><br>
                 <div id="choose_list">
                     {% for file in sheet_list %}
@@ -42,7 +43,7 @@
             </div>
         </form>
         <form action="/chart" method="post">
-            <div id="make">
+            <div id="make" class="container">
                 New Sheet Name (no extension needed)<br><br>
                 <input type="text" name="new_name" id="new_name" required><br><br>
                 Select Optional Fields<br><br>

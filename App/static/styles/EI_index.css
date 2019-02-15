@@ -1,0 +1,39 @@
+body{
+    position: absolute;
+}
+#heading {
+    text-decoration: underline;
+    font-size: 35px;
+    text-align: center;
+}
+#instructions {
+    padding: 5px;
+    margin: auto;
+    width: 75%
+}
+/* File selection/file creation divs container */
+#choose_file {
+    position: absolute;
+    float: left;
+    width: 100%;
+}
+/* File selection form container */
+#choose{
+    float: left;
+}
+/* Available File list */
+#choose_list{
+    margin: auto;
+    width: 75%;
+    height: 95px;
+    overflow: auto;
+    background-color: white;
+}
+/* File creation form container */
+#make {
+    float: right;
+}
+
+
+
+
