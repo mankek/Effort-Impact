@@ -80,7 +80,6 @@ def new_table(new_name, fields):
     fields["Completed"] = []
     df2 = pandas.DataFrame(fields)
     df2.to_excel(writer, sheet_name='Completed')
-    writer.save()
 
 
 class Table(object):
@@ -156,20 +155,34 @@ class Table(object):
         return "Table saved!"
 
     # Deletes a selected task from the excel sheet
-    def delete_from_table(self, task_id):
+    def delete_from_table(self, sheet, task_id):
         if task_id in self.list['Graph'].index:
-            self.list['Graph'].drop(index=task_id, inplace=True)
-            self.list['Graph'].reset_index(drop=True, inplace=True)
-            self.list['Graph'].to_excel(self.writer, sheet_name="Graph")
+            self.list[sheet].drop(index=task_id, inplace=True)
+            self.list[sheet].reset_index(drop=True, inplace=True)
+            self.list[sheet].to_excel(self.writer, sheet_name=sheet)
             self.writer.save()
             return "Table saved"
         else:
             new_task_id = task_id - 1
-            self.delete_from_table(new_task_id)
+            self.delete_from_table(sheet, new_task_id)
             print("index " + str(task_id) + " was not present, so went with next lowest index")
 
     def delete_table(self):
         os.remove(self.path)
+
+    def move_sheets(self, sheet_from, sheet_to, task_id):
+        df = self.list[sheet_to]
+        df2 = self.list[sheet_from]
+        row_number = self.list[sheet_to].shape[0]
+        for i in self.fields:
+            df.loc[row_number, i] = df2.loc[task_id, i]
+        df2 = df2.drop(index=task_id)
+        df2 = df2.reset_index(drop=True)
+        with self.writer as writer:
+            df.to_excel(writer, sheet_name=sheet_to)
+            df2.to_excel(writer, sheet_name=sheet_from)
+        writer.save()
+        return "hello"
 
 
 # Extracts the Effort, Impact data and returns it as [x], [y] lists

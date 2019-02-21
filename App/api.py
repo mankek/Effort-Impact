@@ -134,7 +134,16 @@ def add_new(filename):
 def delete_task(filename):
     delete_info = request.args
     task_id = int(delete_info["Id"])
-    app_methods.Table(filename).delete_from_table(task_id)
+    app_methods.Table(filename).delete_from_table("Graph", task_id)
     return redirect(url_for("show", filename=filename))
 
 
+# Move a task in or out of storage
+@app.route('/move/<filename>', methods=['GET'])
+def move_task(filename):
+    move_info = request.args
+    src = move_info["Data"].split("-")[0]
+    task_id = int(move_info["Data"].split("-")[-1])
+    dest = move_info["Dest"]
+    app_methods.Table(filename).move_sheets(src, dest, task_id)
+    return redirect(url_for("show", filename=filename))

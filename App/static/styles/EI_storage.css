@@ -4,14 +4,17 @@
     height: 200px;
 }
 /* container and table for complete tasks */
-#completed{
-    float: left;
+#Completed{
+    float: right;
     height: 90%;
     overflow: auto;
 }
 /* container and table for unassigned tasks */
-#unplaced{
-    float: right;
+#Unplaced{
+    float: left;
     height: 90%;
     overflow: auto;
+}
+.stored_task{
+    background-color: #8ab2f2;
 }

@@ -94,22 +94,22 @@
         </div>
     </div>
     <div id="storage">
-        <div id="completed" class="container" ondrop="drop(event)" ondragover="allowDrop(event)">
-            <h2>Completed</h2>
-            {% for task in completed %}
-            <p id="{{ task['Task'] }}" draggable="true" ondragstart="drag(event)">{{ task }}</p>
+        <div id="Unplaced" class="container" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <h2>Unassigned</h2>
+            {% for task2 in unplaced %}
+            <p id="Unplaced-{{ unplaced.index(task2) }}" draggable="true" ondragstart="drag(event)" class="stored_task">{{ task2 }}</p><br>
             {% endfor %}
         </div>
-        <div id="unplaced" class="container" ondrop="drop(event)" ondragover="allowDrop(event)">
-            <h2>Unassigned</h2>
-            {% for task in unplaced %}
-            <p>{{ task }}</p>
+        <div id="Completed" class="container" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <h2>Completed</h2>
+            {% for task in completed %}
+            <p id="Completed-{{ completed.index(task) }}" draggable="true" ondragstart="drag(event)" class="stored_task">{{ task }}</p>
             {% endfor %}
         </div>
     </div>
     <script>
 
-        // Drag and Drop test
+        // Drag and Drop
 
         function allowDrop(ev) {
           ev.preventDefault();
@@ -123,7 +123,20 @@
           ev.preventDefault();
           var data = ev.dataTransfer.getData("text");
           ev.target.appendChild(document.getElementById(data));
+          var filename = {{ file|tojson|safe }};
+          $.ajax({
+            url: "/move/" + filename,
+            data: { "Data": data, "Dest": ev.target.id },
+            success: function () {
+                console.log("success!");
+            },
+            error: function (xhr, errorThrown){
+                console.log(xhr.responseText);
+                console.log(errorThrown);
+            }
+          })
         }
+
 
         // Creates form1 and form2 based on fields
 
