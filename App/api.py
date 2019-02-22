@@ -134,7 +134,7 @@ def add_new(filename):
 def delete_task(filename):
     delete_info = request.args
     task_id = int(delete_info["Id"])
-    app_methods.Table(filename).delete_from_table("Graph", task_id)
+    app_methods.Table(filename).delete_from_table(task_id)
     return redirect(url_for("show", filename=filename))
 
 

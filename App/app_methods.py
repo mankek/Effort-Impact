@@ -71,11 +71,12 @@ def file_exist(file):
     return file
 
 
-def new_table(new_name, fields):
-    path = os.path.join(out_path, new_name)
-    df = pandas.DataFrame(fields)
+# Creates a new excel file
+def new_table(filename, fields):
+    path = os.path.join(out_path, filename)
     writer = pandas.ExcelWriter(path, engine='xlsxwriter')
-    df.to_excel(writer, sheet_name='Graph')
+    df = pandas.DataFrame(fields)
+    df.to_excel(writer, sheet_name="Graph")
     df.to_excel(writer, sheet_name='Unplaced')
     fields["Completed"] = []
     df2 = pandas.DataFrame(fields)
@@ -87,19 +88,19 @@ class Table(object):
     def __init__(self, filename):
         self.name = filename
         self.path = os.path.join(out_path, filename)
-        self.book = openpyxl.load_workbook(self.path)
-        self.writer = pandas.ExcelWriter(self.path, engine='openpyxl')
-        self.writer.book = self.book
-        self.writer.sheets = dict((ws.title, ws) for ws in self.book.worksheets)
-        self.list = pandas.read_excel(self.path, sheet_name=None, index=0)
-        self.fields = list(self.list['Graph'])
+        # Loads sheets into separate dataframes
+        self.graph_df = pandas.read_excel(self.path, sheet_name="Graph", index=0)
+        self.unplaced_df = pandas.read_excel(self.path, sheet_name="Unplaced", index=0)
+        self.complete_df = pandas.read_excel(self.path, sheet_name="Completed", index=0)
+        self.fields = list(self.graph_df)
 
     # Loads the excel sheet where tasks are stored, formats them as a list of dictionaries; also returns field names
     def load_table(self):
+
         # Update deadlines in task_list
         if "Deadline" in self.fields:
-            for s in range(0, (self.list['Graph'].shape[0])):
-                line = self.list['Graph']['Deadline'][s]
+            for s in range(0, (self.graph_df.shape[0])):
+                line = self.graph_df['Deadline'][s]
                 if line == "No Deadline":
                     continue
                 else:
@@ -108,36 +109,42 @@ class Table(object):
                     time = line[1].split(':')
                     new_diff = due_day(int(date[0]), int(date[1]), int(date[2]), int(time[0]))
                     line[2] = new_diff
-                    self.list['Graph'].loc[s, ['Deadline']] = '_'.join(line)
+                    self.graph_df.loc[s, ['Deadline']] = '_'.join(line)
 
         # Form list of results
         tasks = []
-        for t in range(0, (self.list['Graph'].shape[0])):
+        for t in range(0, (self.graph_df.shape[0])):
             tasks.append(dict())
             for i in self.fields:
-                tasks[t][i] = str(self.list['Graph'][i][t])
+                tasks[t][i] = str(self.graph_df[i][t])
         # Form list of completed
         completed = []
-        for t in range(0, (self.list['Completed'].shape[0])):
+        for t in range(0, (self.complete_df.shape[0])):
             completed.append(dict())
-            for i in list(self.list['Completed']):
-                completed[t][i] = str(self.list['Completed'][i][t])
+            for i in list(self.complete_df):
+                completed[t][i] = str(self.complete_df[i][t])
         # From list of unplaced
         unplaced = []
-        for t in range(0, (self.list['Unplaced'].shape[0])):
+        for t in range(0, (self.unplaced_df.shape[0])):
             unplaced.append(dict())
-            for i in list(self.list['Unplaced']):
-                unplaced[t][i] = str(self.list['Unplaced'][i][t])
+            for i in list(self.unplaced_df):
+                unplaced[t][i] = str(self.unplaced_df[i][t])
 
         return tasks, self.fields, completed, unplaced
 
+    # Takes the new task and adds it to the excel sheet
+    def add_to_table(self, new_task):
+        row_number = self.graph_df.shape[0]
+        for t in new_task.keys():
+            self.graph_df.loc[row_number, t] = new_task[t]
+        self.save_xlsx()
+
     # Updates the specified field of the specified task
     def update_table(self, task_id, field, content):
-        if int(task_id) in self.list['Graph'].index:
+        if int(task_id) in self.graph_df.index:
             if str(field) in self.fields:
-                self.list['Graph'].loc[int(task_id), field] = content
-                self.list['Graph'].to_excel(self.writer, sheet_name="Graph")
-                self.writer.save()
+                self.graph_df.loc[int(task_id), field] = content
+                self.save_xlsx()
             else:
                 print("improper field")
         else:
@@ -145,44 +152,41 @@ class Table(object):
             self.update_table(new_task_id, field, content)
             print("index " + str(task_id) + " was not present, so went with next lowest index")
 
-    # Takes the new task and adds it to the excel sheet
-    def add_to_table(self, new_task):
-        row_number = self.list['Graph'].shape[0]
-        for t in new_task.keys():
-            self.list['Graph'].loc[row_number, t] = new_task[t]
-        self.list['Graph'].to_excel(self.writer, sheet_name="Graph")
-        self.writer.save()
-        return "Table saved!"
-
     # Deletes a selected task from the excel sheet
-    def delete_from_table(self, sheet, task_id):
-        if task_id in self.list['Graph'].index:
-            self.list[sheet].drop(index=task_id, inplace=True)
-            self.list[sheet].reset_index(drop=True, inplace=True)
-            self.list[sheet].to_excel(self.writer, sheet_name=sheet)
-            self.writer.save()
+    def delete_from_table(self, task_id):
+        if task_id in self.graph_df.index:
+            self.graph_df.drop(index=task_id, inplace=True)
+            self.graph_df.reset_index(drop=True, inplace=True)
+            self.save_xlsx()
             return "Table saved"
         else:
             new_task_id = task_id - 1
-            self.delete_from_table(sheet, new_task_id)
+            self.delete_from_table(new_task_id)
             print("index " + str(task_id) + " was not present, so went with next lowest index")
 
     def delete_table(self):
         os.remove(self.path)
 
     def move_sheets(self, sheet_from, sheet_to, task_id):
-        df = self.list[sheet_to]
-        df2 = self.list[sheet_from]
-        row_number = self.list[sheet_to].shape[0]
-        for i in self.fields:
-            df.loc[row_number, i] = df2.loc[task_id, i]
-        df2 = df2.drop(index=task_id)
-        df2 = df2.reset_index(drop=True)
-        with self.writer as writer:
-            df.to_excel(writer, sheet_name=sheet_to)
-            df2.to_excel(writer, sheet_name=sheet_from)
-        writer.save()
-        return "hello"
+        if sheet_to == "Completed":
+            row_number = self.complete_df.shape[0]
+            for i in self.fields:
+                self.complete_df.loc[row_number, i] = self.unplaced_df.loc[task_id, i]
+            self.unplaced_df.drop(index=task_id, inplace=True)
+            self.unplaced_df.reset_index(drop=True, inplace=True)
+        else:
+            row_number = self.unplaced_df.shape[0]
+            for i in self.fields:
+                self.unplaced_df.loc[row_number, i] = self.complete_df.loc[task_id, i]
+            self.complete_df.drop(index=task_id, inplace=True)
+            self.complete_df.reset_index(drop=True, inplace=True)
+        self.save_xlsx()
+
+    def save_xlsx(self):
+        writer = pandas.ExcelWriter(self.path, engine='xlsxwriter')
+        self.graph_df.to_excel(writer, sheet_name="Graph")
+        self.unplaced_df.to_excel(writer, sheet_name='Unplaced')
+        self.complete_df.to_excel(writer, sheet_name='Completed')
 
 
 # Extracts the Effort, Impact data and returns it as [x], [y] lists
