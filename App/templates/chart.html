@@ -12,7 +12,7 @@
 </head>
 <body>
     <div id="Content">
-        <div id="scatterplot" class="container">
+        <div id="scatterplot" class="container" ondrop="drop_chart(event)" ondragover="allowDrop(event)">
             <script>
                 var result = {{ result|tojson|safe }};
                 var dl_colors = {{ dl_colors|tojson|safe }};
@@ -135,6 +135,12 @@
                 console.log(errorThrown);
             }
           })
+        }
+
+        function drop_chart(ev) {
+            ev.preventDefault();
+            console.log("Hi")
+            $(".quadrants").triggerHandler("dblclick")
         }
 
 
