@@ -139,10 +139,27 @@
 
         function drop_chart(ev) {
             ev.preventDefault();
-            console.log("Hi")
-            $(".quadrants").triggerHandler("dblclick")
+            var svg = d3.select('#scatterplot')
+            var chart = svg.select(".quadrants")
+            chart.dispatch("dblclick")
+            var data = ev.dataTransfer.getData("text")
+            var data_arr = data.split("-")
+            if (data_arr[0] == "Unplaced"){
+                var dict = {{ unplaced|tojson|safe }}
+            }else{
+                var dict = {{ completed|tojson|safe }}
+            }
+            var task = dict[Number(data_arr[1])]
+            var fields = {{ fields|tojson|safe }}.filter(rem_eff_imp)
+            for (i in fields){
+                var y = task[fields[i]]
+                document.getElementsByName(fields[i])[0].value = y
+            }
         }
 
+        function rem_eff_imp(fields){
+            return (fields != 'Effort' && fields != 'Impact')
+        }
 
         // Creates form1 and form2 based on fields
 
