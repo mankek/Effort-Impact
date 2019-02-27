@@ -170,7 +170,7 @@ class Table(object):
     def move_sheets(self, sheet_from, sheet_to, task_id):
         if sheet_to == "Completed":
             row_number = self.complete_df.shape[0]
-            self.complete_df.loc[row_number, "Completed"] = datetime.date.today()
+            self.complete_df.loc[row_number, "Completed"] = datetime.datetime.now()
             if sheet_from == "Unplaced":
                 for i in self.fields:
                     self.complete_df.loc[row_number, i] = self.unplaced_df.loc[task_id, i]

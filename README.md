@@ -35,13 +35,26 @@ Adding a new task to the graph:
 
 * Double click anywhere in the graph, the square and form for it will appear in the corner of the graph (left 0, top 0) and, from there, can be dragged anywhere in the graph.
 
-Updating/Deleting a Task:
+Dragging
 
 * Squares can be dragged anywhere in the graph and their coordinates will automatically update and they will remain there.
-  To change task information, click on a square and a field will appear that allows you to choose the field you want
+  Tasks from the Completed section or Unassigned section can be dragged from one section to the other or onto the
+  graph.
+
+Updating/Deleting/Moving a Task:
+
+* To change task information, click on a square and a field will appear that allows you to choose the field you want
   to update and the value you wish to update it with. If you click the "Click me to change the Deadline!" button, the
   input changes to allow you to choose a date and the Field to Be Changed field is automatically populated.
+
   Pressing the Delete button while having the update form open will delete the selected square.
+
+  Pressing Ctrl + C will move the selected square's information to the Completed section and remove it from the graph.
+
+  Pressing Ctrl + U will move the selected square's information to the Unassigned section and remove it from the graph.
+
+  **NOTE** Moving a task to the Completed section through either dragging or keypress will cause the Completed field of
+  the task to automatically be populated with the current date and time of the movement.
 
 See All Tasks:
 
