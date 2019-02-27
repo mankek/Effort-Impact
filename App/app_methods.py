@@ -168,18 +168,30 @@ class Table(object):
         os.remove(self.path)
 
     def move_sheets(self, sheet_from, sheet_to, task_id):
-        if sheet_to == "Completed":
+        if (sheet_to == "Completed") and (sheet_from == "Unplaced"):
             row_number = self.complete_df.shape[0]
             for i in self.fields:
                 self.complete_df.loc[row_number, i] = self.unplaced_df.loc[task_id, i]
             self.unplaced_df.drop(index=task_id, inplace=True)
             self.unplaced_df.reset_index(drop=True, inplace=True)
-        else:
+        elif (sheet_to == "Unplaced") and (sheet_from == "Completed"):
             row_number = self.unplaced_df.shape[0]
             for i in self.fields:
                 self.unplaced_df.loc[row_number, i] = self.complete_df.loc[task_id, i]
             self.complete_df.drop(index=task_id, inplace=True)
             self.complete_df.reset_index(drop=True, inplace=True)
+        elif sheet_to == "Graph":
+            row_number = self.graph_df.shape[0]
+            if sheet_from == "Unplaced":
+                for i in self.fields:
+                    self.graph_df.loc[row_number, i] = self.unplaced_df.loc[task_id, i]
+                self.unplaced_df.drop(index=task_id, inplace=True)
+                self.unplaced_df.reset_index(drop=True, inplace=True)
+            elif sheet_from == "Completed":
+                for i in self.fields:
+                    self.graph_df.loc[row_number, i] = self.complete_df.loc[task_id, i]
+                self.complete_df.drop(index=task_id, inplace=True)
+                self.complete_df.reset_index(drop=True, inplace=True)
         self.save_xlsx()
 
     def save_xlsx(self):
