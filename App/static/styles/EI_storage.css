@@ -17,4 +17,7 @@
 }
 .stored_task{
     background-color: #8ab2f2;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 20px;
 }
