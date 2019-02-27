@@ -49,9 +49,9 @@ Updating/Deleting/Moving a Task:
 
   Pressing the Delete button while having the update form open will delete the selected square.
 
-  Pressing Ctrl + C will move the selected square's information to the Completed section and remove it from the graph.
+  Pressing Ctrl + c will move the selected square's information to the Completed section and remove it from the graph.
 
-  Pressing Ctrl + U will move the selected square's information to the Unassigned section and remove it from the graph.
+  Pressing Ctrl + u will move the selected square's information to the Unassigned section and remove it from the graph.
 
   **NOTE** Moving a task to the Completed section through either dragging or keypress will cause the Completed field of
   the task to automatically be populated with the current date and time of the movement.

@@ -328,6 +328,7 @@ $(document).ready(function(){
                     })
                 }
             } else if (d3.event.keyCode === 85 && d3.event.ctrlKey == true && $("#New").css("display") == "none"){
+                d3.event.preventDefault()
                 if (focused == null){
                     alert("No task selected. Click a task to select.")
                 } else{

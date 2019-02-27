@@ -47,9 +47,9 @@
                 <p>Press the Enter button to display each square's id and a table of the corresponding task
                 names/descriptions. When editing a square, the Delete button can be pressed to delete the square and all
                 of its information.</p>
-                <h2>Press Ctrl + C or Ctrl + U</h2>
-                <p>When editing a square, press Ctrl + C to move the square's information to the Completed section and
-                remove the square from the graph; press Ctrl + U to move the square's information to the Unassigned section
+                <h2>Press Ctrl + c or Ctrl + u</h2>
+                <p>When editing a square, press Ctrl + c to move the square's information to the Completed section and
+                remove the square from the graph; press Ctrl + u to move the square's information to the Unassigned section
                 and remove the square from the graph.</p>
             </div>
             <div id="task_div" class="info_div">
@@ -102,17 +102,27 @@
         <div id="Unplaced" class="container" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h2>Unassigned</h2>
             {% for task2 in unplaced %}
-            <p id="Unplaced-{{ unplaced.index(task2) }}" draggable="true" ondragstart="drag(event)" class="stored_task">{{ task2 }}</p><br>
+            <p id="Unplaced-{{ unplaced.index(task2) }}" draggable="true" ondragstart="drag(event)" class="stored_task"><strong>Task: </strong>{{ task2["Task"] }} <strong>Description: </strong>{{ task2["Description"] }}</p>
             {% endfor %}
         </div>
         <div id="Completed" class="container" ondrop="drop(event)" ondragover="allowDrop(event)">
             <h2>Completed</h2>
             {% for task in completed %}
-            <p id="Completed-{{ completed.index(task) }}" draggable="true" ondragstart="drag(event)" class="stored_task">{{ task }}</p>
+            <p id="Completed-{{ completed.index(task) }}" draggable="true" ondragstart="drag(event)" class="stored_task"><strong>Task: </strong>{{ task["Task"] }} <strong>Description: </strong>{{ task["Description"] }} <strong>Completed: </strong>{{ task["Completed"] }}</p>
             {% endfor %}
         </div>
     </div>
     <script>
+
+        // Color change on mouseover and mouseleave
+
+        $(".stored_task").on("mouseover", function(){
+            this.style.backgroundColor = "PaleTurquoise"
+        })
+
+        $(".stored_task").on("mouseleave", function(){
+            this.style.backgroundColor = "#8ab2f2"
+        })
 
         // Drag and Drop
 
