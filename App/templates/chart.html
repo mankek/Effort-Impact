@@ -128,7 +128,7 @@
             url: "/move/" + filename,
             data: { "Data": data, "Dest": ev.target.id },
             success: function () {
-                console.log("success!");
+                location.reload(true)
             },
             error: function (xhr, errorThrown){
                 console.log(xhr.responseText);

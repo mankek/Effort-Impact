@@ -310,6 +310,40 @@ $(document).ready(function(){
                     $("#Instructions").show();
                     focused = null;
                 }
+            } else if (d3.event.keyCode === 67 && d3.event.ctrlKey == true && $("#New").css("display") == "none"){
+                if (focused == null){
+                    alert("No task selected. Click a task to select.")
+                } else{
+                    var task = "Graph-" + d3.select(focused).attr("id")
+                    $.ajax({
+                        url: "/move/" + filename,
+                        data: { "Data": task, "Dest": "Completed" },
+                        success: function () {
+                            location.reload(true)
+                        },
+                        error: function (xhr, errorThrown){
+                            console.log(xhr.responseText);
+                            console.log(errorThrown);
+                        }
+                    })
+                }
+            } else if (d3.event.keyCode === 85 && d3.event.ctrlKey == true && $("#New").css("display") == "none"){
+                if (focused == null){
+                    alert("No task selected. Click a task to select.")
+                } else{
+                    var task = "Graph-" + d3.select(focused).attr("id")
+                    $.ajax({
+                        url: "/move/" + filename,
+                        data: { "Data": task, "Dest": "Unplaced" },
+                        success: function () {
+                            location.reload(true)
+                        },
+                        error: function (xhr, errorThrown){
+                            console.log(xhr.responseText);
+                            console.log(errorThrown);
+                        }
+                    })
+                }
             } else if (d3.event.keyCode === 13 && $("#New").css("display") == "none" && $("#Update").css("display") == "none"){
                 if ($("#id_div").css('display') == "none" || $("#id_div").css("visibility") == "hidden") { // If enter button is pressed and id table isn't visible ,id table is rendered and shown
                     $("rect.Data").off() // removes task square events so task table can't appear
@@ -405,10 +439,31 @@ $(document).ready(function(){
                     return y_scale.invert(d3.event.y).toFixed(1)
                 }
             })
-        if ($("#id_div").css("display") == "block"){ // if id table is up, id label is removed from square
-            $("div.tooltip").remove();
+        if ($("#id_div").css("display") != "none"){ // if id table is up, id label is removed from square
+            $(".id_text").remove();
         }
     };
+
+//    function dragged(d, i){
+//        hover_end();
+//        d3.select(this)
+//            .attr('transform', 'translate(' + 0 + ',' + 0 + ')')
+//            .attr("x", function(d) { // replaces squares x coordinate with coordinates of event
+//                return d3.event.x
+//            })
+//            .attr("y", function(d) { // replaces squares y coordinate with coordinates of event
+//                return d3.event.y
+//            })
+//            .attr("dx", function(d) {
+//                return x_scale.invert(d3.event.x).toFixed(1)
+//            })
+//            .attr("dy", function(d) {
+//                return y_scale.invert(d3.event.y).toFixed(1)
+//            })
+//        if ($("#id_div").css("display") != "none"){ // if id table is up, id label is removed from square
+//            $(".id_text").remove();
+//        }
+//    };
 
     // defines behavior when drag ends
     function dragend(d, i){
@@ -424,17 +479,18 @@ $(document).ready(function(){
                 console.log(errorThrown);
             }
         });
-        if ($("#id_div").css("display") == "block") { // if id table is up, id label is re-applied to square
+        if ($("#id_div").css("display") != "none") { // if id table is up, id label is re-applied to square
             for (b=0; b < $("rect.Data").length; b++){
                 var cir = $("rect.Data")[b]
-                var x_pos = Number(d3.select(cir).attr("x")) + 60;
-                var y_pos = Number(d3.select(cir).attr("y")) + 30;
-                d3.select("body").append("div")
-                    .attr("class", "tooltip")
-                    .style("opacity", 0.9)
-                    .style("left", String(x_pos) + "px")
-                    .style("top", String(y_pos) + "px")
-                    .html(d3.select(cir).attr("id"))
+                var x_pos = Number(d3.select(cir).attr("x")) + 5;
+                var y_pos = Number(d3.select(cir).attr("y"));
+                d3.select(".quadrants").append("text") // creates and adds text to each square, showing it's id
+                    .attr("y", y_pos)
+                    .attr("x", x_pos)
+                    .attr("dy", "1em")
+                    .attr("class", "id_text")
+                    .style("font", "bold")
+                    .text(d3.select(cir).attr("id"))
             }
         }
         console.log("Dragend!")
