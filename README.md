@@ -31,27 +31,43 @@ parsed properly by the program.
 
 **Actions**
 
-Adding a new task to the graph:
+Adding a new task:
 
-* Double click anywhere in the graph, the square and form for it will appear in the corner of the graph (left 0, top 0) and, from there, can be dragged anywhere in the graph.
+* Double click anywhere in the graph, the square for it will appear in the corner of the graph (left 0, top 0) and the
+ form will appear on the right-hand side. Once submitted, the square can be dragged anywhere in the graph.
 
-Dragging
+  Double click anywhere in the Unassigned container and the form will appear on the left-hand side.
+
+  **NOTE** New tasks can't be added directly to the Completed Container
+
+Dragging on the graph
 
 * Squares can be dragged anywhere in the graph and their coordinates will automatically update and they will remain there.
-  Tasks from the Completed section or Unassigned section can be dragged from one section to the other or onto the
-  graph.
 
-Updating/Deleting/Moving a Task:
+Updating a Task:
 
-* To change task information, click on a square and a field will appear that allows you to choose the field you want
-  to update and the value you wish to update it with. If you click the "Click me to change the Deadline!" button, the
+* To change task information, click on a square and a form will appear that allows you to choose the field you want
+  to update and input the value you wish to update it with. If you click the "Click me to change the Deadline!" button, the
   input changes to allow you to choose a date and the Field to Be Changed field is automatically populated.
 
-  Pressing the Delete button while having the update form open will delete the selected square.
+* To change a task in the Unassigned section, click on the task and a form will appear that allows you to choose the
+  field you want to update and the input the value you wish to update it with.
 
-  Pressing Ctrl + c will move the selected square's information to the Completed section and remove it from the graph.
+  **NOTE** Tasks in the completed section can't be updated.
 
-  Pressing Ctrl + u will move the selected square's information to the Unassigned section and remove it from the graph.
+Deleting a Task:
+
+* Pressing the Delete button while having the update form open will delete the selected square/task.
+
+Moving a Task:
+
+* Pressing Ctrl + c while having the update form open will move a selected square's information to the Completed
+  section and remove it from the graph.
+
+  Pressing Ctrl + u while having the update form open will move a selected square's information to the Unassigned
+  section and remove it from the graph.
+
+  Tasks in the Unassigned or Completed sections can be moved via dragging.
 
   **NOTE** Moving a task to the Completed section through either dragging or keypress will cause the Completed field of
   the task to automatically be populated with the current date and time of the movement.
@@ -74,4 +90,4 @@ update tasks, move tasks, delete tasks, and delete a task sheet. These tests are
 two*, *Delete error*, *Update bounds*, and *Delete Task Sheet* tests will fail if the *New Task Sheet* test is not run first, so it's best to run the
 entire collection together.
 
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/1d6164d3fda1580c7fcd#?env%5Btest_env%5D=W3sia2V5IjoiZmlsZW5hbWUiLCJ2YWx1ZSI6InRlc3RfMS54bHN4IiwiZGVzY3JpcHRpb24iOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImZpbGVuYW1lX3RleHQiLCJ2YWx1ZSI6InRlc3RfMS54bHN4IiwiZGVzY3JpcHRpb24iOiIiLCJlbmFibGVkIjp0cnVlfSx7ImtleSI6ImZpbGVuYW1lX3Rlc3RuYW1lIiwidmFsdWUiOiJ0ZXN0P18xKiIsImRlc2NyaXB0aW9uIjoiIiwiZW5hYmxlZCI6dHJ1ZX1d)
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/1d6164d3fda1580c7fcd)

@@ -24,18 +24,18 @@
                 <p>Hover over squares in the graph to view their task information. If using the Deadline, Subject, or Department field, hover
                 over the color scale to see the corresponding values.</p>
                 <h2>Click with the mouse</h2>
-                <p>Click a square in the graph to bring up a form to change a certain field of the corresponding task.
-                Double-click anywhere on the graph to create a new square and submit the form that appears to add it.
-                If your sheet has both Deadline, Subject, or Department clicking the color scale to change scales.</p>
+                <p>Click a square in the graph or in storage to bring up a form to change a certain field of the corresponding task.
+                If your sheet has both Deadline, Subject, or Department, clicking the color scale to change scales.</p>
+                <p>Double-click anywhere on the graph to create a new square and submit the form that appears to add it.
+                Double-click in the Unassigned section to add a new task there.</p>
                 <h2>Drag with the mouse</h2>
                 <p>Click, hold, and drag a square anywhere on the graph to change its position. Click, hold, and drag
-                a task in the Completed or Unassigned list to move it from one to the other or onto the graph.</p>
-                <h2>Press the Enter or Delete button</h2>
+                a task in the Completed or Unassigned lists to move it from one to the other or onto the graph.</p>
+                <h2>Button Press</h2>
                 <p>Press the Enter button to display each square's id and a table of the corresponding task
-                names/descriptions. When editing a square, the Delete button can be pressed to delete the square and all
-                of its information.</p>
-                <h2>Press Ctrl + c or Ctrl + u</h2>
-                <p>When editing a square, press Ctrl + c to move the square's information to the Completed section and
+                names/descriptions.</p>
+                <p>When editing a square, the Delete button can be pressed to delete the square and all
+                of its information; press Ctrl + c to move the square's information to the Completed section and
                 remove the square from the graph; press Ctrl + u to move the square's information to the Unassigned section
                 and remove the square from the graph.</p>
             </div>
@@ -58,6 +58,7 @@
                     <div id="input">
                         Task: <input type="text" name="Task" required><br><br>
                         Description: <textarea id="desc" name="Description" required>None</textarea><br><br>
+                        <input type="hidden" name="sheet" id="sheet" value="Graph">
                     </div><br>
                     <button type="submit">Submit to me!</button><button type="button" id="HideNew">Go back</button> <br>
                     <br>

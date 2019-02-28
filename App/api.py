@@ -115,7 +115,7 @@ def update(filename):
 @app.route('/new/<filename>', methods=['POST'])
 def add_new(filename):
     new_task = dict()
-    sheet = "Graph"
+    sheet = request.form["sheet"]
     new_task["Impact"] = "16"
     new_task["Effort"] = "0"
     for i in app_methods.Table(filename).fields:

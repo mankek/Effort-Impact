@@ -154,9 +154,10 @@ $(document).ready(function(){
     // Stored Task Click Event
 
     // attaches a click event to all stored tasks
-     $(".stored_task").on("click", function(){
-        this.style.color = "red"
+     $( "p[id|='Unplaced']").on("click", function(){
         if ($("#id_div").css('display') == "none" && $("#New").css("display") == "none") {
+            $("p[id|='Unplaced']").css("color", "black")
+            this.style.color = "red"
             $("#task_div").hide();
             $("#Instructions").hide();
             $("#Update").show(); // hides all other info divs and shows task change form
@@ -409,6 +410,7 @@ $(document).ready(function(){
         $("#id_div").hide();
         $("#Instructions").show();
         focused = null;
+        $("p[id|='Unplaced']").css("color", "black")
     })
 
     // Hides new task form when 'Go back' button is pressed
@@ -419,8 +421,6 @@ $(document).ready(function(){
         $("#Instructions").show();
         d3.selectAll(".Data:last-of-type").remove();
     })
-
-
 
 
     // Drag Functions
@@ -655,6 +655,17 @@ $(document).ready(function(){
     chart.on("dblclick", function(){
         if ($("#id_div").css('display') == "none" && $("#Update").css("display") == "none") {
             Add_new();
+        }
+    })
+
+    // Attaches double-click event to unplaced container
+    $("#Unplaced").on("dblclick", function(){
+        if ($("#id_div").css('display') == "none" && $("#Update").css("display") == "none") {
+            $("#Instructions").hide();
+            $("#task_div").hide();
+            $("#Update").hide();
+            $("#New").show();
+            $("#sheet").val("Unplaced")
         }
     })
 });
