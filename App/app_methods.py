@@ -93,6 +93,7 @@ class Table(object):
         self.unplaced_df = pandas.read_excel(self.path, sheet_name="Unplaced", index=0)
         self.complete_df = pandas.read_excel(self.path, sheet_name="Completed", index=0)
         self.fields = list(self.graph_df)
+        self.df_dict = {"Graph": self.graph_df, "Unplaced": self.unplaced_df, "Completed": self.complete_df}
 
     # Loads the excel sheet where tasks are stored, formats them as a list of dictionaries; also returns field names
     def load_table(self):
@@ -133,87 +134,59 @@ class Table(object):
         return tasks, self.fields, completed, unplaced
 
     # Takes the new task and adds it to the excel sheet
-    def add_to_table(self, new_task):
-        row_number = self.graph_df.shape[0]
+    def add_to_table(self, new_task, sheet_to):
+        row_number = self.df_dict[sheet_to].shape[0]
         for t in new_task.keys():
-            self.graph_df.loc[row_number, t] = new_task[t]
+            self.df_dict[sheet_to].loc[row_number, t] = new_task[t]
         self.save_xlsx()
 
     # Updates the specified field of the specified task
-    def update_table(self, task_id, field, content):
-        if int(task_id) in self.graph_df.index:
+    def update_table(self, task_id, field, content, sheet_to):
+        if int(task_id) in self.df_dict[sheet_to].index:
             if str(field) in self.fields:
-                self.graph_df.loc[int(task_id), field] = content
+                self.df_dict[sheet_to].loc[int(task_id), field] = content
                 self.save_xlsx()
             else:
                 print("improper field")
         else:
             new_task_id = str(int(task_id) - 1)
-            self.update_table(new_task_id, field, content)
+            self.update_table(new_task_id, field, content, sheet_to)
             print("index " + str(task_id) + " was not present, so went with next lowest index")
 
     # Deletes a selected task from the excel sheet
-    def delete_from_table(self, task_id):
-        if task_id in self.graph_df.index:
-            self.graph_df.drop(index=task_id, inplace=True)
-            self.graph_df.reset_index(drop=True, inplace=True)
+    def delete_from_table(self, task_id, sheet_to):
+        if task_id in self.df_dict[sheet_to].index:
+            self.df_dict[sheet_to].drop(index=task_id, inplace=True)
+            self.df_dict[sheet_to].reset_index(drop=True, inplace=True)
             self.save_xlsx()
             return "Table saved"
         else:
             new_task_id = task_id - 1
-            self.delete_from_table(new_task_id)
+            self.delete_from_table(new_task_id, sheet_to)
             print("index " + str(task_id) + " was not present, so went with next lowest index")
 
     def delete_table(self):
         os.remove(self.path)
 
     def move_sheets(self, sheet_from, sheet_to, task_id):
+        df_to = self.df_dict[sheet_to]
+        df_from = self.df_dict[sheet_from]
+        row_number = df_to.shape[0]
         if sheet_to == "Completed":
-            row_number = self.complete_df.shape[0]
             now_split = str(datetime.datetime.now()).split(" ")
             now = now_split[0] + " " + ":".join(now_split[1].split(":")[:2])
-            self.complete_df.loc[row_number, "Completed"] = now
-            if sheet_from == "Unplaced":
-                for i in self.fields:
-                    self.complete_df.loc[row_number, i] = self.unplaced_df.loc[task_id, i]
-                self.unplaced_df.drop(index=task_id, inplace=True)
-                self.unplaced_df.reset_index(drop=True, inplace=True)
-            elif sheet_from == "Graph":
-                for i in self.fields:
-                    self.complete_df.loc[row_number, i] = self.graph_df.loc[task_id, i]
-                self.graph_df.drop(index=task_id, inplace=True)
-                self.graph_df.reset_index(drop=True, inplace=True)
-        elif sheet_to == "Unplaced":
-            row_number = self.unplaced_df.shape[0]
-            if sheet_from == "Completed":
-                for i in self.fields:
-                    self.unplaced_df.loc[row_number, i] = self.complete_df.loc[task_id, i]
-                self.complete_df.drop(index=task_id, inplace=True)
-                self.complete_df.reset_index(drop=True, inplace=True)
-            elif sheet_from == "Graph":
-                for i in self.fields:
-                    self.unplaced_df.loc[row_number, i] = self.graph_df.loc[task_id, i]
-                self.graph_df.drop(index=task_id, inplace=True)
-                self.graph_df.reset_index(drop=True, inplace=True)
-        elif sheet_to == "Graph":
-            row_number = self.graph_df.shape[0]
-            if sheet_from == "Unplaced":
-                for i in self.fields:
-                    self.graph_df.loc[row_number, i] = self.unplaced_df.loc[task_id, i]
-                self.unplaced_df.drop(index=task_id, inplace=True)
-                self.unplaced_df.reset_index(drop=True, inplace=True)
-            elif sheet_from == "Completed":
-                for i in self.fields:
-                    self.graph_df.loc[row_number, i] = self.complete_df.loc[task_id, i]
-                self.complete_df.drop(index=task_id, inplace=True)
-                self.complete_df.reset_index(drop=True, inplace=True)
+            df_to.loc[row_number, "Completed"] = now
+        for i in self.fields:
+            df_to.loc[row_number, i] = df_from.loc[task_id, i]
+        df_from.drop(index=task_id, inplace=True)
+        df_from.reset_index(drop=True, inplace=True)
         self.save_xlsx()
 
     def save_xlsx(self):
         writer = pandas.ExcelWriter(self.path, engine='xlsxwriter')
-        self.graph_df.to_excel(writer, sheet_name="Graph")
-        self.unplaced_df.to_excel(writer, sheet_name='Unplaced')
-        self.complete_df.to_excel(writer, sheet_name='Completed')
+        self.df_dict["Graph"].to_excel(writer, sheet_name="Graph")
+        self.df_dict["Unplaced"].to_excel(writer, sheet_name='Unplaced')
+        self.df_dict["Completed"].to_excel(writer, sheet_name='Completed')
 
 
 # Extracts the Effort, Impact data and returns it as [x], [y] lists

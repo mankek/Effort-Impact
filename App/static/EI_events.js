@@ -128,6 +128,13 @@ $(document).ready(function(){
         $("div.colortip").remove(); // removes the object with the value info
     });
 
+    // color change on stored tasks
+    $(".stored_task").hover(function(){
+        this.style.backgroundColor = "PaleTurquoise"
+    },
+    function(){
+        this.style.backgroundColor = "#8ab2f2"
+    });
 
 
     // Task Square Click Event
@@ -135,7 +142,7 @@ $(document).ready(function(){
     // attaches a click event to all task squares in chart
     g.selectAll("rect.Data")
         .on("click", function(d, i){
-            if ($("#id_div").css('display') == "none" || $("#id_div").css("visibility") == "hidden") {
+            if ($("#id_div").css('display') == "none" && $("#New").css("display") == "none") {
                 $("#task_div").hide();
                 $("#Instructions").hide();
                 $("#Update").show(); // hides all other info divs and shows task change form
@@ -143,6 +150,20 @@ $(document).ready(function(){
                 focused = this; // clicked square becomes saved under focused variable (for use in deletion)
             }
         });
+
+    // Stored Task Click Event
+
+    // attaches a click event to all stored tasks
+     $(".stored_task").on("click", function(){
+        this.style.color = "red"
+        if ($("#id_div").css('display') == "none" && $("#New").css("display") == "none") {
+            $("#task_div").hide();
+            $("#Instructions").hide();
+            $("#Update").show(); // hides all other info divs and shows task change form
+            $("#id").val(this.id); // populates id field in change form
+            focused = this;
+        }
+     })
 
     // Color Scale Click Functions
 
@@ -282,15 +303,15 @@ $(document).ready(function(){
 
     // Button Press Events
 
-    d3.select("body")
+    $("body")
         .on('keydown', function (){
-            console.log(d3.event.keyCode);
-            if (d3.event.keyCode === 46){ // If delete button is pressed, id for square in focused is sent to back-end for deletion
-                if (focused == null){
+            console.log(event.keyCode);
+            if (event.keyCode === 46){ // If delete button is pressed, id for square in focused is sent to back-end for deletion
+                if (focused === null){
                     alert("No task selected. Click a task to select.")
                 } else{
                     console.log(focused)
-                    d3.select(focused).remove();
+                    $(focused).remove();
                     var table = document.getElementById("task_table");
                     for (b = 0; b < 5; b++) {
                         table.deleteRow(-1)
@@ -310,42 +331,52 @@ $(document).ready(function(){
                     $("#Instructions").show();
                     focused = null;
                 }
-            } else if (d3.event.keyCode === 67 && d3.event.ctrlKey == true && $("#New").css("display") == "none"){
-                if (focused == null){
+            } else if (event.keyCode === 67 && event.ctrlKey == true && $("#New").css("display") == "none"){
+                if (focused === null){
                     alert("No task selected. Click a task to select.")
                 } else{
-                    var task = "Graph-" + d3.select(focused).attr("id")
-                    $.ajax({
-                        url: "/move/" + filename,
-                        data: { "Data": task, "Dest": "Completed" },
-                        success: function () {
-                            location.reload(true)
-                        },
-                        error: function (xhr, errorThrown){
-                            console.log(xhr.responseText);
-                            console.log(errorThrown);
-                        }
-                    })
+                    var f_id = focused.id
+                    if (f_id.split("-").length > 1){
+                        alert("Only tasks on the graph can be moved this way. Tasks that are already stored should be dragged.")
+                    } else{
+                        var task = "Graph-" + f_id
+                        $.ajax({
+                            url: "/move/" + filename,
+                            data: { "Data": task, "Dest": "Completed" },
+                            success: function () {
+                                location.reload(true)
+                            },
+                            error: function (xhr, errorThrown){
+                                console.log(xhr.responseText);
+                                console.log(errorThrown);
+                            }
+                        })
+                    }
                 }
-            } else if (d3.event.keyCode === 85 && d3.event.ctrlKey == true && $("#New").css("display") == "none"){
-                d3.event.preventDefault()
-                if (focused == null){
+            } else if (event.keyCode === 85 && event.ctrlKey == true && $("#New").css("display") == "none"){
+                event.preventDefault()
+                if (focused === null){
                     alert("No task selected. Click a task to select.")
                 } else{
-                    var task = "Graph-" + d3.select(focused).attr("id")
-                    $.ajax({
-                        url: "/move/" + filename,
-                        data: { "Data": task, "Dest": "Unplaced" },
-                        success: function () {
-                            location.reload(true)
-                        },
-                        error: function (xhr, errorThrown){
-                            console.log(xhr.responseText);
-                            console.log(errorThrown);
-                        }
-                    })
+                    var f_id = focused.id
+                    if (f_id.split("-").length > 1){
+                        alert("Only tasks on the graph can be moved this way. Tasks that are already stored should be dragged.")
+                    } else{
+                        var task = "Graph-" + f_id
+                        $.ajax({
+                            url: "/move/" + filename,
+                            data: { "Data": task, "Dest": "Unplaced" },
+                            success: function () {
+                                location.reload(true)
+                            },
+                            error: function (xhr, errorThrown){
+                                console.log(xhr.responseText);
+                                console.log(errorThrown);
+                            }
+                        })
+                    }
                 }
-            } else if (d3.event.keyCode === 13 && $("#New").css("display") == "none" && $("#Update").css("display") == "none"){
+            } else if (event.keyCode === 13 && $("#New").css("display") == "none" && $("#Update").css("display") == "none"){
                 if ($("#id_div").css('display') == "none" || $("#id_div").css("visibility") == "hidden") { // If enter button is pressed and id table isn't visible ,id table is rendered and shown
                     $("rect.Data").off() // removes task square events so task table can't appear
                     $("#Task_check").on("click", function(){ // if task radio button is clicked, id table displays Task
@@ -394,12 +425,12 @@ $(document).ready(function(){
 
     // Drag Functions
 
-    // defines behavior when drag starts
+    // defines behavior when square drag starts
     function dragstarted(){
         hover_end(); // stops task square hover behavior when dragging
     };
 
-    // defines behavior during dragging
+    // defines behavior during square dragging
     function dragged(d, i){
         hover_end();
         d3.select(this)
@@ -445,28 +476,8 @@ $(document).ready(function(){
         }
     };
 
-//    function dragged(d, i){
-//        hover_end();
-//        d3.select(this)
-//            .attr('transform', 'translate(' + 0 + ',' + 0 + ')')
-//            .attr("x", function(d) { // replaces squares x coordinate with coordinates of event
-//                return d3.event.x
-//            })
-//            .attr("y", function(d) { // replaces squares y coordinate with coordinates of event
-//                return d3.event.y
-//            })
-//            .attr("dx", function(d) {
-//                return x_scale.invert(d3.event.x).toFixed(1)
-//            })
-//            .attr("dy", function(d) {
-//                return y_scale.invert(d3.event.y).toFixed(1)
-//            })
-//        if ($("#id_div").css("display") != "none"){ // if id table is up, id label is removed from square
-//            $(".id_text").remove();
-//        }
-//    };
 
-    // defines behavior when drag ends
+    // defines behavior when square drag ends
     function dragend(d, i){
         var circle = d3.select(this)
         $.ajax({ // sends new effort impact data to back-end
@@ -497,6 +508,51 @@ $(document).ready(function(){
         console.log("Dragend!")
     }
 
+    // Enables dropping of stored tasks
+    function allowDrop() {
+      event.preventDefault();
+    }
+
+    // Specifies data being dragged
+    function drag(ev) {
+      ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    // Moves dragged task to target div and sends info to backend
+    function drop(ev) {
+      ev.preventDefault();
+      var data = ev.dataTransfer.getData("text");
+      ev.target.appendChild(document.getElementById(data));
+      $.ajax({
+        url: "/move/" + filename,
+        data: { "Data": data, "Dest": ev.target.id },
+        success: function () {
+            location.reload(true)
+        },
+        error: function (xhr, errorThrown){
+            console.log(xhr.responseText);
+            console.log(errorThrown);
+        }
+      })
+    }
+
+    // If dragging to chart, sends data to backend and reloads page
+    function drop_chart(ev) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text")
+        $.ajax({
+            url: "/move/" + filename,
+            data: { "Data": data, "Dest": "Graph" },
+            success: function () {
+                location.reload(true)
+            },
+            error: function (xhr, errorThrown){
+                console.log(xhr.responseText);
+                console.log(errorThrown);
+            }
+          })
+    }
+
     // Drag Event
 
     var dragHandler = d3.drag()
@@ -504,8 +560,39 @@ $(document).ready(function(){
         .on("drag", dragged)
         .on("end", dragend);
 
+    // attaches square drag event to all data squares on graph
     dragHandler(svg.selectAll(".Data"));
 
+    // attaches needed drag and drop events to the storage and graph containers
+    var tasks = document.getElementsByClassName("stored_task")
+    var containers = document.getElementsByClassName("container")
+    var graph_con = document.getElementById("scatterplot")
+    var unplaced_con = document.getElementById("Unplaced")
+    var complete_con = document.getElementById("Completed")
+
+    for (var i=0;i<tasks.length;i++){
+        tasks[i].ondragstart = function(event){
+            drag(event)
+        }
+    }
+
+    for (var i=0;i<containers.length;i++){
+        containers[i].ondragover = function(event){
+            allowDrop(event)
+        }
+    }
+
+    graph_con.ondrop = function(event){
+        drop_chart(event)
+    }
+
+    unplaced_con.ondrop = function(event){
+        drop(event)
+    }
+
+    complete_con.ondrop = function(event){
+        drop(event);
+    }
 
 
     // Double Click Functions
@@ -566,7 +653,7 @@ $(document).ready(function(){
 
     // Attaches double-click event to chart
     chart.on("dblclick", function(){
-        if ($("#id_div").css('display') == "none" || $("#id_div").css("visibility") == "hidden") {
+        if ($("#id_div").css('display') == "none" && $("#Update").css("display") == "none") {
             Add_new();
         }
     })

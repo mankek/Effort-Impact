@@ -86,8 +86,9 @@ def update(filename):
         elif float(im) < 0:
             im = str(0)
         task_id = change['Id']
-        app_methods.Table(filename).update_table(task_id, "Effort", eff)
-        app_methods.Table(filename).update_table(task_id, "Impact", im)
+        sheet = "Graph"
+        app_methods.Table(filename).update_table(task_id, "Effort", eff, sheet)
+        app_methods.Table(filename).update_table(task_id, "Impact", im, sheet)
         return redirect(url_for("show", filename=filename))
     if request.method == "POST":
         task_id = request.form["id"]
@@ -101,7 +102,12 @@ def update(filename):
                 due_date = content.split('-')
                 diff = app_methods.due_day(int(due_date[0]), int(due_date[1]), int(due_date[2]), int(due_time[0]))
                 content = content + '_' + request.form["up_time"] + "_" + diff
-        app_methods.Table(filename).update_table(task_id, field, content)
+        if len(task_id.split("-")) > 1:
+            sheet = task_id.split("-")[0]
+            task_id = task_id.split("-")[-1]
+        else:
+            sheet = "Graph"
+        app_methods.Table(filename).update_table(task_id, field, content, sheet)
         return redirect(url_for("show", filename=filename))
 
 
@@ -109,6 +115,7 @@ def update(filename):
 @app.route('/new/<filename>', methods=['POST'])
 def add_new(filename):
     new_task = dict()
+    sheet = "Graph"
     new_task["Impact"] = "16"
     new_task["Effort"] = "0"
     for i in app_methods.Table(filename).fields:
@@ -125,7 +132,7 @@ def add_new(filename):
         else:
             data = request.form[i]
         new_task[i] = data
-    app_methods.Table(filename).add_to_table(new_task)
+    app_methods.Table(filename).add_to_table(new_task, sheet)
     return redirect(url_for("show", filename=filename))
 
 
@@ -133,8 +140,13 @@ def add_new(filename):
 @app.route('/delete/<filename>', methods=['GET'])
 def delete_task(filename):
     delete_info = request.args
-    task_id = int(delete_info["Id"])
-    app_methods.Table(filename).delete_from_table(task_id)
+    if len(delete_info["Id"].split("-")) > 1:
+        task_id = int(delete_info["Id"].split("-")[-1])
+        sheet = delete_info["Id"].split("-")[0]
+    else:
+        task_id = int(delete_info["Id"])
+        sheet = "Graph"
+    app_methods.Table(filename).delete_from_table(task_id, sheet)
     return redirect(url_for("show", filename=filename))
 
 

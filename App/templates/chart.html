@@ -12,20 +12,7 @@
 </head>
 <body>
     <div id="Content">
-        <div id="scatterplot" class="container" ondrop="drop_chart(event)" ondragover="allowDrop(event)">
-            <script>
-                var result = {{ result|tojson|safe }};
-                var dl_colors = {{ dl_colors|tojson|safe }};
-                var sj_colors = {{ sj_colors|tojson|safe }};
-                var dp_colors = {{ dp_colors|tojson|safe }};
-                var y_raw = {{ y|tojson|safe }};
-                var x_raw = {{ x|tojson|safe }};
-                var title = {{ name|tojson }};
-                var fields = {{ fields|tojson|safe }};
-                var filename = {{ file|tojson|safe }};
-            </script>
-            <script src="/static/EI_chart.js"></script>
-            <script src="/static/EI_chart_events.js"></script>
+        <div id="scatterplot" class="container">
         </div>
         <div id="Info" class="container">
             <div id="Instructions" class="info_div">
@@ -80,10 +67,12 @@
             <div id="Update" class="info_div">
                 <form action="/update/{{ file }}" method="post" id="form2">
                     <h2>Change Form</h2>
-                    <h3>Press the Ctrl button to delete this task!</h3>
+                    <h3>Press the Delete button to delete this task!</h3>
+                    <h3>Press Ctrl + c to complete this task!</h3>
+                    <h3>Press Ctrl + u to move a task to Unassigned!</h3>
                     <div id="inputs">
                         <br>
-                        Task ID #: <input type="number" name="id" id="id" readonly><br><br>
+                        Task ID #: <input type="text" name="id" id="id" readonly><br><br>
                         <label id="field-label">Field to be Changed: </label>
                         <input type="radio" value="Task" name="Field" onclick="change_type('text')" checked>Task
                         <input type="radio" value="Description" name="Field" onclick="change_type('text')">Description
@@ -99,78 +88,36 @@
         </div>
     </div>
     <div id="storage">
-        <div id="Unplaced" class="container" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <div id="Unplaced" class="container">
             <h2>Unassigned</h2>
             {% for task2 in unplaced %}
-            <p id="Unplaced-{{ unplaced.index(task2) }}" draggable="true" ondragstart="drag(event)" class="stored_task"><strong>Task: </strong>{{ task2["Task"] }} <strong>Description: </strong>{{ task2["Description"] }}</p>
+            <p id="Unplaced-{{ unplaced.index(task2) }}" draggable="true" class="stored_task"><strong>Task: </strong>{{ task2["Task"] }} <strong>Description: </strong>{{ task2["Description"] }}</p>
             {% endfor %}
         </div>
-        <div id="Completed" class="container" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <div id="Completed" class="container">
             <h2>Completed</h2>
             {% for task in completed %}
-            <p id="Completed-{{ completed.index(task) }}" draggable="true" ondragstart="drag(event)" class="stored_task"><strong>Task: </strong>{{ task["Task"] }} <strong>Description: </strong>{{ task["Description"] }} <strong>Completed: </strong>{{ task["Completed"] }}</p>
+            <p id="Completed-{{ completed.index(task) }}" draggable="true" class="stored_task"><strong>Task: </strong>{{ task["Task"] }} <strong>Description: </strong>{{ task["Description"] }} <strong>Completed: </strong>{{ task["Completed"] }}</p>
             {% endfor %}
         </div>
     </div>
     <script>
-
-        // Color change on mouseover and mouseleave
-
-        $(".stored_task").on("mouseover", function(){
-            this.style.backgroundColor = "PaleTurquoise"
-        })
-
-        $(".stored_task").on("mouseleave", function(){
-            this.style.backgroundColor = "#8ab2f2"
-        })
-
-        // Drag and Drop
-
-        function allowDrop(ev) {
-          ev.preventDefault();
-        }
-
-        function drag(ev) {
-          ev.dataTransfer.setData("text", ev.target.id);
-        }
-
-        function drop(ev) {
-          ev.preventDefault();
-          var data = ev.dataTransfer.getData("text");
-          ev.target.appendChild(document.getElementById(data));
-          var filename = {{ file|tojson|safe }};
-          $.ajax({
-            url: "/move/" + filename,
-            data: { "Data": data, "Dest": ev.target.id },
-            success: function () {
-                location.reload(true)
-            },
-            error: function (xhr, errorThrown){
-                console.log(xhr.responseText);
-                console.log(errorThrown);
-            }
-          })
-        }
-
-        function drop_chart(ev) {
-            ev.preventDefault();
-            var data = ev.dataTransfer.getData("text")
-            $.ajax({
-                url: "/move/" + filename,
-                data: { "Data": data, "Dest": "Graph" },
-                success: function () {
-                    location.reload(true)
-                },
-                error: function (xhr, errorThrown){
-                    console.log(xhr.responseText);
-                    console.log(errorThrown);
-                }
-              })
-        }
+        var result = {{ result|tojson|safe }};
+        var dl_colors = {{ dl_colors|tojson|safe }};
+        var sj_colors = {{ sj_colors|tojson|safe }};
+        var dp_colors = {{ dp_colors|tojson|safe }};
+        var y_raw = {{ y|tojson|safe }};
+        var x_raw = {{ x|tojson|safe }};
+        var title = {{ name|tojson }};
+        var fields = {{ fields|tojson|safe }};
+        var filename = {{ file|tojson|safe }};
+    </script>
+    <script src="/static/EI_chart.js"></script>
+    <script src="/static/EI_events.js"></script>
+    <script>
 
         // Creates form1 and form2 based on fields
 
-        var fields = {{ fields|tojson|safe }}
         for (i in fields){
             if (fields[i] == "Deadline") {
                 // Form 1
