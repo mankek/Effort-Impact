@@ -174,6 +174,7 @@ $(document).ready(function(){
         $("div.colortip").remove()
         $(".axis_text").remove()
         scale_flag = "SJ"
+        set_flagCookie("SJ")
         sj_or_dp_legend()
         render_graph(scale_flag)
         $(".ColorScale").hover(function(d, i){
@@ -193,6 +194,7 @@ $(document).ready(function(){
         $("div.colortip").remove()
         $(".axis_text").remove()
         scale_flag = "DP"
+        set_flagCookie("DP")
         sj_or_dp_legend()
         render_graph(scale_flag)
         $(".ColorScale").hover(function(d, i){
@@ -212,6 +214,7 @@ $(document).ready(function(){
         $("div.colortip").remove()
         $(".axis_text").remove()
         scale_flag = "DL"
+        set_flagCookie("DL")
         dl_legend()
         render_graph(scale_flag)
         $(".ColorScale").hover(function(d, i){

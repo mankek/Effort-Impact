@@ -16,14 +16,31 @@ var c1_scale = d3.scaleSequential(d3.interpolateRdBu)
 var c2_scale = d3.scaleSequential(d3.interpolateSinebow)
     .domain([0, 1]);
 
-if (fields.includes("Deadline")){
-    scale_flag = "DL"
-} else if (!fields.includes("Deadline") && fields.includes("Subject")){
-    scale_flag = "SJ"
-} else if (!fields.includes("Deadline") && !fields.includes("Subject") && fields.includes("Department")){
-    scale_flag = "DP"
-} else {
-    scale_flag = "None"
+function set_flagCookie(cvalue){
+    document.cookie = "scaleflag=" + cvalue
+}
+
+function get_flagCookie(){
+    var name = "scaleflag="
+    var decodedCookie = decodeURIComponent(document.cookie);
+    if (decodedCookie.indexOf(name) != -1){
+        return decodedCookie.split("=")[1]
+    } else {
+        return ""
+    }
+}
+
+scale_flag = get_flagCookie()
+if (scale_flag == ""){
+    if (fields.includes("Deadline")){
+        scale_flag = "DL"
+    } else if (!fields.includes("Deadline") && fields.includes("Subject")){
+        scale_flag = "SJ"
+    } else if (!fields.includes("Deadline") && !fields.includes("Subject") && fields.includes("Department")){
+        scale_flag = "DP"
+    } else {
+        scale_flag = "None"
+    }
 }
 
 if ( fields.includes("Deadline") ){
