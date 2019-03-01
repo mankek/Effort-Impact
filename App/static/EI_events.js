@@ -27,8 +27,8 @@ $(document).ready(function(){
             cell1.innerHTML = JSON.stringify(i)
             cell2.innerHTML = JSON.stringify(result[index][i])
         }
-        $("#Instructions").hide();
-        if ($("#New").css("display") == "none" && $("#Update").css("display") == "none"){
+        if ($("#New").css("display") == "none" && $("#Update").css("display") == "none" && $("#id_div").css("display") == "none"){
+            $("#Instructions").hide();
             $("#task_div").show(); // if no forms are showing, shows task table
         }
     }
@@ -379,7 +379,7 @@ $(document).ready(function(){
                 }
             } else if (event.keyCode === 13 && $("#New").css("display") == "none" && $("#Update").css("display") == "none"){
                 if ($("#id_div").css('display') == "none" || $("#id_div").css("visibility") == "hidden") { // If enter button is pressed and id table isn't visible ,id table is rendered and shown
-                    $("rect.Data").off() // removes task square events so task table can't appear
+//                    $("rect.Data").off() // removes task square events so task table can't appear
                     $("#Task_check").on("click", function(){ // if task radio button is clicked, id table displays Task
                         $("#Desc_check").prop("checked", false)
                         ID_table_hide()
@@ -393,12 +393,6 @@ $(document).ready(function(){
                     $("#Task_check").click()
                 } else { // if id table is already visible, id table is hidden
                    ID_table_hide()
-                   $("rect.Data").hover(function(){ // re-attaches hover event to task squares
-                        hover_start(this);
-                    },
-                    function(){
-                        hover_end();
-                    });
                 }
             }
         });
@@ -436,8 +430,8 @@ $(document).ready(function(){
         d3.select(this)
             .attr('transform', 'translate(' + 0 + ',' + 0 + ')')
             .attr("x", function(d) { // replaces squares x coordinate with coordinates of event
-                if (d3.event.x > x_scale(16)){ // if coordinates go outside graph, they are limited to stay within graph
-                    return x_scale(16)
+                if (d3.event.x > x_scale(16.25)){ // if coordinates go outside graph, they are limited to stay within graph
+                    return x_scale(16.25)
                 }else if (d3.event.x < x_scale(0)) {
                     return x_scale(0)
                 }else {
@@ -454,8 +448,8 @@ $(document).ready(function(){
                 }
             })
             .attr("dx", function(d) {
-                if (d3.event.x > x_scale(16)){
-                    return 16
+                if (d3.event.x > x_scale(16.25)){
+                    return 16.25
                 }else if (d3.event.x < x_scale(0)) {
                     return 0
                 }else {
@@ -616,18 +610,19 @@ $(document).ready(function(){
             .attr("height", 25)
             .attr("id", function(){
                 if($("rect.Data").siblings().length) {
-                    console.log($("rect.Data").siblings().length)
                     return $("rect.Data").siblings().length - 1;
                 }
                 return 0;
             })
             .attr("class", "Data")
             .style("fill", function (d, i) {
-                if (fields.includes("Deadline")){
+                if (scale_flag == "DL"){
                     return c1_scale(dl_colors[i]);
-                } else if (!fields.includes("Deadline") && fields.includes("Subject")){
+                } else if (scale_flag == "SJ"){
                     return c2_scale(sj_colors[i]);
-                } else {
+                } else if (scale_flag == "DP"){
+                    return c2_scale(dp_colors[i]);
+                }else {
                     console.log("no color scale")
                     return c2_scale(i/10);
                 }

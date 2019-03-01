@@ -92,13 +92,21 @@
         <div id="Unplaced" class="container">
             <h2>Unassigned</h2>
             {% for task2 in unplaced %}
-            <p id="Unplaced-{{ unplaced.index(task2) }}" draggable="true" class="stored_task"><strong>Task: </strong>{{ task2["Task"] }} <strong>Description: </strong>{{ task2["Description"] }}</p>
+            <p id="Unplaced-{{ unplaced.index(task2) }}" draggable="true" class="stored_task">
+                {% for key in task2.keys() %}
+                <strong>{{ key }}: </strong>{{ task2[key] }}
+                {% endfor %}
+            </p>
             {% endfor %}
         </div>
         <div id="Completed" class="container">
             <h2>Completed</h2>
             {% for task in completed %}
-            <p id="Completed-{{ completed.index(task) }}" draggable="true" class="stored_task"><strong>Task: </strong>{{ task["Task"] }} <strong>Description: </strong>{{ task["Description"] }} <strong>Completed: </strong>{{ task["Completed"] }}</p>
+            <p id="Completed-{{ completed.index(task) }}" draggable="true" class="stored_task">
+                {% for key in task.keys() %}
+                <strong>{{ key }}: </strong>{{ task[key] }}
+                {% endfor %}
+            </p>
             {% endfor %}
         </div>
     </div>
@@ -124,7 +132,7 @@
                 // Form 1
                 var DL_label = $("<label></label>").text("Deadline: ");
                 var new_date = $("<input>").attr("type", "date").attr("name", "Deadline");
-                var new_time = $("<input>").attr("type", "time").attr("name", "time").attr("required", "");
+                var new_time = $("<input>").attr("type", "time").attr("name", "time");
                 var DL_text = $("<h2></h2>").text("Leave Deadline Fields blank for no deadline!");
                 $("#input").append(DL_label, new_date, new_time, DL_text)
 

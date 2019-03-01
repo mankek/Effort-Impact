@@ -98,10 +98,13 @@ def update(filename):
             if content == "":
                 content = "No Deadline"
             else:
-                due_time = request.form["up_time"].split(":")
                 due_date = content.split('-')
+                if request.form["up_time"] == "":
+                    due_time = ["00", "00"]
+                else:
+                    due_time = request.form["up_time"].split(":")
                 diff = app_methods.due_day(int(due_date[0]), int(due_date[1]), int(due_date[2]), int(due_time[0]))
-                content = content + '_' + request.form["up_time"] + "_" + diff
+                content = content + '_' + ":".join(due_time) + "_" + diff
         if len(task_id.split("-")) > 1:
             sheet = task_id.split("-")[0]
             task_id = task_id.split("-")[-1]
@@ -124,9 +127,12 @@ def add_new(filename):
                 data = "No Deadline"
             else:
                 due_date = request.form[i].split('-')
-                due_time = request.form['time'].split(':')
+                if request.form['time'] == "":
+                    due_time = ["00", "00"]
+                else:
+                    due_time = request.form['time'].split(':')
                 diff = app_methods.due_day(int(due_date[0]), int(due_date[1]), int(due_date[2]), int(due_time[0]))
-                data = request.form[i] + '_' + request.form['time'] + '_' + diff
+                data = request.form[i] + '_' + ":".join(due_time) + '_' + diff
         elif (i == "Effort") or (i == "Impact"):
             continue
         else:
