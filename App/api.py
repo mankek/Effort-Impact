@@ -65,7 +65,7 @@ def show(filename):
         new_result = app_methods.clean_result(result)
         return render_template("chart.html", x=x, y=y, result=new_result, dl_colors=dl_colors, sj_colors=sj_colors,
                                dp_colors=dp_colors, name=filename.split(".")[0], fields=names, file=filename,
-                               completed=completed, unplaced=unplaced)
+                               completed=app_methods.clean_result(completed), unplaced=app_methods.clean_result(unplaced))
     except FileNotFoundError:
         return redirect(url_for("index"))
 

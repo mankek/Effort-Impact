@@ -16,6 +16,9 @@ var c1_scale = d3.scaleSequential(d3.interpolateRdBu)
 var c2_scale = d3.scaleSequential(d3.interpolateSinebow)
     .domain([0, 1]);
 
+// A cookie is used to keep track of current color scale
+// Cookie is set by color scale click events
+
 function set_flagCookie(cvalue){
     document.cookie = "scaleflag=" + cvalue
 }

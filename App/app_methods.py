@@ -1,8 +1,14 @@
 # !/usr/bin/python
 import pandas
-import openpyxl
 import os
 import datetime
+
+print(pandas.__version__)
+
+if "0.21.0" < pandas.__version__:
+    old_pandas = False
+else:
+    old_pandas = True
 
 # Defines path to Task sheets within application directory
 out_path = ("\\").join(os.path.dirname(os.path.abspath(__file__)).split("\\")[0:-1]) + r"\Task Sheets"
@@ -88,10 +94,16 @@ class Table(object):
     def __init__(self, filename):
         self.name = filename
         self.path = os.path.join(out_path, filename)
-        # Loads sheets into separate dataframes
-        self.graph_df = pandas.read_excel(self.path, sheet_name="Graph", index=0)
-        self.unplaced_df = pandas.read_excel(self.path, sheet_name="Unplaced", index=0)
-        self.complete_df = pandas.read_excel(self.path, sheet_name="Completed", index=0)
+        if old_pandas:
+            # Loads sheets into separate dataframes
+            self.graph_df = pandas.read_excel(self.path, sheetname="Graph", index=0)
+            self.unplaced_df = pandas.read_excel(self.path, sheetname="Unplaced", index=0)
+            self.complete_df = pandas.read_excel(self.path, sheetname="Completed", index=0)
+        else:
+            # Loads sheets into separate dataframes
+            self.graph_df = pandas.read_excel(self.path, sheet_name="Graph", index=0)
+            self.unplaced_df = pandas.read_excel(self.path, sheet_name="Unplaced", index=0)
+            self.complete_df = pandas.read_excel(self.path, sheet_name="Completed", index=0)
         self.fields = list(self.graph_df)
         self.df_dict = {"Graph": self.graph_df, "Unplaced": self.unplaced_df, "Completed": self.complete_df}
 
@@ -156,7 +168,7 @@ class Table(object):
     # Deletes a selected task from the excel sheet
     def delete_from_table(self, task_id, sheet_to):
         if task_id in self.df_dict[sheet_to].index:
-            self.df_dict[sheet_to].drop(index=task_id, inplace=True)
+            self.df_dict[sheet_to].drop(task_id, axis=0, inplace=True)
             self.df_dict[sheet_to].reset_index(drop=True, inplace=True)
             self.save_xlsx()
             return "Table saved"
@@ -178,7 +190,7 @@ class Table(object):
             df_to.loc[row_number, "Completed"] = now
         for i in self.fields:
             df_to.loc[row_number, i] = df_from.loc[task_id, i]
-        df_from.drop(index=task_id, inplace=True)
+        df_from.drop(task_id, axis=0, inplace=True)
         df_from.reset_index(drop=True, inplace=True)
         self.save_xlsx()
 
@@ -187,6 +199,7 @@ class Table(object):
         self.df_dict["Graph"].to_excel(writer, sheet_name="Graph")
         self.df_dict["Unplaced"].to_excel(writer, sheet_name='Unplaced')
         self.df_dict["Completed"].to_excel(writer, sheet_name='Completed')
+        writer.save()
 
 
 # Extracts the Effort, Impact data and returns it as [x], [y] lists

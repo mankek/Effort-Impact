@@ -1,3 +1,8 @@
-Flask==1.0.2
-pandas==0.23.0
-openpxyl==2.5.4
+Flask>=0.12
+pandas>=0.20.3
+openpxyl>=2.5.12
+XlsxWriter>=1.0.5
+xlrd>=1.0.0
+xlwt>=1.2.0
+
+
