@@ -3,7 +3,7 @@
     width: 100%;
     margin-left: auto;
     margin-right: auto;
-    height: 700px;
+    height: 720px;
 }
 /* Container for chart */
 #scatterplot {
@@ -12,7 +12,8 @@
     height: 90%;
     padding-top: 10px;
     padding-bottom: 10px;
-    overflow: hidden;
+    overflow-y: hidden;
+    overflow-x: hidden;
 }
 /* d3 chart object - make chart responsive to window size */
 .chart{

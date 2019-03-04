@@ -1,5 +1,5 @@
 // Variables for chart creation
-var margin = {top: 40, right: 65, bottom: 40, left: 40}
+var margin = {top: 50, right: 60, bottom: 40, left: 40}
 var width = 700
 var height = 500
 
@@ -66,7 +66,7 @@ var svg = d3.select('#scatterplot')
 //  .attr('height', height + margin.top + margin.bottom)
   .attr("preserveAspectRatio", "xMidYMid")
 //  .attr("viewBox", " 0 0 " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom))
-  .attr("viewBox", -chart_margins + " " + -margin.top + " 930 900")
+  .attr("viewBox", "0 0 800 620")
   .attr('class', 'chart')
   .style("background-color", "white")
 //  .attr("transform", "translate(" + (margin.left + margin.right)/2 + "," + margin.top + ")")
@@ -235,12 +235,11 @@ svg.append("text")
     .style("font-size", "25px")
     .text("Impact");
 
-//// Chart title
+// Chart title
 
 svg.append("text")
-    .attr("transform", "translate(" + ((width + margin.left + margin.right)/2) + "," + (2*margin.top/3) + ")")
+    .attr("transform", "translate(" + ((width/2) + margin.left) + "," + (2*margin.top/3) + ")")
     .style("text-anchor", "middle")
-    .style("text-anchor", "right")
     .style("font-size", "35px")
     .text(title)
 

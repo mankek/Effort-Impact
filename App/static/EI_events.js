@@ -308,7 +308,7 @@ $(document).ready(function(){
     // Button Press Events
 
     $("body")
-        .on('keydown', function (){
+        .on('keydown', function (event){
             console.log(event.keyCode);
             if (event.keyCode === 46){ // If delete button is pressed, id for square in focused is sent to back-end for deletion
                 if (focused === null){
@@ -506,8 +506,8 @@ $(document).ready(function(){
     }
 
     // Enables dropping of stored tasks
-    function allowDrop() {
-      event.preventDefault();
+    function allowDrop(ev) {
+      ev.preventDefault();
     }
 
     // Specifies data being dragged

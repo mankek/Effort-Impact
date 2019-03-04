@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/static/styles/EI_general.css">
     <link rel="stylesheet" href="/static/styles/EI_content.css">
     <link rel="stylesheet" href="/static/styles/EI_storage.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/redmond/jquery-ui.css">
 </head>
 <body>
     <div id="Content">
@@ -123,6 +124,8 @@
     </script>
     <script src="/static/EI_chart.js"></script>
     <script src="/static/EI_events.js"></script>
+    <script src="/static/jquery-ui.min.js"></script>
+    <script src="/static/jquery.ui.timepicker.js"></script>
     <script>
 
         // Creates form1 and form2 based on fields
@@ -131,10 +134,12 @@
             if (fields[i] == "Deadline") {
                 // Form 1
                 var DL_label = $("<label></label>").text("Deadline: ");
-                var new_date = $("<input>").attr("type", "date").attr("name", "Deadline");
-                var new_time = $("<input>").attr("type", "time").attr("name", "time");
+                var new_date = $("<input>").attr("type", "date").attr("name", "Deadline").attr("id", "Deadline");
+                var new_time = $("<input>").attr("type", "time").attr("name", "time").attr("id", "time");
                 var DL_text = $("<h2></h2>").text("Leave Deadline Fields blank for no deadline!");
                 $("#input").append(DL_label, new_date, new_time, DL_text)
+                check_date_time("Deadline", "time")
+
 
                 // Form 2
                 var DL_label2 = $("<label></label>").text("Deadline");
@@ -158,17 +163,36 @@
             }
         }
 
+        function check_date_time(date_id, time_id) {
+              var elem = document.createElement('input');
+              elem.setAttribute('type', 'date');
+
+              if ( elem.type === 'text' ) {
+                 $('#' + date_id).datepicker({
+                    dateFormat: "yy-mm-dd"
+                 });
+                 $("#" + time_id).timepicker({
+                    showDeselectButton: true,
+                    defaultTime: '',
+                    showCloseButton: true
+                 });
+              }
+        };
+
         function change_type(new_type){
             $("#change").attr("type", new_type);
             var timeExists = document.getElementsByName("up_time");
             if (new_type == "date"){
                 console.log("date")
                 if (timeExists.length == 0){
-                    var new_time = $("<input>").attr("type", "time").attr("name", "up_time");
-                    $("#inputs").append(new_time);
+                    console.log("no time")
+                    var new_time = $("<input>").attr("type", "time").attr("name", "up_time").attr("id", "up_time");
+                    $("#change").after(new_time);
                 }
+                check_date_time("change", "up_time")
             } else{
                 if (timeExists.length !== 0){
+                    console.log("time removed!")
                     $("input[name='up_time']").remove();
                 }
             }
