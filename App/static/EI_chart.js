@@ -35,18 +35,18 @@ function get_flagCookie(){
 
 scale_flag = get_flagCookie()
 if (scale_flag == ""){
-    if (fields.includes("Deadline")){
+    if (fields.indexOf("Deadline") != -1){
         scale_flag = "DL"
-    } else if (!fields.includes("Deadline") && fields.includes("Subject")){
+    } else if (fields.indexOf("Deadline") == -1 && fields.indexOf("Subject") != -1){
         scale_flag = "SJ"
-    } else if (!fields.includes("Deadline") && !fields.includes("Subject") && fields.includes("Department")){
+    } else if (fields.indexOf("Deadline") == -1 && fields.indexOf("Subject") == -1 && fields.indexOf("Department") != -1){
         scale_flag = "DP"
     } else {
         scale_flag = "None"
     }
 }
 
-if ( fields.includes("Deadline") ){
+if ( fields.indexOf("Deadline") != -1){
     var cAxis = d3.axisRight(c1_scale)
 } else {
     var cAxis = d3.axisRight(c2_scale);

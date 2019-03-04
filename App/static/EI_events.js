@@ -231,25 +231,25 @@ $(document).ready(function(){
     // defines click behavior for color scale - switching between color scales
     function ColorClick(){
         if (scale_flag == "DL"){
-            if (fields.includes("Subject")){
+            if (fields.indexOf("Subject") != -1){
                 RendertoSubject()
-            } else if (fields.includes("Department")){
+            } else if (fields.indexOf("Department") != -1){
                 RendertoDepartment()
             }else{
                 console.log("No other Scales")
             }
         }else if (scale_flag == "SJ"){
-            if (fields.includes("Department")){
+            if (fields.indexOf("Department") != -1){
                 RendertoDepartment()
-            } else if (fields.includes("Deadline")){
+            } else if (fields.indexOf("Deadline") != -1){
                 RendertoDeadline()
             }else{
                 console.log("No other Scales")
             }
         }else if (scale_flag == "DP"){
-            if (fields.includes("Deadline")){
+            if (fields.indexOf("Deadline") != -1){
                 RendertoDeadline()
-            } else if (fields.includes("Subject")){
+            } else if (fields.indexOf("Subject") != -1){
                 RendertoSubject()
             }else{
                 console.log("No other Scales")
