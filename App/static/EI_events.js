@@ -314,7 +314,6 @@ $(document).ready(function(){
                 if (focused === null){
                     alert("No task selected. Click a task to select.")
                 } else{
-                    console.log(focused)
                     $(focused).remove();
                     var table = document.getElementById("task_table");
                     for (b = 0; b < 5; b++) {
@@ -666,4 +665,14 @@ $(document).ready(function(){
             $("#sheet").val("Unplaced")
         }
     })
+
+
+    // Submit Event
+
+    // Attaches an event ot logout form that clears scale_flag cookie
+    $("#logout").submit(function(){
+        delete_flagCookie()
+        return true
+    })
 });
+

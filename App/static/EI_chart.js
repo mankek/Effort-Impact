@@ -19,6 +19,24 @@ var c2_scale = d3.scaleSequential(d3.interpolateSinebow)
 // A cookie is used to keep track of current color scale
 // Cookie is set by color scale click events
 
+var flag_meanings = {
+    DL: "Deadline",
+    SJ: "Subject",
+    DP: "Department"
+}
+
+function check_fields(){
+    if (fields.indexOf("Deadline") != -1){
+        scale_flag = "DL"
+    } else if (fields.indexOf("Deadline") == -1 && fields.indexOf("Subject") != -1){
+        scale_flag = "SJ"
+    } else if (fields.indexOf("Deadline") == -1 && fields.indexOf("Subject") == -1 && fields.indexOf("Department") != -1){
+        scale_flag = "DP"
+    } else {
+        scale_flag = "None"
+    }
+}
+
 function set_flagCookie(cvalue){
     document.cookie = "scaleflag=" + cvalue
 }
@@ -33,16 +51,16 @@ function get_flagCookie(){
     }
 }
 
+function delete_flagCookie(){
+    document.cookie = "scaleflag=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/chart;"
+}
+
 scale_flag = get_flagCookie()
 if (scale_flag == ""){
-    if (fields.indexOf("Deadline") != -1){
-        scale_flag = "DL"
-    } else if (fields.indexOf("Deadline") == -1 && fields.indexOf("Subject") != -1){
-        scale_flag = "SJ"
-    } else if (fields.indexOf("Deadline") == -1 && fields.indexOf("Subject") == -1 && fields.indexOf("Department") != -1){
-        scale_flag = "DP"
-    } else {
-        scale_flag = "None"
+    check_fields()
+} else{
+    if (fields.indexOf(flag_meanings[scale_flag]) == -1){
+        check_fields()
     }
 }
 

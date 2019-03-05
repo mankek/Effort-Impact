@@ -186,7 +186,15 @@ class Table(object):
         row_number = df_to.shape[0]
         if sheet_to == "Completed":
             now_split = str(datetime.datetime.now()).split(" ")
-            now = now_split[0] + " " + ":".join(now_split[1].split(":")[:2])
+            time_split = now_split[1].split(":")
+            if int(time_split[0]) == 12:
+                period = "PM"
+            elif int(time_split[0]) > 12:
+                period = "PM"
+                time_split[0] = str(int(time_split[0]) - 12)
+            else:
+                period = "AM"
+            now = now_split[0] + " " + ":".join(time_split[:2]) + " " + period
             df_to.loc[row_number, "Completed"] = now
         for i in self.fields:
             df_to.loc[row_number, i] = df_from.loc[task_id, i]
