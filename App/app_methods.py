@@ -3,7 +3,7 @@ import pandas
 import os
 import datetime
 
-print(pandas.__version__)
+# print(pandas.__version__)
 
 if "0.21.0" < pandas.__version__:
     old_pandas = False
@@ -11,7 +11,7 @@ else:
     old_pandas = True
 
 # Defines path to Task sheets within application directory
-out_path = ("\\").join(os.path.dirname(os.path.abspath(__file__)).split("\\")[0:-1]) + r"\Task Sheets"
+out_path = "\\".join(os.path.dirname(os.path.abspath(__file__)).split("\\")[0:]) + r"\Task-Sheets"
 
 
 # Checks for Task Sheet directory; create if it doesn't exist

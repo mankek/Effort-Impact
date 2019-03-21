@@ -55,6 +55,11 @@ div.tooltip {
     font-size: 18px;
     text-align: center;
 }
+/* hyperlink that downloads task sheets */
+#download{
+    background-color: #b3cbf2;
+}
+
 #Instructions{
     overflow: auto;
 }

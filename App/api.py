@@ -1,6 +1,6 @@
 # !/usr/bin/python
 from App import app_methods
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 
 app = Flask(__name__)
 
@@ -165,3 +165,9 @@ def move_task(filename):
     dest = move_info["Dest"]
     app_methods.Table(filename).move_sheets(src, dest, task_id)
     return redirect(url_for("show", filename=filename))
+
+
+@app.route('/download/<filename>', methods=['GET'])
+def download(filename):
+    return send_from_directory(directory="Task-Sheets", filename=str(filename), as_attachment=True)
+
