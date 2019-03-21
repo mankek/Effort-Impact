@@ -83,6 +83,11 @@ Hovering:
 * When hovering on squares, their task info is displayed. When hovering on a color scale, the corresponding information
  for that color block is displayed.
 
+Downloading Task sheets
+
+* Clicking on the link at the top of the Instructions that says "Download Task Files" will download the Excel workbook that
+  contains the task sheets (graphed, unassigned, and completed on different sheets).
+
 **Testing** 
 
 For testing I used a suite of Postman request tests that test the application's ability to create a new file, add tasks, 
