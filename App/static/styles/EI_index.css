@@ -5,11 +5,13 @@ body{
     text-decoration: underline;
     font-size: 35px;
     text-align: center;
+    color: #3077e8;
 }
 #instructions {
     padding: 5px;
     margin: auto;
-    width: 75%
+    width: 80%;
+    font-size: 24px;
 }
 /* File selection/file creation divs container */
 #choose_file {
@@ -21,6 +23,7 @@ body{
 #choose{
     height: 100%;
     float: left;
+
 }
 /* Available File list */
 #choose_list{
@@ -28,7 +31,7 @@ body{
     width: 75%;
     height: 130px;
     overflow: auto;
-    background-color: white;
+    background-color: #e8f0fc;
 }
 /* File creation form container */
 #make {

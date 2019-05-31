@@ -6,13 +6,13 @@
 /* container and table for complete tasks */
 #Completed{
     float: right;
-    height: 90%;
+    height: 80%;
     overflow: auto;
 }
 /* container and table for unassigned tasks */
 #Unplaced{
     float: left;
-    height: 90%;
+    height: 80%;
     overflow: auto;
 }
 .stored_task{

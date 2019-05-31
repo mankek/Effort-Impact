@@ -507,6 +507,7 @@ $(document).ready(function(){
     // Enables dropping of stored tasks
     function allowDrop(ev) {
       ev.preventDefault();
+      console.log("hi")
     }
 
     // Specifies data being dragged
@@ -565,6 +566,13 @@ $(document).ready(function(){
     var graph_con = document.getElementById("scatterplot")
     var unplaced_con = document.getElementById("Unplaced")
     var complete_con = document.getElementById("Completed")
+    var data = document.getElementsByClassName("Data")
+
+    for (var i=0;i<data.length;i++){
+        data[i].ondragstart = function(event) {
+            drag(event)
+        }
+    }
 
     for (var i=0;i<tasks.length;i++){
         tasks[i].ondragstart = function(event){
@@ -669,7 +677,7 @@ $(document).ready(function(){
 
     // Submit Event
 
-    // Attaches an event ot logout form that clears scale_flag cookie
+    // Attaches an event to logout form that clears scale_flag cookie
     $("#logout").submit(function(){
         delete_flagCookie()
         return true
