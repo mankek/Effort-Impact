@@ -421,31 +421,77 @@ $(document).ready(function(){
 
     // Drag Functions
 
+    //vars and functions for svg->div dragging
+    var $helper = null
+    var $helperparent = $('body')
+
+    function drag_chart(drag_id, dest){
+        var task = "Graph-" + drag_id
+        $.ajax({
+            url: "/move/" + filename,
+            data: { "Data": task, "Dest": dest },
+            success: function () {
+                location.reload(true)
+            },
+            error: function (xhr, errorThrown){
+                console.log(xhr.responseText);
+                console.log(errorThrown);
+            }
+        })
+    }
+
+    var isOnUnplaced = false;
+    $("#Unplaced").mouseenter(function(){isOnUnplaced=true;})
+    $("#Unplaced").mouseleave(function(){isOnUnplaced=false;})
+
+    var isOnComplete = false;
+    $("#Completed").mouseover(function(){isOnComplete=true;})
+    $("#Completed").mouseleave(function(){isOnComplete=false;})
+
+
     // defines behavior when square drag starts
     function dragstarted(){
         hover_end(); // stops task square hover behavior when dragging
+        // testing svg-div dragging
+        $helper = $("<span>Hello</span>").appendTo($helperparent)
+        $helper.css("position", "absolute")
+        $helper.css("display", "none")
     };
 
     // defines behavior during square dragging
+
     function dragged(d, i){
         hover_end();
+
+        mousepos = d3.mouse($helperparent[0])
+
+        $helper.css({
+            left: mousepos[0] + 10,
+            top: mousepos[1] + 10
+        });
         d3.select(this)
             .attr('transform', 'translate(' + 0 + ',' + 0 + ')')
-            .attr("x", function(d) { // replaces squares x coordinate with coordinates of event
+            .attr("x", function(d, i) { // replaces squares x coordinate with coordinates of event
                 if (d3.event.x > x_scale(16.25)){ // if coordinates go outside graph, they are limited to stay within graph
+                    $helper.show()
                     return x_scale(16.25)
                 }else if (d3.event.x < x_scale(0)) {
+                    $helper.show()
                     return x_scale(0)
                 }else {
+                    $helper.hide()
                     return d3.event.x
                 }
             })
-            .attr("y", function(d) { // replaces squares y coordinate with coordinates of event
+            .attr("y", function(d, i) { // replaces squares y coordinate with coordinates of event
                 if (d3.event.y < y_scale(16)) {
+                    $helper.show()
                     return y_scale(16)
                 }else if (d3.event.y > y_scale(0)) {
+                    $helper.show()
                     return y_scale(0)
                 }else {
+                    $helper.hide()
                     return d3.event.y
                 }
             })
@@ -474,34 +520,43 @@ $(document).ready(function(){
 
 
     // defines behavior when square drag ends
+
+
     function dragend(d, i){
-        var circle = d3.select(this)
-        $.ajax({ // sends new effort impact data to back-end
-            url: "/update/" + filename,
-            data: {"Effort": circle.attr('dx'),"Impact": circle.attr('dy'),"Id": i},
-            success: function () {
-                console.log("success!");
-            },
-            error: function (xhr, errorThrown){
-                console.log(xhr.responseText);
-                console.log(errorThrown);
+        if(isOnUnplaced===true){
+            drag_chart(String(i), "Unplaced")
+        } else if(isOnComplete===true){
+            drag_chart(String(i), "Completed")
+        }else{
+            var circle = d3.select(this)
+            $.ajax({ // sends new effort impact data to back-end
+                url: "/update/" + filename,
+                data: {"Effort": circle.attr('dx'),"Impact": circle.attr('dy'),"Id": i},
+                success: function () {
+                    console.log("success!");
+                },
+                error: function (xhr, errorThrown){
+                    console.log(xhr.responseText);
+                    console.log(errorThrown);
+                }
+            });
+            if ($("#id_div").css("display") != "none") { // if id table is up, id label is re-applied to square
+                for (b=0; b < $("rect.Data").length; b++){
+                    var cir = $("rect.Data")[b]
+                    var x_pos = Number(d3.select(cir).attr("x")) + 5;
+                    var y_pos = Number(d3.select(cir).attr("y"));
+                    d3.select(".quadrants").append("text") // creates and adds text to each square, showing it's id
+                        .attr("y", y_pos)
+                        .attr("x", x_pos)
+                        .attr("dy", "1em")
+                        .attr("class", "id_text")
+                        .style("font", "bold")
+                        .text(d3.select(cir).attr("id"))
+                }
             }
-        });
-        if ($("#id_div").css("display") != "none") { // if id table is up, id label is re-applied to square
-            for (b=0; b < $("rect.Data").length; b++){
-                var cir = $("rect.Data")[b]
-                var x_pos = Number(d3.select(cir).attr("x")) + 5;
-                var y_pos = Number(d3.select(cir).attr("y"));
-                d3.select(".quadrants").append("text") // creates and adds text to each square, showing it's id
-                    .attr("y", y_pos)
-                    .attr("x", x_pos)
-                    .attr("dy", "1em")
-                    .attr("class", "id_text")
-                    .style("font", "bold")
-                    .text(d3.select(cir).attr("id"))
-            }
+            console.log("Dragend!")
         }
-        console.log("Dragend!")
+        $helper.remove();
     }
 
     // Enables dropping of stored tasks
@@ -566,13 +621,6 @@ $(document).ready(function(){
     var graph_con = document.getElementById("scatterplot")
     var unplaced_con = document.getElementById("Unplaced")
     var complete_con = document.getElementById("Completed")
-    var data = document.getElementsByClassName("Data")
-
-    for (var i=0;i<data.length;i++){
-        data[i].ondragstart = function(event) {
-            drag(event)
-        }
-    }
 
     for (var i=0;i<tasks.length;i++){
         tasks[i].ondragstart = function(event){

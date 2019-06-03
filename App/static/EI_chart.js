@@ -153,7 +153,6 @@ g.append("rect")
     .attr("dx", function (d, i) {
         return x_raw[i];
     })
-    .attr("draggable", true)
     .attr("width", 25)
     .attr("height", 25)
     .style("fill", function (d, i) {
