@@ -410,9 +410,15 @@ $(document).ready(function(){
     // defines behavior when square drag starts
     function dragstarted(){
         hover_end(); // stops task square hover behavior when dragging
-        $helper = $("<span>Hello</span>").appendTo($helperparent) // creates square clone for dragging outside graph
-        $helper.css("position", "absolute")
-        $helper.css("display", "none")
+        $helper = $("<div></div>").appendTo($helperparent) // creates square clone for dragging outside graph
+        $helper.css({
+            "position": "absolute",
+            "display": "none",
+            "width": "25px",
+            "height": "25px",
+            "background-color": "lightgrey",
+            "border": "2px solid grey"
+        })
     };
 
     // defines behavior during square dragging
@@ -516,7 +522,6 @@ $(document).ready(function(){
     // Enables dropping of stored tasks
     function allowDrop(ev) {
       ev.preventDefault();
-      console.log("hi")
     }
 
     // Specifies data being dragged
