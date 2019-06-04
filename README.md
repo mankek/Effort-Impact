@@ -61,9 +61,9 @@ Deleting a Task:
 
 Moving a Task:
 
-  Tasks in the Unassigned or Completed sections and the on graph can be moved via dragging.
+  Tasks in the Unassigned or Completed sections and on the graph can be moved to other sections or the graph via dragging.
 
-  **NOTE** Moving a task to the Completed section through cause the Completed field of
+  **NOTE** Moving a task to the Completed section will cause the Completed field of
   the task to automatically be populated with the current date and time of the movement.
 
 See All Tasks:
