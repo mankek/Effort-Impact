@@ -334,52 +334,7 @@ $(document).ready(function(){
                     $("#Instructions").show();
                     focused = null;
                 }
-            } else if (event.keyCode === 67 && event.ctrlKey == true && $("#New").css("display") == "none"){
-                if (focused === null){
-                    alert("No task selected. Click a task to select.")
-                } else{
-                    var f_id = focused.id
-                    if (f_id.split("-").length > 1){
-                        alert("Only tasks on the graph can be moved this way. Tasks that are already stored should be dragged.")
-                    } else{
-                        var task = "Graph-" + f_id
-                        $.ajax({
-                            url: "/move/" + filename,
-                            data: { "Data": task, "Dest": "Completed" },
-                            success: function () {
-                                location.reload(true)
-                            },
-                            error: function (xhr, errorThrown){
-                                console.log(xhr.responseText);
-                                console.log(errorThrown);
-                            }
-                        })
-                    }
-                }
-            } else if (event.keyCode === 85 && event.ctrlKey == true && $("#New").css("display") == "none"){
-                event.preventDefault()
-                if (focused === null){
-                    alert("No task selected. Click a task to select.")
-                } else{
-                    var f_id = focused.id
-                    if (f_id.split("-").length > 1){
-                        alert("Only tasks on the graph can be moved this way. Tasks that are already stored should be dragged.")
-                    } else{
-                        var task = "Graph-" + f_id
-                        $.ajax({
-                            url: "/move/" + filename,
-                            data: { "Data": task, "Dest": "Unplaced" },
-                            success: function () {
-                                location.reload(true)
-                            },
-                            error: function (xhr, errorThrown){
-                                console.log(xhr.responseText);
-                                console.log(errorThrown);
-                            }
-                        })
-                    }
-                }
-            } else if (event.keyCode === 13 && $("#New").css("display") == "none" && $("#Update").css("display") == "none"){
+            }else if (event.keyCode === 13 && $("#New").css("display") == "none" && $("#Update").css("display") == "none"){
                 if ($("#id_div").css('display') == "none" || $("#id_div").css("visibility") == "hidden") { // If enter button is pressed and id table isn't visible ,id table is rendered and shown
 //                    $("rect.Data").off() // removes task square events so task table can't appear
                     $("#Task_check").on("click", function(){ // if task radio button is clicked, id table displays Task
@@ -421,10 +376,11 @@ $(document).ready(function(){
 
     // Drag Functions
 
-    //vars and functions for svg->div dragging
-    var $helper = null
+    //vars for svg->div dragging
+    var $helper = null // Square clone for dragging outside svg
     var $helperparent = $('body')
 
+    // When dragging from chart to storage sends data to backend
     function drag_chart(drag_id, dest){
         var task = "Graph-" + drag_id
         $.ajax({
@@ -440,10 +396,12 @@ $(document).ready(function(){
         })
     }
 
+    // Tracks when the mouse enters/leaves the Unplaced container
     var isOnUnplaced = false;
     $("#Unplaced").mouseenter(function(){isOnUnplaced=true;})
     $("#Unplaced").mouseleave(function(){isOnUnplaced=false;})
 
+    // Tracks when the mouse enters/leaves the Completed container
     var isOnComplete = false;
     $("#Completed").mouseover(function(){isOnComplete=true;})
     $("#Completed").mouseleave(function(){isOnComplete=false;})
@@ -452,28 +410,26 @@ $(document).ready(function(){
     // defines behavior when square drag starts
     function dragstarted(){
         hover_end(); // stops task square hover behavior when dragging
-        // testing svg-div dragging
-        $helper = $("<span>Hello</span>").appendTo($helperparent)
+        $helper = $("<span>Hello</span>").appendTo($helperparent) // creates square clone for dragging outside graph
         $helper.css("position", "absolute")
         $helper.css("display", "none")
     };
 
     // defines behavior during square dragging
-
     function dragged(d, i){
         hover_end();
 
         mousepos = d3.mouse($helperparent[0])
 
         $helper.css({
-            left: mousepos[0] + 10,
+            left: mousepos[0] + 10, // Square clone is positioned so that it doesn't interfere with mouseenter event
             top: mousepos[1] + 10
         });
         d3.select(this)
             .attr('transform', 'translate(' + 0 + ',' + 0 + ')')
             .attr("x", function(d, i) { // replaces squares x coordinate with coordinates of event
                 if (d3.event.x > x_scale(16.25)){ // if coordinates go outside graph, they are limited to stay within graph
-                    $helper.show()
+                    $helper.show() // if coordinates go outside graph, square clone is shown
                     return x_scale(16.25)
                 }else if (d3.event.x < x_scale(0)) {
                     $helper.show()
@@ -520,8 +476,6 @@ $(document).ready(function(){
 
 
     // defines behavior when square drag ends
-
-
     function dragend(d, i){
         if(isOnUnplaced===true){
             drag_chart(String(i), "Unplaced")

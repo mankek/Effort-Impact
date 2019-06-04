@@ -61,15 +61,9 @@ Deleting a Task:
 
 Moving a Task:
 
-* Pressing Ctrl + c while having the update form open will move a selected square's information to the Completed
-  section and remove it from the graph.
+  Tasks in the Unassigned or Completed sections and the on graph can be moved via dragging.
 
-  Pressing Ctrl + u while having the update form open will move a selected square's information to the Unassigned
-  section and remove it from the graph.
-
-  Tasks in the Unassigned or Completed sections can be moved via dragging.
-
-  **NOTE** Moving a task to the Completed section through either dragging or keypress will cause the Completed field of
+  **NOTE** Moving a task to the Completed section through cause the Completed field of
   the task to automatically be populated with the current date and time of the movement.
 
 See All Tasks:
