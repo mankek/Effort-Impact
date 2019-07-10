@@ -1,5 +1,7 @@
 body{
     position: absolute;
+    width: 100%;
+    height: 100%;
 }
 #heading {
     text-decoration: underline;
@@ -8,7 +10,9 @@ body{
     color: #3077e8;
 }
 #instructions {
+    position: relative;
     padding: 5px;
+    height: 40%;
     margin: auto;
     width: 80%;
     font-size: 24px;
@@ -16,8 +20,9 @@ body{
 /* File selection/file creation divs container */
 #choose_file {
     position: absolute;
-    float: left;
     width: 100%;
+    height: 250px;
+    top: 600px;
 }
 /* File selection form container */
 #choose{
@@ -35,7 +40,8 @@ body{
 }
 /* File creation form container */
 #make {
-    float: right;
+    left: 1000px;
+    height: 250px;
 }
 
 

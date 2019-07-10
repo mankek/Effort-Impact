@@ -1,15 +1,14 @@
 /* Container for chart and right-hand info/form div */
 #Content {
     width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    height: 720px;
+    height: 75%;
+    margin: auto;
 }
 /* Container for chart */
 #scatterplot {
     display: inline-block;
-    float: left;
-    height: 90%;
+    left: 5px;
+    height: 650px;
     padding-top: 10px;
     padding-bottom: 10px;
     overflow-y: hidden;
@@ -19,7 +18,7 @@
 .chart{
     display: inline-block;
     position: absolute;
-    top: 0;
+    top: 10;
     left: 0;
 }
 /* chart gridlines */
@@ -45,8 +44,8 @@ div.tooltip {
 }
 /* Container for info/form div */
 #Info {
-    float: right;
-    height: 90%;
+    left: 1000px;
+    height: 650px;
 }
 /* class references all below divs that can appear in Info */
 .info_div{
