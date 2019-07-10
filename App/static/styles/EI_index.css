@@ -8,13 +8,14 @@ body{
     font-size: 35px;
     text-align: center;
     color: #3077e8;
+    width: 1000px;
+    margin: auto;
 }
 #instructions {
     position: relative;
     padding: 5px;
-    height: 40%;
     margin: auto;
-    width: 80%;
+    width: 1500px;
     font-size: 24px;
 }
 /* File selection/file creation divs container */
