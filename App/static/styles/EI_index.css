@@ -4,24 +4,29 @@ body{
     height: 100%;
 }
 #heading {
+    position: absolute;
     text-decoration: underline;
+    left: 10%;
+    height: 45px;
     font-size: 35px;
     text-align: center;
     color: #3077e8;
-    width: 1000px;
-    margin: auto;
+    width: 1500px;
+    padding: 5px;
 }
 #instructions {
-    position: relative;
+    position: absolute;
+    left: 10%;
+    top: 180px;
     padding: 5px;
-    margin: auto;
     width: 1500px;
     font-size: 24px;
 }
 /* File selection/file creation divs container */
 #choose_file {
     position: absolute;
-    width: 100%;
+    width: 1520px;
+    left: 10%;
     height: 250px;
     top: 600px;
 }
@@ -29,6 +34,7 @@ body{
 #choose{
     height: 100%;
     float: left;
+    width: 40%;
 
 }
 /* Available File list */
@@ -41,8 +47,9 @@ body{
 }
 /* File creation form container */
 #make {
-    left: 1000px;
+    right: 0px;
     height: 250px;
+    width: 40%;
 }
 
 
