@@ -9,8 +9,9 @@ app = Flask(__name__)
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
-    sheet_list = app_methods.file_find()
     app_methods.sheet_dir()
+    # finds all valid, available task sheets in the Task Sheets folder
+    sheet_list = app_methods.file_find()
     return render_template("index.html", sheet_list=sheet_list)
 
 
@@ -73,8 +74,11 @@ def show(filename):
 # Update existing task
 @app.route('/update/<filename>', methods=['GET', 'POST'])
 def update(filename):
+    # if task has been moved on chart
     if request.method == "GET":
+        # get dictionary of new effort & impact coordinates and task info
         change = request.args
+        # if effort or impact values are beyond boundaries, set them to max/min values
         eff = change['Effort']
         if float(eff) > 16:
             eff = str(16)
@@ -87,13 +91,17 @@ def update(filename):
             im = str(0)
         task_id = change['Id']
         sheet = "Graph"
+        # updates task sheet with new effort & impact values
         app_methods.Table(filename).update_table(task_id, "Effort", eff, sheet)
         app_methods.Table(filename).update_table(task_id, "Impact", im, sheet)
         return redirect(url_for("show", filename=filename))
+    # if task fields have been changed
     if request.method == "POST":
         task_id = request.form["id"]
         field = request.form["Field"]
         content = request.form["Content"]
+        # if deadline was unchosen, task has no deadline
+        # else check for a due time and format the deadline and find amount of time until due
         if field == "Deadline":
             if content == "":
                 content = "No Deadline"
@@ -105,11 +113,13 @@ def update(filename):
                     due_time = request.form["up_time"].split(":")
                 diff = app_methods.due_day(int(due_date[0]), int(due_date[1]), int(due_date[2]), int(due_time[0]))
                 content = content + '_' + ":".join(due_time) + "_" + diff
+        # parses task id to identify task location
         if len(task_id.split("-")) > 1:
             sheet = task_id.split("-")[0]
             task_id = task_id.split("-")[-1]
         else:
             sheet = "Graph"
+        # updates task sheet
         app_methods.Table(filename).update_table(task_id, field, content, sheet)
         return redirect(url_for("show", filename=filename))
 
@@ -117,11 +127,15 @@ def update(filename):
 # Add a task to the table
 @app.route('/new/<filename>', methods=['POST'])
 def add_new(filename):
+    # dictionary that holds the info for the new task
     new_task = dict()
     sheet = request.form["sheet"]
     new_task["Impact"] = "16"
     new_task["Effort"] = "0"
+    # iterates through the fields of the current task sheet
     for i in app_methods.Table(filename).fields:
+        # if deadline was unchosen, task has no deadline
+        # else check for a due time and format the deadline and find amount of time until due
         if i == 'Deadline':
             if request.form[i] == "":
                 data = "No Deadline"
@@ -133,11 +147,14 @@ def add_new(filename):
                     due_time = request.form['time'].split(':')
                 diff = app_methods.due_day(int(due_date[0]), int(due_date[1]), int(due_date[2]), int(due_time[0]))
                 data = request.form[i] + '_' + ":".join(due_time) + '_' + diff
+        # effort & impact coordinates are set above
         elif (i == "Effort") or (i == "Impact"):
             continue
         else:
             data = request.form[i]
+        # process form data is added to new task dictionary
         new_task[i] = data
+    # new task is added to task sheet
     app_methods.Table(filename).add_to_table(new_task, sheet)
     return redirect(url_for("show", filename=filename))
 
@@ -146,12 +163,14 @@ def add_new(filename):
 @app.route('/delete/<filename>', methods=['GET'])
 def delete_task(filename):
     delete_info = request.args
+    # parses task id to get task location
     if len(delete_info["Id"].split("-")) > 1:
         task_id = int(delete_info["Id"].split("-")[-1])
         sheet = delete_info["Id"].split("-")[0]
     else:
         task_id = int(delete_info["Id"])
         sheet = "Graph"
+    # deletes task from sheet
     app_methods.Table(filename).delete_from_table(task_id, sheet)
     return redirect(url_for("show", filename=filename))
 
@@ -160,14 +179,19 @@ def delete_task(filename):
 @app.route('/move/<filename>', methods=['GET'])
 def move_task(filename):
     move_info = request.args
+    # gets location of task
     src = move_info["Data"].split("-")[0]
+    # gets numerical id of task
     task_id = int(move_info["Data"].split("-")[-1])
+    # gets location task will be moved to
     dest = move_info["Dest"]
+    # moves task in task sheet
     app_methods.Table(filename).move_sheets(src, dest, task_id)
     return redirect(url_for("show", filename=filename))
 
 
 @app.route('/download/<filename>', methods=['GET'])
 def download(filename):
+    # returns the current task sheet file
     return send_from_directory(directory="Task-Sheets", filename=str(filename), as_attachment=True)
 

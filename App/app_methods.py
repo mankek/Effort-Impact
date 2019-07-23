@@ -4,7 +4,7 @@ import os
 import datetime
 
 # print(pandas.__version__)
-
+# checks version of pandas available
 if "0.21.0" < pandas.__version__:
     old_pandas = False
 else:
@@ -40,10 +40,10 @@ def file_check(file):
     if file.split(".")[-1] != "xlsx":
         print("file is not an excel file with the .xlsx extension")
         return False
-    if file.split(".")[0] == "test_1":
-        return False
+    # loads the task sheet to check fields
     file_frame = pandas.read_excel(os.path.join(out_path, file), index=0)
     frame_fields = list(file_frame)
+    # checks for existence of required fields
     if ("Description" not in frame_fields) or ("Task" not in frame_fields) or ("Effort" not in frame_fields) or \
             ("Impact" not in frame_fields):
         print("file is missing required fields")
@@ -66,9 +66,10 @@ def file_name(name):
 
 # Checks if new file already exists; appends name with number if it does
 def file_exist(file):
-    index = 2
+    index = 1
+    # as long as the file path already exists, append an incremented number to the end of the file name
     while os.path.exists(os.path.join(out_path, file)):
-        if index == 2:
+        if index == 1:
             file_title = file.split(".")[0] + "_" + str(index)
         else:
             file_title = "_".join(file.split("_")[0:-1]) + "_" + str(index)
@@ -79,13 +80,19 @@ def file_exist(file):
 
 # Creates a new excel file
 def new_table(filename, fields):
+    # defines task sheet path
     path = os.path.join(out_path, filename)
+    # initializes writer
     writer = pandas.ExcelWriter(path, engine='xlsxwriter')
+    # creates dataframe with required and chosen fields
     df = pandas.DataFrame(fields)
+    # creates Graph and Unplaced location sheets
     df.to_excel(writer, sheet_name="Graph")
     df.to_excel(writer, sheet_name='Unplaced')
+    # Adds new "Completed" field for date and time completed
     fields["Completed"] = []
     df2 = pandas.DataFrame(fields)
+    # creates Completed location sheet
     df2.to_excel(writer, sheet_name='Completed')
 
 
@@ -147,19 +154,27 @@ class Table(object):
 
     # Takes the new task and adds it to the excel sheet
     def add_to_table(self, new_task, sheet_to):
+        # row new task will be added to
         row_number = self.df_dict[sheet_to].shape[0]
+        # iterates through fields and adds task info to new location
         for t in new_task.keys():
             self.df_dict[sheet_to].loc[row_number, t] = new_task[t]
         self.save_xlsx()
 
     # Updates the specified field of the specified task
     def update_table(self, task_id, field, content, sheet_to):
+        # checks if task numerical id is present in dataframe index
         if int(task_id) in self.df_dict[sheet_to].index:
+            # checks that field is present
             if str(field) in self.fields:
+                # writes new info to field of task
                 self.df_dict[sheet_to].loc[int(task_id), field] = content
                 self.save_xlsx()
             else:
                 print("improper field")
+        # if task numerical id is not present, reduces id by one and tries again
+        # this is because resetting the index after a task deletion
+        # doesn't always carry-over to the front-end immediately after reloading
         else:
             new_task_id = str(int(task_id) - 1)
             self.update_table(new_task_id, field, content, sheet_to)
@@ -167,23 +182,33 @@ class Table(object):
 
     # Deletes a selected task from the excel sheet
     def delete_from_table(self, task_id, sheet_to):
+        # checks if task numerical id is present in dataframe index
         if task_id in self.df_dict[sheet_to].index:
+            # drops deleted task from data frame
             self.df_dict[sheet_to].drop(task_id, axis=0, inplace=True)
+            # resets data frame index
             self.df_dict[sheet_to].reset_index(drop=True, inplace=True)
             self.save_xlsx()
             return "Table saved"
+        # if task numerical id is not present, reduces id by one and tries again
+        # this is because resetting the index after a task deletion
+        # doesn't always carry-over to the front-end immediately after reloading
         else:
             new_task_id = task_id - 1
             self.delete_from_table(new_task_id, sheet_to)
             print("index " + str(task_id) + " was not present, so went with next lowest index")
 
+    # Deletes a task sheet from the Task Sheets directory
     def delete_table(self):
         os.remove(self.path)
 
+    # Moves sheets from one location sheet to another
     def move_sheets(self, sheet_from, sheet_to, task_id):
         df_to = self.df_dict[sheet_to]
         df_from = self.df_dict[sheet_from]
+        # row task will be moved to
         row_number = df_to.shape[0]
+        # adds the date and time completed
         if sheet_to == "Completed":
             now_split = str(datetime.datetime.now()).split(" ")
             time_split = now_split[1].split(":")
@@ -196,14 +221,19 @@ class Table(object):
                 period = "AM"
             now = now_split[0] + " " + ":".join(time_split[:2]) + " " + period
             df_to.loc[row_number, "Completed"] = now
+        # for every field in sheet adds task info to new location
         for i in self.fields:
             df_to.loc[row_number, i] = df_from.loc[task_id, i]
+        # removes task from old location
         df_from.drop(task_id, axis=0, inplace=True)
+        # resets index of dataframe
         df_from.reset_index(drop=True, inplace=True)
         self.save_xlsx()
 
     def save_xlsx(self):
+        # intializes writer
         writer = pandas.ExcelWriter(self.path, engine='xlsxwriter')
+        # writes each location data frame content to lcoation sheet
         self.df_dict["Graph"].to_excel(writer, sheet_name="Graph")
         self.df_dict["Unplaced"].to_excel(writer, sheet_name='Unplaced')
         self.df_dict["Completed"].to_excel(writer, sheet_name='Completed')
@@ -232,8 +262,10 @@ def colors(tasks):
         return dl_colors, sj_col, dp_col
 
     for i in tasks:
+        # checks if deadline is a field
         if 'Deadline' in i.keys():
             due = i['Deadline'].split('_')[-1].split(" ")
+            # checks if amount of time until deadline is in hours or days
             if due[1][0] == 'h':
                 dl_colors.append((int(due[0])/24) * 0.0027397260273973)
             elif due[1][0] == 'd':
@@ -242,17 +274,22 @@ def colors(tasks):
                     dl_colors.append(color_val)
                 else:
                     dl_colors.append(1)
+            # checks if there is no deadline
             elif due[0][0] == 'N':
                 dl_colors.append(1)
+            # checks if task is past due
             elif due[1][0] == 'i':
                 dl_colors.append(0)
+            # checks if task is due today
             elif due[1][0] == 't':
                 dl_colors.append(.00136)
         else:
             break
 
+    # defines the number of available categories for categorical axis
     col_div = 1 / 20
     sj_list = list()
+    # iterates through tasks and adds the unique subjects to a list
     for s in tasks:
         if 'Subject' in s.keys():
             if s['Subject'] not in sj_list:
@@ -262,14 +299,17 @@ def colors(tasks):
     if len(sj_list) > 0:
         sj_col_index = dict()
         index = 1
+        # every unique subject is assigned a number id in a dictionary that corresponds to a color value
         for t in sj_list:
             sj_col_index[t] = index * col_div
             index += 1
+        # for every task, the color value of the subject is found, rounded and saved in a list
         for u in tasks:
             sub = u['Subject']
             sj_col.append(round(sj_col_index[sub], 2))
 
     dp_list = list()
+    # iterates through tasks and adds unique departments to a list
     for a in tasks:
         if 'Department' in a.keys():
             if a['Department'] not in dp_list:
@@ -278,9 +318,11 @@ def colors(tasks):
             return dl_colors, sj_col, dp_col
     dp_col_index = dict()
     index2 = 1
+    # every unique subject is assigned a color value
     for b in dp_list:
         dp_col_index[b] = index2 * col_div
         index2 += 1
+    # for every task, the color value of the department is rounded and saved in a list
     for c in tasks:
         dep = c['Department']
         dp_col.append(round(dp_col_index[dep], 2))
@@ -294,22 +336,31 @@ def due_day(year, month, day, hour):
     y = datetime.datetime.today()
     u = datetime.date(year, month, day)
     v = datetime.date.today()
+    # if the deadline date is larger (in the future) than today's date
     if u > v:
+        # finds the time difference between the deadline datetime and today's datetime
         t = x - y
         one_day = datetime.timedelta(days=1)
+        # if the time difference is less than one day
+        # time until due is given in hours
         if t < one_day:
             return str(round(t.seconds/3600)) + ' hours left!'
+        # if the time difference is one day
         elif t == one_day:
             return str(t.days) + ' day left'
+        # if the time difference is greater than one day
         else:
             return str(t.days) + ' days and ' + str(round((int(t.seconds)/3600))) + ' hours left!'
+    # if the deadline date or datetime is less than (in the past) today's date or datetime
     elif v > u or y > x:
         return "Task is past due"
+    # if the deadline date and today's date are the same
     elif v == u:
         return "Due today!"
 
 
-# Removes Effort, Impact values
+# Removes Effort, Impact values so that
+# they aren't shown to the user
 def clean_result(dict_list):
     new_result = dict_list
     for i in new_result:
