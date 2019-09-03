@@ -1,41 +1,43 @@
-body{
-    position: absolute;
-    width: 100%;
-    height: 100%;
-}
 #heading {
-    position: absolute;
-    text-decoration: underline;
-    left: 10%;
-    height: 45px;
-    font-size: 35px;
+    position: relative;
+    background-color: #0b2b5b;
+    border-bottom: 5px solid #8ab2f2;
+    height: 7%;
+    padding-top: 15px;
+    font-size: 36px;
+    font-weight: bold;
     text-align: center;
-    color: #3077e8;
-    width: 1500px;
-    padding: 5px;
+    color: white;
+    width: 100%;
+    margin: auto;
 }
-#instructions {
-    position: absolute;
-    left: 10%;
-    top: 180px;
-    padding: 5px;
-    width: 1500px;
+
+.container {
+    position: relative;
+    background-color: white;
+    border: 5px solid #8ab2f2;
+    text-align: center;
     font-size: 24px;
+    padding: 10px;
+}
+
+#instructions {
+    width: 85%;
+    height: 35%;
+    margin: auto;
+    overflow: auto;
 }
 /* File selection/file creation divs container */
 #choose_file {
-    position: absolute;
-    width: 1520px;
-    left: 10%;
-    height: 250px;
-    top: 600px;
+    width: 85%;
+    height: 35%;
+    margin: auto;
 }
 /* File selection form container */
 #choose{
-    height: 100%;
+    height: 85%;
     float: left;
-    width: 40%;
-
+    width: 45%;
 }
 /* Available File list */
 #choose_list{
@@ -43,13 +45,22 @@ body{
     width: 75%;
     height: 130px;
     overflow: auto;
-    background-color: #e8f0fc;
+    background-color: #f2f2f2;
 }
 /* File creation form container */
 #make {
-    right: 0px;
-    height: 250px;
-    width: 40%;
+    float: right;
+    height: 85%;
+    width: 45%;
+}
+
+#footer {
+    position: relative;
+    background-color: #0b2b5b;
+    border-top: 5px solid #8ab2f2;
+    text-align: center;
+    padding-top: 5px;
+    height: 3%;
 }
 
 

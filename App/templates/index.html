@@ -9,29 +9,27 @@
 </head>
 <body>
     <div id="heading">
-        <h2>Welcome to the Effort-Impact Application!</h2>
-    </div>
+        <header>Welcome to the Effort-Impact Application!</header>
+    </div><br><br>
     <div id="instructions" class="container">
         <h3>Some instructions to get you started:</h3>
         <p>
-            The first step to generating the Effort-Impact Matrix is selecting your task sheet. All task sheets are
-            located in the Task Sheets folder within the application folder. If you do not yet have a Task sheet in the folder, you can
-            click on the Create New Sheet button, which will create a new Task Sheet with a given name.
+            Choose Task Sheet contains a list of all available task sheets. Selecting one allows you to either load the
+            associated chart or delete the task sheet.
         </p>
         <p>
-            Non-optional fields for each entry are: Task, Description. Optional fields can be chosen when creating
-            a new sheet.
+            New Task Sheet allows for the creation of a new task sheet. Input the title of the new sheet (if a sheet
+            with that name already exists - your sheet will have a number appended to the title).
         </p>
         <p>
-            If you create a new task sheet with a name that already belongs to an existing task sheet, your new task sheet will have a number
-            appended to its title.
+            All sheets are initialized with the Task and Description fields. Optional fields can be selected according
+            to the type of tasks that will be added.
         </p>
     </div>
-    <br>
-    <br>
+    <br><br><br>
     <div id="choose_file">
-        <form action="/chart" method="post">
-            <div id="choose" class="container">
+        <form action="/chart" method="post" id="choose" class="container">
+            <div>
                 Choose Task Sheet<br><br>
                 <div id="choose_list">
                     {% for file in sheet_list %}
@@ -39,14 +37,14 @@
                     {% endfor %}
                     <br>
                 </div><br>
-                <button type="submit" name="action" value="submit">Submit</button>
-                <button type="submit" name="action" value="delete" style="background-color:red">Delete</button><br>
+                <button type="submit" name="action" value="submit">Open Sheet</button>
+                <button type="submit" name="action" value="delete" style="background-color:red">Delete Sheet</button><br>
             </div>
         </form>
-        <form action="/chart" method="post">
-            <div id="make" class="container">
-                New Sheet Name (no extension needed)<br><br>
-                <input type="text" name="new_name" id="new_name" required><br><br>
+        <form action="/chart" method="post" id="make" class="container">
+            <div>
+                New Task Sheet<br><br>
+                Name: <input type="text" name="new_name" id="new_name" required><br><br>
                 Select Optional Fields<br><br>
                 <input id="DeadlineHidden" type="hidden" value="No" name="DeadlineField">
                 <input id="Deadline" type="checkbox" name="DeadlineField" value="Deadline" onclick="Check('Deadline')">Deadline
@@ -56,9 +54,13 @@
                 <input id="Department" type="checkbox" name="DepField" value="Department" onclick="Check('Department')">Department
                 <input id="NotesHidden" type="hidden" value="No" name="NotesField">
                 <input id="Notes" type="checkbox" name="NotesField" value="Notes" onclick="Check('Notes')">Notes<br><br>
-                <button type="submit" name="action" value="new">Create New Sheet</button>
+                <button type="submit" name="action" value="new">Open New Sheet</button>
             </div>
         </form>
+    </div><br><br>
+
+    <div id="footer">
+        <footer></footer>
     </div>
 
     <script>
