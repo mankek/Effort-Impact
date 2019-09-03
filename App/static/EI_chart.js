@@ -1,7 +1,7 @@
 // Variables for chart creation
-var margin = {top: 50, right: 60, bottom: 40, left: 40}
-var width = 700
-var height = 500
+var margin = {top: 40, right: 70, bottom: 60, left: 50}
+var width = 835
+var height = 555
 
 
 var x_scale = d3.scaleLinear()
@@ -80,12 +80,12 @@ var legendWidth = 20;
 
 var svg = d3.select('#scatterplot')
   .append('svg')
-//  .attr('width', width + margin.left + margin.right)
-//  .attr('height', height + margin.top + margin.bottom)
-  .attr("preserveAspectRatio", "xMidYMid")
+  .attr('width', width + margin.left + margin.right)
+  .attr('height', height + margin.top + margin.bottom)
+//  .attr("preserveAspectRatio", "xMidYMid")
 //  .attr("viewBox", " 0 0 " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom))
-  .attr("viewBox", "0 0 800 620")
-  .attr('class', 'chart')
+//  .attr("viewBox", "0 0 840 620")
+//  .attr('class', 'chart')
   .style("background-color", "white")
 //  .attr("transform", "translate(" + (margin.left + margin.right)/2 + "," + margin.top + ")")
 
@@ -234,7 +234,7 @@ chart.append("g")
 //    .call(xAxis);
 
 svg.append("text")
-    .attr("transform", "translate(" + ((width + margin.left + margin.right)/2) + "," + (height + (2*margin.bottom/3) + (margin.top)) + ")")
+    .attr("transform", "translate(" + ((width + margin.left + margin.right)/2) + "," + (height + (40) + (margin.top)) + ")")
     .style("text-anchor", "middle")
     .style("font-size", "25px")
     .text("Effort");
@@ -255,11 +255,11 @@ svg.append("text")
 
 // Chart title
 
-svg.append("text")
-    .attr("transform", "translate(" + ((width/2) + margin.left) + "," + (2*margin.top/3) + ")")
-    .style("text-anchor", "middle")
-    .style("font-size", "35px")
-    .text(title)
+//svg.append("text")
+//    .attr("transform", "translate(" + ((width/2) + margin.left) + "," + (2*margin.top/3) + ")")
+//    .style("text-anchor", "middle")
+//    .style("font-size", "35px")
+//    .text(title)
 
 
 // Color Legend
@@ -298,12 +298,12 @@ function sj_or_dp_legend(){
     var legendsvg = svg.selectAll(".legend")
         .data(c2_scale.ticks(20).slice(1).reverse())
         .enter().append("g")
-        .attr("transform", function(d, i) { return "translate(" + (width + margin.left) + "," + ((25 * i) + margin.top) + ")"; })
+        .attr("transform", function(d, i) { return "translate(" + (width + margin.left) + "," + (((height/20) * i) + margin.top) + ")"; })
         .attr("class", "legend")
 
     legendsvg.append("rect")
         .attr("width", legendWidth)
-        .attr("height", 25)
+        .attr("height", 27)
         .style("fill", c2_scale)
         .attr("class", "ColorScale")
         .attr("color_val", function(d) {
@@ -313,8 +313,8 @@ function sj_or_dp_legend(){
     if (scale_flag == "SJ"){
         svg.append("text")
         .attr("transform", "rotate(90)")
-        .attr("x", (margin.top + margin.bottom + height/3))
-        .attr("y", 0 - (width + margin.right + legendWidth))
+        .attr("x", (margin.top + height)/2)
+        .attr("y", 0 - (width + legendWidth + margin.left + (margin.right/3)))
         .attr("dy", "0.35em")
         .attr("class", "axis_text")
         .style("font-size", "25px")

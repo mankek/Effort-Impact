@@ -8,19 +8,26 @@
     <script src="https://d3js.org/d3-scale-chromatic.v1.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="/static/styles/EI_general.css">
-    <link rel="stylesheet" href="/static/styles/EI_content.css">
+    <link rel="stylesheet" href="/static/styles/EI_chart.css">
     <link rel="stylesheet" href="/static/styles/EI_storage.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/redmond/jquery-ui.css">
 </head>
 <body>
+    <div id="heading">
+        <header>Current Sheet: {{ file }}
+            <form action="/index" method="get" id="logout">
+                    <button type="submit" id="logout-button">Logout</button>
+            </form>
+        </header>
+    </div>
     <div id="Content">
         <div id="scatterplot" class="container">
         </div>
         <div id="Info" class="container">
+            <div id="show-bar">
+                FillerFillerFiller
+            </div>
             <div id="Instructions" class="info_div">
-                <form action="/index" method="get" id="logout">
-                    <button type="submit">Logout</button>
-                </form>
                 <a href="/download/{{ file }}"><h2 id="download">Download Task Files</h2></a>
                 <h1>Controls</h1>
                 <h2>Hover with the mouse</h2>
