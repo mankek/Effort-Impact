@@ -104,7 +104,7 @@
     </div>
     <div id="storage">
         <div id="Unplaced" class="container">
-            <h2>Unassigned</h2>
+            <h2 style="text-decoration:underline">Unassigned</h2>
             {% for task2 in unplaced %}
             <p id="Unplaced-{{ unplaced.index(task2) }}" draggable="true" class="stored_task">
                 {% for key in task2.keys() %}
@@ -114,7 +114,7 @@
             {% endfor %}
         </div>
         <div id="Completed" class="container">
-            <h2>Completed</h2>
+            <h2 style="text-decoration:underline">Completed</h2>
             {% for task in completed %}
             <p id="Completed-{{ completed.index(task) }}" draggable="true" class="stored_task">
                 {% for key in task.keys() %}
