@@ -133,7 +133,7 @@ $(document).ready(function(){
         this.style.backgroundColor = "PaleTurquoise"
     },
     function(){
-        this.style.backgroundColor = "#8ab2f2"
+        this.style.backgroundColor = "#e8f0fc"
     });
 
 

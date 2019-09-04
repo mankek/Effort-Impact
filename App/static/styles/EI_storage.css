@@ -37,6 +37,7 @@
 .stored_task{
     background-color: #e8f0fc;
     margin-top: 0;
-    margin-bottom: 0;
+    padding-bottom: 5px;
+    margin: 0;
     font-size: 20px;
 }

@@ -31,7 +31,7 @@
                 <button class="menu">test show instructions</button>
             </div>
             <div id="Instructions" class="info_div">
-                <a href="/download/{{ file }}"><h2 id="download">Download Task Files</h2></a>
+<!--                <a href="/download/{{ file }}"><h2 id="download">Download Task Files</h2></a>-->
                 <h1>Controls</h1>
                 <h2>Hover with the mouse</h2>
                 <p>Hover over squares in the graph to view their task information. If using the Deadline, Subject, or Department field, hover
@@ -66,6 +66,7 @@
             </div>
             <div id="New" class="info_div">
                 <form action="/new/{{ file }}" method="post" id="form">
+                    <br>
                     <h2>New Task Form</h2>
                     <br>
                     <div id="input">
@@ -73,17 +74,17 @@
                         Description: <textarea id="desc" name="Description" required>None</textarea><br><br>
                         <input type="hidden" name="sheet" id="sheet" value="Graph">
                     </div><br>
-                    <button type="submit">Submit to me!</button><button type="button" id="HideNew">Go back</button> <br>
+                    <button type="submit">Create Task</button><br>
+                    <button type="button" id="HideNew">Go back</button> <br>
                     <br>
                 </form>
             </div>
 
             <div id="Update" class="info_div">
                 <form action="/update/{{ file }}" method="post" id="form2">
+                    <br>
                     <h2>Change Form</h2>
                     <h3>Press the Delete button to delete this task!</h3>
-                    <h3>Press Ctrl + c to complete this task!</h3>
-                    <h3>Press Ctrl + u to move a task to Unassigned!</h3>
                     <div id="inputs">
                         <br>
                         Task ID #: <input type="text" name="id" id="id" readonly><br><br>
@@ -94,8 +95,8 @@
                         <label>Content</label> <input type="text" id="change" name="Content" required><br><br>
                     </div>
                     <br>
-                    <br>
-                    <button type="submit">Transform!</button><button type="button" id="HideUpdate">Go back</button> <br>
+                    <button type="submit">Update Task</button><br>
+                    <button type="button" id="HideUpdate">Go back</button> <br>
                     <br>
                 </form>
             </div>
