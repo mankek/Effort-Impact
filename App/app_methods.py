@@ -150,7 +150,6 @@ class Table(object):
             unplaced.append(dict())
             for i in list(self.unplaced_df):
                 unplaced[t][i] = str(self.unplaced_df[i][t])
-        print(self.fields)
         return tasks, self.fields, completed, unplaced
 
     # Takes the new task and adds it to the excel sheet
