@@ -111,6 +111,11 @@ div.tooltip {
     width: 25%;
     height: 100%;
     float: left;
+    border: 1px solid #e8f0fc;
+    background-image: linear-gradient(to bottom, rgba(11,43,91,0.5) 0%, rgba(232,240,252,1) 100%);
+}
+.menu:hover {
+    background-image: linear-gradient(to bottom, rgba(22,86,182,0.5) 0%, rgba(232,240,252,1) 100%);
 }
 /* hyperlink that downloads task sheets */
 #download{
@@ -119,6 +124,7 @@ div.tooltip {
 
 /* container and table for task hover */
 #task_div {
+    padding-top: 5%;
     display: inline-block;
     word-wrap: break-word;
 }
