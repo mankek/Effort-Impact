@@ -1,7 +1,7 @@
 // Variables for chart creation
 var margin = {top: 40, right: 70, bottom: 60, left: 50}
 var width = 835
-var height = 555
+var height = 562
 
 
 var x_scale = d3.scaleLinear()
@@ -80,12 +80,12 @@ var legendWidth = 20;
 
 var svg = d3.select('#scatterplot')
   .append('svg')
-  .attr('width', width + margin.left + margin.right)
-  .attr('height', height + margin.top + margin.bottom)
-//  .attr("preserveAspectRatio", "xMidYMid")
-//  .attr("viewBox", " 0 0 " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom))
-//  .attr("viewBox", "0 0 840 620")
-//  .attr('class', 'chart')
+//  .attr('width', width + margin.left + margin.right)
+//  .attr('height', height + margin.top + margin.bottom)
+  .attr("preserveAspectRatio", "none")
+  .attr("viewBox", " 0 0 " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom))
+//  .attr("viewBox", "0 0 955 660")
+  .attr('class', 'chart')
   .style("background-color", "white")
 //  .attr("transform", "translate(" + (margin.left + margin.right)/2 + "," + margin.top + ")")
 

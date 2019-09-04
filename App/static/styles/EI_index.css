@@ -1,3 +1,12 @@
+body {
+    position: absolute;
+    margin: 0px;
+    background-color: #e8f0fc;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    font-family: sans-serif;
+}
 #heading {
     position: relative;
     background-color: #0b2b5b;
@@ -19,13 +28,13 @@
     text-align: center;
     font-size: 24px;
     padding: 10px;
+    overflow: auto;
 }
 
 #instructions {
     width: 85%;
     height: 35%;
     margin: auto;
-    overflow: auto;
 }
 /* File selection/file creation divs container */
 #choose_file {

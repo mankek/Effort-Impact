@@ -1,3 +1,13 @@
+body {
+    position: absolute;
+    margin: 0px;
+    background-color: #0b2b5b;
+    width: 100%;
+    min-width: 1930px;
+    height: 100%;
+    overflow-x: hidden;
+    font-family: sans-serif;
+}
 #heading {
     position: relative;
     background-color: #0b2b5b;
@@ -6,7 +16,7 @@
     padding-top: 5px;
     font-size: 30px;
     color: white;
-    width: 100%;
+    width: 99%;
     margin: auto;
 }
 
@@ -16,7 +26,7 @@ header {
 
 #logout {
     float: right;
-    padding-right: 15px;
+    padding-right: 10px;
     height: 100%;
     width: 7%;
 }
@@ -25,37 +35,28 @@ header {
     height: 100%;
     width: 100%;
 }
-/*
-.container {
-    position: absolute;
-    border: 5px solid #8ab2f2;
-    background-color: #e8f0fc;
-    width: 850px;
-    padding: 10px;
-    text-align: center;
-    font-family: Arial, Helvetica, sans-serif;
-}
-*/
 
 /* Container for chart and right-hand info/form div */
 #Content {
-    width: 100%;
+    width: 99%;
     height: 655px;
     margin: auto;
     border: 5px solid #0b2b5b;
 }
 /* Container for chart */
 #scatterplot {
-    position: absolute;
+    position: relative;
+    padding-right: 25px;
     float: left;
-    width: 820px;
-    height: 620px;
+    width: 49%;
+    height: 100%;
+    border-right: 5px solid #0b2b5b;
+    overflow-y: scroll;
 }
 /* d3 chart object - make chart responsive to window size */
 .chart{
     display: inline-block;
     position: absolute;
-    top: 10;
     left: 0;
 }
 /* chart gridlines */
@@ -83,15 +84,16 @@ div.tooltip {
 #Info {
     position: relative;
     height: 100%;
-    width: 50%;
-    float: right;
+    width: 49%;
+    float: left;
     background-color: white;
-    border-left: 5px solid #0b2b5b;
+    overflow: auto;
 }
 /* class references all below divs that can appear in Info */
 .info_div{
-    width: 100%;
+    width: 95%;
     height: 95%;
+    margin: auto;
     font-size: 18px;
     text-align: center;
     padding-left: 5px;
@@ -103,14 +105,17 @@ div.tooltip {
     text-align: center;
     background-color: #8ab2f2;
 }
+
+.menu {
+    width: 25%;
+    height: 100%;
+    float: left;
+}
 /* hyperlink that downloads task sheets */
 #download{
     background-color: #e8f0fc;
 }
 
-#Instructions{
-    overflow: auto;
-}
 /* container and table for task hover */
 #task_div {
     display: inline-block;
@@ -136,5 +141,6 @@ div.tooltip {
 #Update {
     display: inline-block;
 }
+
 
 
