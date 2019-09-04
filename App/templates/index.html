@@ -14,36 +14,27 @@
     <div id="instructions" class="container">
         <h3>Some instructions to get you started:</h3>
         <p>
-            Choose Task Sheet contains a list of all available task sheets. Selecting one allows you to either load the
-            associated chart or delete the task sheet.
-        </p>
-        <p>
-            New Task Sheet allows for the creation of a new task sheet. Input the title of the new sheet (if a sheet
-            with that name already exists - your sheet will have a number appended to the title).
-        </p>
-        <p>
-            All sheets are initialized with the Task and Description fields. Optional fields can be selected according
-            to the type of tasks that will be added.
+            Placeholder
         </p>
     </div>
     <br><br><br>
     <div id="choose_file">
         <form action="/chart" method="post" id="choose" class="container">
             <div>
-                Choose Task Sheet<br><br>
+                Choose Table<br><br>
                 <div id="choose_list">
-                    {% for file in sheet_list %}
-                    <input type="radio" name="file" value="{{ file }}" required> {{ file }}<br>
+                    {% for table in table_list %}
+                    <input type="radio" name="table" value="{{ table }}" required> {{ table }}<br>
                     {% endfor %}
                     <br>
                 </div><br>
-                <button type="submit" name="action" value="submit">Open Sheet</button>
-                <button type="submit" name="action" value="delete" style="background-color:red">Delete Sheet</button><br>
+                <button type="submit" name="action" value="submit">Open Table</button>
+                <button type="submit" name="action" value="delete" style="background-color:red">Delete Table</button><br>
             </div>
         </form>
         <form action="/chart" method="post" id="make" class="container">
             <div>
-                New Task Sheet<br><br>
+                New Table<br><br>
                 Name: <input type="text" name="new_name" id="new_name" required><br><br>
                 Select Optional Fields<br><br>
                 <input id="DeadlineHidden" type="hidden" value="No" name="DeadlineField">
