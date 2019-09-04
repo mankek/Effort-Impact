@@ -41,7 +41,7 @@ def file_check(file):
         print("file is not an excel file with the .xlsx extension")
         return False
     # loads the task sheet to check fields
-    file_frame = pandas.read_excel(os.path.join(out_path, file), index=0)
+    file_frame = pandas.read_excel(os.path.join(out_path, file), index_col=0)
     frame_fields = list(file_frame)
     # checks for existence of required fields
     if ("Description" not in frame_fields) or ("Task" not in frame_fields) or ("Effort" not in frame_fields) or \
@@ -94,6 +94,7 @@ def new_table(filename, fields):
     df2 = pandas.DataFrame(fields)
     # creates Completed location sheet
     df2.to_excel(writer, sheet_name='Completed')
+    writer.close()
 
 
 class Table(object):
@@ -108,9 +109,9 @@ class Table(object):
             self.complete_df = pandas.read_excel(self.path, sheetname="Completed", index=0)
         else:
             # Loads sheets into separate dataframes
-            self.graph_df = pandas.read_excel(self.path, sheet_name="Graph", index=0)
-            self.unplaced_df = pandas.read_excel(self.path, sheet_name="Unplaced", index=0)
-            self.complete_df = pandas.read_excel(self.path, sheet_name="Completed", index=0)
+            self.graph_df = pandas.read_excel(self.path, sheet_name="Graph", index_col=0)
+            self.unplaced_df = pandas.read_excel(self.path, sheet_name="Unplaced", index_col=0)
+            self.complete_df = pandas.read_excel(self.path, sheet_name="Completed", index_col=0)
         self.fields = list(self.graph_df)
         self.df_dict = {"Graph": self.graph_df, "Unplaced": self.unplaced_df, "Completed": self.complete_df}
 
@@ -149,7 +150,7 @@ class Table(object):
             unplaced.append(dict())
             for i in list(self.unplaced_df):
                 unplaced[t][i] = str(self.unplaced_df[i][t])
-
+        print(self.fields)
         return tasks, self.fields, completed, unplaced
 
     # Takes the new task and adds it to the excel sheet
