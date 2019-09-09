@@ -4,6 +4,9 @@ import os
 import datetime
 import sqlite3
 
+# db_folder_test = "\\".join(os.path.dirname(os.path.abspath(__file__)).split("\\")[0:]) + r"\Database"
+# current_db_test = "DB_1.sqlite"
+
 
 def database_check(path_in):
     try:
@@ -20,22 +23,39 @@ class Database(object):
     def __init__(self, db_folder, current_db):
         self.db_path = os.path.join(db_folder, current_db)
         database_check(self.db_path)
-        self.db_conn = sqlite3.connect(self.db_path)
-        self.db_cursor = self.db_conn.cursor()
 
     def get_tables(self):
-        self.db_cursor.execute('''SELECT name FROM sqlite_master WHERE type='table';''')
-        tables = self.db_cursor.fetchall()
-        self.db_conn.commit()
+        db_conn = sqlite3.connect(self.db_path)
+        db_cursor = db_conn.cursor()
+        db_cursor.execute('''SELECT name FROM sqlite_master WHERE type='table';''')
+        tables = db_cursor.fetchall()
+        db_conn.commit()
+        db_conn.close()
         if tables:
             return tables
         else:
             return "No tables"
 
-    def new_table(self, table_name, table_fields):
-        field_string = ", ".join(table_fields)
-        self.db_cursor.execute('''CREATE TABLE''' + table_name + '''(''' + field_string + ''')''')
+    def check_for_table(self, table_name):
+        db_conn = sqlite3.connect(self.db_path)
+        db_cursor = db_conn.cursor()
+        db_cursor.execute('''SELECT name FROM sqlite_master WHERE type='table' AND name='{''' + table_name + '''}\'''')
+        table = db_cursor.fetchall()
+        db_conn.commit()
+        db_conn.close()
+        if table:
+            return True
+        else:
+            return False
 
+    def new_table(self, table_name, table_fields):
+        db_conn = sqlite3.connect(self.db_path)
+        db_cursor = db_conn.cursor()
+        field_string = ", ".join(table_fields)
+        db_cursor.execute('''CREATE TABLE''' + table_name + '''(''' + field_string + ''')''')
+
+
+# print(Database(db_folder_test, current_db_test).check_for_table("test"))
 
 # # print(pandas.__version__)
 # # checks version of pandas available

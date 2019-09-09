@@ -11,17 +11,26 @@ app = Flask(__name__)
 
 db_folder = "\\".join(os.path.dirname(os.path.abspath(__file__)).split("\\")[0:]) + r"\Database"
 current_db = "DB_1.sqlite"
+db_obj = Database(db_folder, current_db)
 
 
 # Get the table of tasks
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
-    db_obj = Database(db_folder, current_db)
     table_list = db_obj.get_tables()
     if table_list == "No tables":
         table_list = []
     return render_template("index.html", table_list=table_list)
+
+
+@app.route('/new', methods=['POST', 'GET'])
+def new():
+    if request.method == 'GET':
+        rec_data = request.args
+        new_name = rec_data['name']
+        table_exists = db_obj.check_for_table(new_name)
+        return table_exists
 
 
 # Loads new or existing chart
