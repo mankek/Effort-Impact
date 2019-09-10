@@ -30,67 +30,62 @@ def new():
         rec_data = request.args
         new_name = rec_data['name']
         table_exists = db_obj.check_for_table(new_name)
-        return table_exists
-
-
-# Loads new or existing chart
-@app.route("/chart", methods=['POST'])
-def view():
-    # Defines which fields are optional for task sheet and which must be each in task sheet
-    optional_fields = ["DepField", "SubjectField", "DeadlineField", "NotesField"]
-    required_fields = {"Task": [], "Effort": [], "Impact": [], "Description": []}
-
-    # If request is to load a chosen existing file:
-    if request.form['action'] == 'submit':
-        pass
-        # # checks the file location, extension, and fields
-        # if app_methods.file_check(request.form['file']):
-        #     file = request.form['file']
-        #     return redirect(url_for("show", filename=file))
-        # # if file fails checks, redirects to home page
-        # else:
-        #     return redirect(url_for("index"))
-    # If request is to delete a chosen existing file
-    elif request.form['action'] == 'delete':
-        pass
-        # file = request.form['file']
-        # app_methods.Table(file).delete_table()
-        # return redirect(url_for('index'))
-    # If request is to create new file:
-    elif request.form['action'] == 'new':
-        # # sanitizes the input file name
+        return str(table_exists)
+    if request.method == 'POST':
+        optional_fields = ["DepField", "SubjectField", "DeadlineField", "NotesField"]
+        required_fields = ["Task", "Effort", "Impact", "Description", "Complete", "Unplaced"]
+        for i in optional_fields:
+            if request.form[i] != "No":
+                required_fields.append(i)
         new_name = request.form['new_name']
-        # # checks if a file with the same name already exists
-        # clean_new_name = app_methods.file_name(new_name)
-        # existing_clean_new_name = app_methods.file_exist(clean_new_name)
-        # # checks if any of the optional fields were chosen
-        # for i in optional_fields:
-        #     if request.form[i] != "No":
-        #         required_fields[request.form[i]] = []
-        # # creates a new task sheet
-        # app_methods.new_table(existing_clean_new_name, required_fields)
-        # file = existing_clean_new_name
-        return redirect(url_for("show", filename=file))
+        new_name = '"' + new_name + '"'
+        db_obj.new_table(new_name, required_fields)
+        return redirect(url_for("show", table=new_name, fields=required_fields))
 
 
-# @app.route("/chart/<filename>", methods=['GET'])
-# def show(filename):
-#     try:
-#         # Gets the task and field data and deadline flag for the chosen/created sheet
-#         result, names, completed, unplaced = app_methods.Table(filename).load_table()
-#         # Gets the effort and Impact values for each task
-#         x, y = app_methods.effort_impact(result)
-#         # Determines color scale values for data
-#         dl_colors, sj_colors, dp_colors = app_methods.colors(result)
-#         # Removes effort, impact values from results so they aren't displayed with the task info
-#         new_result = app_methods.clean_result(result)
-#         return render_template("chart.html", x=x, y=y, result=new_result, dl_colors=dl_colors, sj_colors=sj_colors,
-#                                dp_colors=dp_colors, name=filename.split(".")[0], fields=names, file=filename,
-#                                completed=app_methods.clean_result(completed), unplaced=app_methods.clean_result(unplaced))
-#     except FileNotFoundError:
-#         return redirect(url_for("index"))
-#
-#
+# # Loads new or existing chart
+# @app.route("/chart", methods=['POST'])
+# def view():
+#     # Defines which fields are optional for task sheet and which must be each in task sheet
+#     optional_fields = ["DepField", "SubjectField", "DeadlineField", "NotesField"]
+#     required_fields = {"Task": [], "Effort": [], "Impact": [], "Description": []}
+#     # If request is to load a chosen existing file:
+#     if request.form['action'] == 'submit':
+#         pass
+#         # # checks the file location, extension, and fields
+#         # if app_methods.file_check(request.form['file']):
+#         #     file = request.form['file']
+#         #     return redirect(url_for("show", filename=file))
+#         # # if file fails checks, redirects to home page
+#         # else:
+#         #     return redirect(url_for("index"))
+#     # If request is to delete a chosen existing file
+#     elif request.form['action'] == 'delete':
+#         pass
+#         # file = request.form['file']
+#         # app_methods.Table(file).delete_table()
+#         # return redirect(url_for('index'))
+
+
+@app.route("/chart/<table>", methods=['GET'])
+def show(table, fields):
+    table_tasks = db_obj.load_table(table, fields)
+    return table_tasks
+
+    #     result, names, completed, unplaced = app_methods.Table(filename).load_table()
+    #     # Gets the effort and Impact values for each task
+    #     x, y = app_methods.effort_impact(result)
+    #     # Determines color scale values for data
+    #     dl_colors, sj_colors, dp_colors = app_methods.colors(result)
+    #     # Removes effort, impact values from results so they aren't displayed with the task info
+    #     new_result = app_methods.clean_result(result)
+    #     return render_template("chart.html", x=x, y=y, result=new_result, dl_colors=dl_colors, sj_colors=sj_colors,
+    #                            dp_colors=dp_colors, name=filename.split(".")[0], fields=names, file=filename,
+    #                            completed=app_methods.clean_result(completed), unplaced=app_methods.clean_result(unplaced))
+    # except FileNotFoundError:
+    #     return redirect(url_for("index"))
+
+
 # # Update existing task
 # @app.route('/update/<filename>', methods=['GET', 'POST'])
 # def update(filename):

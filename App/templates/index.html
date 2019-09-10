@@ -36,7 +36,9 @@
         <form action="/new" method="post" id="make" class="container">
             <div>
                 New Table<br><br>
-                Name: <input type="text" name="new_name" id="new_name" required onchange="Check_Name"><br><br>
+                <div id="warning">This name is taken!</div>
+                Name: <input type="text" name="new_name" id="new_name" required onchange="Check_Name()">
+                <br><br>
                 Select Optional Fields<br><br>
                 <input id="DeadlineHidden" type="hidden" value="No" name="DeadlineField">
                 <input id="Deadline" type="checkbox" name="DeadlineField" value="Deadline" onclick="Check('Deadline')">Deadline
@@ -46,7 +48,7 @@
                 <input id="Department" type="checkbox" name="DepField" value="Department" onclick="Check('Department')">Department
                 <input id="NotesHidden" type="hidden" value="No" name="NotesField">
                 <input id="Notes" type="checkbox" name="NotesField" value="Notes" onclick="Check('Notes')">Notes<br><br>
-                <button type="submit" name="action" value="new">Open New Sheet</button>
+                <button type="submit" value="new">Open New Sheet</button><br>
             </div>
         </form>
     </div><br><br>

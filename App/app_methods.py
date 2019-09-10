@@ -52,7 +52,32 @@ class Database(object):
         db_conn = sqlite3.connect(self.db_path)
         db_cursor = db_conn.cursor()
         field_string = ", ".join(table_fields)
-        db_cursor.execute('''CREATE TABLE''' + table_name + '''(''' + field_string + ''')''')
+        db_cursor.execute('''CREATE TABLE ''' + table_name + ''' (''' + field_string + ''')''')
+
+    def load_table(self, table_name, fields):
+        db_conn = sqlite3.connect(self.db_path)
+        db_cursor = db_conn.cursor()
+        db_cursor.execute('''SELECT * FROM ''' + table_name)
+        results = db_cursor.fetchall()
+        db_conn.commit()
+        db_conn.close()
+        if results:
+            graph = []
+            complete = []
+            unplaced = []
+            if "DeadlineField" in fields:
+                dl_place = fields.index("DeadlineField")
+            for task in results:
+                complete_status = int(task[4])
+                unplaced_status = int(task[5])
+                if complete_status != 0:
+                    complete.append(task)
+                elif unplaced_status != 0:
+                    unplaced.append(task)
+                else:
+                    graph.append(task)
+        else:
+            return "No tasks"
 
 
 # print(Database(db_folder_test, current_db_test).check_for_table("test"))
@@ -63,94 +88,8 @@ class Database(object):
 #     old_pandas = False
 # else:
 #     old_pandas = True
-#
-# # Defines path to Task sheets within application directory
-# out_path = "\\".join(os.path.dirname(os.path.abspath(__file__)).split("\\")[0:]) + r"\Task-Sheets"
-#
-#
-# # Checks for Task Sheet directory; create if it doesn't exist
-# def sheet_dir():
-#     if os.path.exists(out_path):
-#         return "yes"
-#     else:
-#         os.mkdir(out_path)
-#
-#
-# # Finds all task sheets with proper extension and adds them to a list. Returns list
-# def file_find():
-#     task_sheets = []
-#     for _, _, filename in os.walk(out_path):
-#         for file in filename:
-#             if file.split(".")[-1] == "xlsx":
-#                 task_sheets.append(file)
-#     return task_sheets
-#
-#
-# # Checks if the chosen file is in the Task Sheet folder, has the proper extension, and the required fields
-# def file_check(file):
-#     if not os.path.exists(os.path.join(out_path, file)):
-#         print("file is not from Task Sheet folder")
-#         return False
-#     if file.split(".")[-1] != "xlsx":
-#         print("file is not an excel file with the .xlsx extension")
-#         return False
-#     # loads the task sheet to check fields
-#     file_frame = pandas.read_excel(os.path.join(out_path, file), index_col=0)
-#     frame_fields = list(file_frame)
-#     # checks for existence of required fields
-#     if ("Description" not in frame_fields) or ("Task" not in frame_fields) or ("Effort" not in frame_fields) or \
-#             ("Impact" not in frame_fields):
-#         print("file is missing required fields")
-#         return False
-#     else:
-#         return True
-#
-#
-# # Sanitizes file name input
-# def file_name(name):
-#     bad_characters = ["?", "/", "\\", "*", ":", "|", "<", ">", '"']
-#     for i in bad_characters:
-#         if name.find(i) != -1:
-#             name = name.replace(i, "")
-#             file_name(name)
-#         else:
-#             continue
-#     return name
-#
-#
-# # Checks if new file already exists; appends name with number if it does
-# def file_exist(file):
-#     index = 1
-#     # as long as the file path already exists, append an incremented number to the end of the file name
-#     while os.path.exists(os.path.join(out_path, file)):
-#         if index == 1:
-#             file_title = file.split(".")[0] + "_" + str(index)
-#         else:
-#             file_title = "_".join(file.split("_")[0:-1]) + "_" + str(index)
-#         file = file_title + ".xlsx"
-#         index = index + 1
-#     return file
-#
-#
-# # Creates a new excel file
-# def new_table(filename, fields):
-#     # defines task sheet path
-#     path = os.path.join(out_path, filename)
-#     # initializes writer
-#     writer = pandas.ExcelWriter(path, engine='xlsxwriter')
-#     # creates dataframe with required and chosen fields
-#     df = pandas.DataFrame(fields)
-#     # creates Graph and Unplaced location sheets
-#     df.to_excel(writer, sheet_name="Graph")
-#     df.to_excel(writer, sheet_name='Unplaced')
-#     # Adds new "Completed" field for date and time completed
-#     fields["Completed"] = []
-#     df2 = pandas.DataFrame(fields)
-#     # creates Completed location sheet
-#     df2.to_excel(writer, sheet_name='Completed')
-#     writer.close()
-#
-#
+
+
 # class Table(object):
 #
 #     def __init__(self, filename):
