@@ -34,7 +34,8 @@ class Database(object):
         tables = []
         if results:
             for i in results:
-                tables.append(i[0])
+                if i[0] != "sqlite_sequence":
+                    tables.append(i[0])
             return tables
         else:
             return "No tables"
@@ -54,7 +55,7 @@ class Database(object):
     def new_table(self, table_name, table_fields):
         db_conn = sqlite3.connect(self.db_path)
         db_cursor = db_conn.cursor()
-        field_string = ", ".join(table_fields)
+        field_string = "Task_ID INTEGER PRIMARY KEY AUTOINCREMENT, " + ", ".join(table_fields)
         db_cursor.execute('''CREATE TABLE ''' + table_name + ''' (''' + field_string + ''')''')
 
     def get_fields(self, table):
@@ -66,13 +67,14 @@ class Database(object):
         db_conn.commit()
         db_conn.close()
         for i in results:
-            fields.append(i[1])
+            if i[1] != "Task_ID":
+                fields.append(i[1])
         return fields
 
     def load_table(self, table_name, fields):
         db_conn = sqlite3.connect(self.db_path)
         db_cursor = db_conn.cursor()
-        db_cursor.execute('''SELECT * FROM ''' + table_name)
+        db_cursor.execute('''SELECT ''' + ", ".join(fields) + ''' FROM ''' + table_name)
         results = db_cursor.fetchall()
         db_conn.commit()
         db_conn.close()
@@ -81,8 +83,8 @@ class Database(object):
         unplaced = []
         for task in results:
             task_dict = format_task(task, fields)
-            complete_status = int(task[4])
-            unplaced_status = int(task[5])
+            complete_status = task[4]
+            unplaced_status = task[6]
             if complete_status != 0:
                 complete.append(task_dict)
             elif unplaced_status != 0:
@@ -98,6 +100,26 @@ class Database(object):
         db_conn.commit()
         db_conn.close()
 
+    def add_task(self, table, new_task):
+        fields = self.get_fields(table)
+        values = []
+        for i in fields:
+            values.append(new_task[i])
+        db_conn = sqlite3.connect(self.db_path)
+        db_cursor = db_conn.cursor()
+        db_cursor.execute('''INSERT INTO ''' + table + ''' (''' + ",".join(fields) + ''') ''' + ''' VALUES ''' + '''('''
+                          + ",".join(values) + ''')''')
+        db_conn.commit()
+        db_conn.close()
+
+    def update_table(self, table, task_id, field, new_value):
+        db_conn = sqlite3.connect(self.db_path)
+        db_cursor = db_conn.cursor()
+        db_cursor.execute('''UPDATE ''' + table + ''' SET ''' + field + ''' = ''' + "\"" + new_value + "\"" +
+                          ''' WHERE ''' + '''Task_ID = ''' + task_id)
+        db_conn.commit()
+        db_conn.close()
+
 
 # print(Database(db_folder_test, current_db_test).check_for_table("test"))
 
@@ -109,61 +131,6 @@ class Database(object):
 #     old_pandas = True
 
 
-# class Table(object):
-#
-#     def __init__(self, filename):
-#         self.name = filename
-#         self.path = os.path.join(out_path, filename)
-#         if old_pandas:
-#             # Loads sheets into separate dataframes
-#             self.graph_df = pandas.read_excel(self.path, sheetname="Graph", index=0)
-#             self.unplaced_df = pandas.read_excel(self.path, sheetname="Unplaced", index=0)
-#             self.complete_df = pandas.read_excel(self.path, sheetname="Completed", index=0)
-#         else:
-#             # Loads sheets into separate dataframes
-#             self.graph_df = pandas.read_excel(self.path, sheet_name="Graph", index_col=0)
-#             self.unplaced_df = pandas.read_excel(self.path, sheet_name="Unplaced", index_col=0)
-#             self.complete_df = pandas.read_excel(self.path, sheet_name="Completed", index_col=0)
-#         self.fields = list(self.graph_df)
-#         self.df_dict = {"Graph": self.graph_df, "Unplaced": self.unplaced_df, "Completed": self.complete_df}
-#
-#     # Loads the excel sheet where tasks are stored, formats them as a list of dictionaries; also returns field names
-#     def load_table(self):
-#
-#         # Update deadlines in task_list
-#         if "Deadline" in self.fields:
-#             for s in range(0, (self.graph_df.shape[0])):
-#                 line = self.graph_df['Deadline'][s]
-#                 if line == "No Deadline":
-#                     continue
-#                 else:
-#                     line = line.split('_')
-#                     date = line[0].split('-')
-#                     time = line[1].split(':')
-#                     new_diff = due_day(int(date[0]), int(date[1]), int(date[2]), int(time[0]))
-#                     line[2] = new_diff
-#                     self.graph_df.loc[s, ['Deadline']] = '_'.join(line)
-#
-#         # Form list of results
-#         tasks = []
-#         for t in range(0, (self.graph_df.shape[0])):
-#             tasks.append(dict())
-#             for i in self.fields:
-#                 tasks[t][i] = str(self.graph_df[i][t])
-#         # Form list of completed
-#         completed = []
-#         for t in range(0, (self.complete_df.shape[0])):
-#             completed.append(dict())
-#             for i in list(self.complete_df):
-#                 completed[t][i] = str(self.complete_df[i][t])
-#         # From list of unplaced
-#         unplaced = []
-#         for t in range(0, (self.unplaced_df.shape[0])):
-#             unplaced.append(dict())
-#             for i in list(self.unplaced_df):
-#                 unplaced[t][i] = str(self.unplaced_df[i][t])
-#         return tasks, self.fields, completed, unplaced
-#
 #     # Takes the new task and adds it to the excel sheet
 #     def add_to_table(self, new_task, sheet_to):
 #         # row new task will be added to
@@ -267,7 +234,13 @@ def format_task(task_in, fields_in):
             hour = time.split(":")[0]
             task_dict[fields_in[index]] = due_day(year, month, day, hour)
         else:
-            task_dict[fields_in[index]] = value
+            try:
+                task_dict[fields_in[index]] = value
+            except IndexError:
+                print(fields_in)
+                print(task_in)
+                print(index)
+                print(value)
     return task_dict
 
 
