@@ -43,28 +43,18 @@ def new():
         return redirect(url_for("show", table=new_name))
 
 
-# # Loads existing chart
-# @app.route("/chart", methods=['POST'])
-# def view():
-#     # Defines which fields are optional for task sheet and which must be each in task sheet
-#     optional_fields = ["DepField", "SubjectField", "DeadlineField", "NotesField"]
-#     required_fields = {"Task": [], "Effort": [], "Impact": [], "Description": []}
-#     # If request is to load a chosen existing file:
-#     if request.form['action'] == 'submit':
-#         pass
-#         # # checks the file location, extension, and fields
-#         # if app_methods.file_check(request.form['file']):
-#         #     file = request.form['file']
-#         #     return redirect(url_for("show", filename=file))
-#         # # if file fails checks, redirects to home page
-#         # else:
-#         #     return redirect(url_for("index"))
-#     # If request is to delete a chosen existing file
-#     elif request.form['action'] == 'delete':
-#         pass
-#         # file = request.form['file']
-#         # app_methods.Table(file).delete_table()
-#         # return redirect(url_for('index'))
+# Loads existing chart
+@app.route("/chart", methods=['POST'])
+def view():
+    # If request is to load a chosen existing file:
+    if request.form['action'] == 'submit':
+        file = request.form['table']
+        return redirect(url_for("show", filename=file))
+    # If request is to delete a chosen existing file
+    elif request.form['action'] == 'delete':
+        table = request.form['table']
+        db_obj.delete_table(table)
+        return redirect(url_for('index'))
 
 
 @app.route("/chart/<table>", methods=['GET'])

@@ -28,10 +28,13 @@ class Database(object):
         db_conn = sqlite3.connect(self.db_path)
         db_cursor = db_conn.cursor()
         db_cursor.execute('''SELECT name FROM sqlite_master WHERE type='table';''')
-        tables = db_cursor.fetchall()
+        results = db_cursor.fetchall()
         db_conn.commit()
         db_conn.close()
-        if tables:
+        tables = []
+        if results:
+            for i in results:
+                tables.append(i[0])
             return tables
         else:
             return "No tables"
@@ -60,6 +63,8 @@ class Database(object):
         db_cursor = db_conn.cursor()
         db_cursor.execute('''PRAGMA table_info(''' + table + ''')''')
         results = db_cursor.fetchall()
+        db_conn.commit()
+        db_conn.close()
         for i in results:
             fields.append(i[1])
         return fields
@@ -85,6 +90,13 @@ class Database(object):
             else:
                 graph.append(task_dict)
         return graph, complete, unplaced
+
+    def delete_table(self, table_name):
+        db_conn = sqlite3.connect(self.db_path)
+        db_cursor = db_conn.cursor()
+        db_cursor.execute('''DROP TABLE ''' + table_name)
+        db_conn.commit()
+        db_conn.close()
 
 
 # print(Database(db_folder_test, current_db_test).check_for_table("test"))
