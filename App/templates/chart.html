@@ -143,7 +143,7 @@
 
         // Creates form1 and form2 based on fields
 
-        for (i in fields){
+        for (var i = 0; i < fields.length; i++){
             if (fields[i] == "Deadline") {
                 // Form 1
                 var DL_label = $("<label></label>").text("Deadline: ");

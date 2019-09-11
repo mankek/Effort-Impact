@@ -37,7 +37,7 @@ def new():
                            "Complete", "Date_Completed", "Unplaced"]
         for i in optional_fields:
             if request.form[i] != "No":
-                required_fields.append(i)
+                required_fields.append(request.form[i])
         new_name = request.form['new_name']
         new_name = '"' + new_name + '"'
         db_obj.new_table(new_name, required_fields)
@@ -92,13 +92,13 @@ def add_new(table):
         # if deadline was unchosen, task has no deadline
         if i == 'Deadline':
             if request.form[i] == "":
-                data = "No Deadline"
+                data = "\"No Deadline\""
             else:
                 if request.form['time'] == "":
                     due_time = "00:00"
                 else:
                     due_time = request.form['time']
-                data = request.form[i] + ' ' + due_time
+                data = "\"" + request.form[i] + ' ' + due_time + "\""
         else:
             data = "\"" + request.form[i] + "\""
         # process form data is added to new task dictionary
@@ -135,18 +135,18 @@ def update(table):
     if request.method == "POST":
         task_id = str(int(request.form["id"]) + 1)
         field = request.form["Field"]
-        content = request.form["Content"]
+        content = "\"" + request.form["Content"] + "\""
         # if deadline was unchosen, task has no deadline
         # else check for a due time and format the deadline and find amount of time until due
         if field == "Deadline":
             if content == "":
-                content = "No Deadline"
+                content = "\"No Deadline\""
             else:
                 if request.form["up_time"] == "":
                     due_time = "00:00"
                 else:
                     due_time = request.form["up_time"]
-                content = content + ' ' + due_time
+                content = "\"" + content + ' ' + due_time + "\""
         db_obj.update_table(table, task_id, field, content)
         return redirect(url_for("show", table=table))
 
