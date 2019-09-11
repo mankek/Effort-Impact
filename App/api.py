@@ -1,5 +1,5 @@
 # !/usr/bin/python
-from .app_methods import Database
+from .app_methods import Database, effort_impact, colors, clean_result
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 import os
 
@@ -33,17 +33,17 @@ def new():
         return str(table_exists)
     if request.method == 'POST':
         optional_fields = ["DepField", "SubjectField", "DeadlineField", "NotesField"]
-        required_fields = ["Task", "Effort", "Impact", "Description", "Complete", "Unplaced"]
+        required_fields = ["Task", "Effort", "Impact", "Description", "Complete", "Date_Completed", "Unplaced"]
         for i in optional_fields:
             if request.form[i] != "No":
                 required_fields.append(i)
         new_name = request.form['new_name']
         new_name = '"' + new_name + '"'
         db_obj.new_table(new_name, required_fields)
-        return redirect(url_for("show", table=new_name, fields=required_fields))
+        return redirect(url_for("show", table=new_name))
 
 
-# # Loads new or existing chart
+# # Loads existing chart
 # @app.route("/chart", methods=['POST'])
 # def view():
 #     # Defines which fields are optional for task sheet and which must be each in task sheet
@@ -68,23 +68,15 @@ def new():
 
 
 @app.route("/chart/<table>", methods=['GET'])
-def show(table, fields):
-    table_tasks = db_obj.load_table(table, fields)
-    return table_tasks
-
-    #     result, names, completed, unplaced = app_methods.Table(filename).load_table()
-    #     # Gets the effort and Impact values for each task
-    #     x, y = app_methods.effort_impact(result)
-    #     # Determines color scale values for data
-    #     dl_colors, sj_colors, dp_colors = app_methods.colors(result)
-    #     # Removes effort, impact values from results so they aren't displayed with the task info
-    #     new_result = app_methods.clean_result(result)
-    #     return render_template("chart.html", x=x, y=y, result=new_result, dl_colors=dl_colors, sj_colors=sj_colors,
-    #                            dp_colors=dp_colors, name=filename.split(".")[0], fields=names, file=filename,
-    #                            completed=app_methods.clean_result(completed), unplaced=app_methods.clean_result(unplaced))
-    # except FileNotFoundError:
-    #     return redirect(url_for("index"))
-
+def show(table):
+    fields = db_obj.get_fields(table)
+    table_tasks, completed_tasks, unplaced_tasks = db_obj.load_table(table, fields)
+    x, y = effort_impact(table_tasks)
+    dl_colors, sj_colors, dp_colors = colors(table_tasks)
+    new_tasks = clean_result(table_tasks)
+    return render_template("chart.html", x=x, y=y, result=new_tasks, dl_colors=dl_colors, sj_colors=sj_colors,
+                           dp_colors=dp_colors, name=table, fields=fields, file=table,
+                           completed=clean_result(completed_tasks), unplaced=clean_result(unplaced_tasks))
 
 # # Update existing task
 # @app.route('/update/<filename>', methods=['GET', 'POST'])
