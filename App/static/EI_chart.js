@@ -270,12 +270,12 @@ function dl_legend() {
     var legendsvg = svg.selectAll(".legend")
         .data(c1_scale.ticks(50).slice(1).reverse())
         .enter().append("g")
-        .attr("transform", function(d, i) { return "translate(" + (width + margin.left) + "," + ((10 * i) + margin.top) + ")"; })
+        .attr("transform", function(d, i) { return "translate(" + (width + margin.left) + "," + ((11.25 * i) + margin.top) + ")"; })
         .attr("class", "legend")
 
     legendsvg.append("rect")
         .attr("width", legendWidth)
-        .attr("height", 10)
+        .attr("height", 10.5)
         .style("fill", c1_scale)
         .attr("class", "ColorScale")
         .attr("color_val", function(d) {

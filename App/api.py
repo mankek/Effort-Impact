@@ -117,15 +117,7 @@ def update(table):
         change = request.args
         # if effort or impact values are beyond boundaries, set them to max/min values
         eff = change['Effort']
-        # if float(eff) > 16:
-        #     eff = str(16)
-        # elif float(eff) < 0:
-        #     eff = str(0)
         im = change['Impact']
-        # if float(im) > 16:
-        #     im = str(16)
-        # elif float(im) < 0:
-        #     im = str(0)
         task_id = str(int(change['Id']) + 1)
         # updates task sheet with new effort & impact values
         db_obj.update_table(table, task_id, "Effort", eff)
