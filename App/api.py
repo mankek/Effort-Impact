@@ -34,7 +34,7 @@ def new():
     if request.method == 'POST':
         optional_fields = ["DepField", "SubjectField", "DeadlineField", "NotesField"]
         required_fields = ["Task", "Effort", "Impact", "Description",
-                           "Complete", "Date_Completed", "Unplaced"]
+                           "Completed", "Date_Completed", "Unplaced"]
         for i in optional_fields:
             if request.form[i] != "No":
                 required_fields.append(request.form[i])
@@ -84,9 +84,9 @@ def add_new(table):
         new_task["Unplaced"] = "0"
     new_task["Impact"] = "16"
     new_task["Effort"] = "0"
-    new_task["Complete"] = "0"
+    new_task["Completed"] = "0"
     new_task["Date_Completed"] = "NULL"
-    non_var_fields = ["Unplaced", "Impact", "Effort", "Complete", "Date_Completed"]
+    non_var_fields = ["Unplaced", "Impact", "Effort", "Completed", "Date_Completed"]
     var_fields = [s for s in fields if s not in non_var_fields]
     # iterates through the fields of the current task sheet
     for i in var_fields:
@@ -161,21 +161,21 @@ def delete_task(table):
     return redirect(url_for("show", table=table))
 
 
-# # Move a task in or out of storage
-# @app.route('/move/<filename>', methods=['GET'])
-# def move_task(filename):
-#     move_info = request.args
-#     # gets location of task
-#     src = move_info["Data"].split("-")[0]
-#     # gets numerical id of task
-#     task_id = int(move_info["Data"].split("-")[-1])
-#     # gets location task will be moved to
-#     dest = move_info["Dest"]
-#     # moves task in task sheet
-#     app_methods.Table(filename).move_sheets(src, dest, task_id)
-#     return redirect(url_for("show", filename=filename))
-#
-#
+# Move a task in or out of storage
+@app.route('/move/<table>', methods=['GET'])
+def move_task(table):
+    move_info = request.args
+    # gets location of task
+    src = move_info["Data"].split("-")[0]
+    # gets numerical id of task
+    task_id = move_info["Data"].split("-")[-1]
+    # gets location task will be moved to
+    dest = move_info["Dest"]
+    # moves task in task sheet
+    db_obj.move_task(table, src, dest, task_id)
+    return redirect(url_for("show", table=table))
+
+
 # @app.route('/download/<filename>', methods=['GET'])
 # def download(filename):
 #     # returns the current task sheet file

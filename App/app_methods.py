@@ -128,6 +128,18 @@ class Database(object):
         db_conn.commit()
         db_conn.close()
 
+    def move_task(self, table, src, dest, task_id):
+        db_conn = sqlite3.connect(self.db_path)
+        db_cursor = db_conn.cursor()
+        if dest == "Graph":
+            db_cursor.execute('''UPDATE ''' + table + ''' SET ''' + src + ''' = 0 WHERE Task_ID = ''' + task_id)
+        else:
+            db_cursor.execute('''UPDATE ''' + table + ''' SET ''' + dest + ''' = 1 WHERE Task_ID = ''' + task_id)
+            if src != "Graph":
+                db_cursor.execute('''UPDATE ''' + table + ''' SET ''' + src + ''' = 0 WHERE Task_ID = ''' + task_id)
+        db_conn.commit()
+        db_conn.close()
+
 
 # print(Database(db_folder_test, current_db_test).check_for_table("test"))
 
@@ -139,56 +151,6 @@ class Database(object):
 #     old_pandas = True
 
 
-#     # Takes the new task and adds it to the excel sheet
-#     def add_to_table(self, new_task, sheet_to):
-#         # row new task will be added to
-#         row_number = self.df_dict[sheet_to].shape[0]
-#         # iterates through fields and adds task info to new location
-#         for t in new_task.keys():
-#             self.df_dict[sheet_to].loc[row_number, t] = new_task[t]
-#         self.save_xlsx()
-#
-#     # Updates the specified field of the specified task
-#     def update_table(self, task_id, field, content, sheet_to):
-#         # checks if task numerical id is present in dataframe index
-#         if int(task_id) in self.df_dict[sheet_to].index:
-#             # checks that field is present
-#             if str(field) in self.fields:
-#                 # writes new info to field of task
-#                 self.df_dict[sheet_to].loc[int(task_id), field] = content
-#                 self.save_xlsx()
-#             else:
-#                 print("improper field")
-#         # if task numerical id is not present, reduces id by one and tries again
-#         # this is because resetting the index after a task deletion
-#         # doesn't always carry-over to the front-end immediately after reloading
-#         else:
-#             new_task_id = str(int(task_id) - 1)
-#             self.update_table(new_task_id, field, content, sheet_to)
-#             print("index " + str(task_id) + " was not present, so went with next lowest index")
-#
-#     # Deletes a selected task from the excel sheet
-#     def delete_from_table(self, task_id, sheet_to):
-#         # checks if task numerical id is present in dataframe index
-#         if task_id in self.df_dict[sheet_to].index:
-#             # drops deleted task from data frame
-#             self.df_dict[sheet_to].drop(task_id, axis=0, inplace=True)
-#             # resets data frame index
-#             self.df_dict[sheet_to].reset_index(drop=True, inplace=True)
-#             self.save_xlsx()
-#             return "Table saved"
-#         # if task numerical id is not present, reduces id by one and tries again
-#         # this is because resetting the index after a task deletion
-#         # doesn't always carry-over to the front-end immediately after reloading
-#         else:
-#             new_task_id = task_id - 1
-#             self.delete_from_table(new_task_id, sheet_to)
-#             print("index " + str(task_id) + " was not present, so went with next lowest index")
-#
-#     # Deletes a task sheet from the Task Sheets directory
-#     def delete_table(self):
-#         os.remove(self.path)
-#
 #     # Moves sheets from one location sheet to another
 #     def move_sheets(self, sheet_from, sheet_to, task_id):
 #         df_to = self.df_dict[sheet_to]

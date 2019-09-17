@@ -384,6 +384,7 @@ $(document).ready(function(){
     // When dragging from chart to storage sends data to backend
     function drag_chart(drag_id, dest){
         var task = "Graph-" + drag_id
+        console.log(task)
         $.ajax({
             url: "/move/" + filename,
             data: { "Data": task, "Dest": dest },
@@ -485,9 +486,9 @@ $(document).ready(function(){
     // defines behavior when square drag ends
     function dragend(d, i){
         if(isOnUnplaced===true){
-            drag_chart(String(i), "Unplaced")
+            drag_chart(result[i]["Task_ID"], "Unplaced")
         } else if(isOnComplete===true){
-            drag_chart(String(i), "Completed")
+            drag_chart(result[i]["Task_ID"], "Completed")
         }else{
             var circle = d3.select(this)
             $.ajax({ // sends new effort impact data to back-end
