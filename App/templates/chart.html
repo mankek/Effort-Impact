@@ -87,7 +87,7 @@
                     <h3>Press the Delete button to delete this task!</h3>
                     <div id="inputs">
                         <br>
-                        Task ID #: <input type="text" name="id" id="id" readonly><br><br>
+                        <input type="hidden" name="id" id="id" readonly><br>
                         <label id="field-label">Field to be Changed: </label>
                         <input type="radio" value="Task" name="Field" onclick="change_type('text')" checked>Task
                         <input type="radio" value="Description" name="Field" onclick="change_type('text')">Description
@@ -95,7 +95,7 @@
                         <label>Content</label> <input type="text" id="change" name="Content" required><br><br>
                     </div>
                     <br>
-                    <button type="submit">Update Task</button><br>
+                    <button type="submit">Update Task</button><br><br>
                     <button type="button" id="HideUpdate">Go back</button> <br>
                     <br>
                 </form>

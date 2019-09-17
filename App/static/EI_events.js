@@ -146,7 +146,7 @@ $(document).ready(function(){
                 $("#task_div").hide();
                 $("#Instructions").hide();
                 $("#Update").show(); // hides all other info divs and shows task change form
-                $("#id").val(this.id); // populates id field in change form
+                $("#id").val(result[this.id]["Task_ID"]); // populates id field in change form
                 focused = this; // clicked square becomes saved under focused variable (for use in deletion)
             }
         });
@@ -161,7 +161,7 @@ $(document).ready(function(){
             $("#task_div").hide();
             $("#Instructions").hide();
             $("#Update").show(); // hides all other info divs and shows task change form
-            $("#id").val(this.id); // populates id field in change form
+            $("#id").val(result[this.id]["Task_ID"]); // populates id field in change form
             focused = this;
         }
      })
@@ -319,9 +319,10 @@ $(document).ready(function(){
                     for (b = 0; b < 5; b++) {
                         table.deleteRow(-1)
                     }
+                    console.log($("#id").val())
                     $.ajax({
                         url: "/delete/" + filename,
-                        data: { "Id": focused.id },
+                        data: { "Id": $("#id").val() },
                         success: function () {
                             console.log("success!");
                         },
@@ -491,7 +492,7 @@ $(document).ready(function(){
             var circle = d3.select(this)
             $.ajax({ // sends new effort impact data to back-end
                 url: "/update/" + filename,
-                data: {"Effort": circle.attr('dx'),"Impact": circle.attr('dy'),"Id": i},
+                data: {"Effort": circle.attr('dx'),"Impact": circle.attr('dy'),"Id": result[i]["Task_ID"]},
                 success: function () {
                     console.log("success!");
                 },

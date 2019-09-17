@@ -67,8 +67,9 @@ class Database(object):
         db_conn.commit()
         db_conn.close()
         for i in results:
-            if i[1] != "Task_ID":
-                fields.append(i[1])
+            fields.append(i[1])
+            # if i[1] != "Task_ID":
+            #     fields.append(i[1])
         return fields
 
     def load_table(self, table_name, fields):
@@ -83,8 +84,8 @@ class Database(object):
         unplaced = []
         for task in results:
             task_dict = format_task(task, fields)
-            complete_status = task[4]
-            unplaced_status = task[6]
+            complete_status = task[5]
+            unplaced_status = task[7]
             if complete_status != 0:
                 complete.append(task_dict)
             elif unplaced_status != 0:
@@ -100,11 +101,11 @@ class Database(object):
         db_conn.commit()
         db_conn.close()
 
-    def add_task(self, table, new_task):
-        fields = self.get_fields(table)
+    def add_task(self, table, new_task, fields):
         values = []
         for i in fields:
-            values.append(new_task[i])
+            if i != "Task_ID":
+                values.append(new_task[i])
         db_conn = sqlite3.connect(self.db_path)
         db_cursor = db_conn.cursor()
         db_cursor.execute('''INSERT INTO ''' + table + ''' (''' + ",".join(fields) + ''') ''' + ''' VALUES ''' + '''('''
@@ -115,8 +116,15 @@ class Database(object):
     def update_table(self, table, task_id, field, new_value):
         db_conn = sqlite3.connect(self.db_path)
         db_cursor = db_conn.cursor()
-        db_cursor.execute('''UPDATE ''' + table + ''' SET ''' + field + ''' = ''' + "\"" + new_value + "\"" +
-                          ''' WHERE ''' + '''Task_ID = ''' + task_id)
+        db_cursor.execute('''UPDATE ''' + table + ''' SET ''' + field + ''' = ''' + new_value +
+                          ''' WHERE Task_ID = ''' + task_id)
+        db_conn.commit()
+        db_conn.close()
+
+    def delete_task(self, table, task_id):
+        db_conn = sqlite3.connect(self.db_path)
+        db_cursor = db_conn.cursor()
+        db_cursor.execute('''DELETE FROM ''' + table + ''' WHERE Task_ID = ''' + task_id)
         db_conn.commit()
         db_conn.close()
 

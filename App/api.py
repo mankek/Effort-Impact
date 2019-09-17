@@ -74,6 +74,7 @@ def show(table):
 @app.route('/new/<table>', methods=['POST'])
 def add_new(table):
     fields = db_obj.get_fields(table)
+    fields.remove("Task_ID")
     # dictionary that holds the info for the new task
     new_task = dict()
     sheet = request.form["sheet"]
@@ -104,7 +105,7 @@ def add_new(table):
         # process form data is added to new task dictionary
         new_task[i] = data
     # new task is added to task sheet
-    db_obj.add_task(table, new_task)
+    db_obj.add_task(table, new_task, fields)
     return redirect(url_for("show", table=table))
 
 
@@ -118,14 +119,14 @@ def update(table):
         # if effort or impact values are beyond boundaries, set them to max/min values
         eff = change['Effort']
         im = change['Impact']
-        task_id = str(int(change['Id']) + 1)
+        task_id = change['Id']
         # updates task sheet with new effort & impact values
         db_obj.update_table(table, task_id, "Effort", eff)
         db_obj.update_table(table, task_id, "Impact", im)
         return redirect(url_for("show", table=table))
     # if task fields have been changed
     if request.method == "POST":
-        task_id = str(int(request.form["id"]) + 1)
+        task_id = request.form["id"]
         field = request.form["Field"]
         content = "\"" + request.form["Content"] + "\""
         # if deadline was unchosen, task has no deadline
@@ -143,22 +144,23 @@ def update(table):
         return redirect(url_for("show", table=table))
 
 
-# # Delete a task from the table
-# @app.route('/delete/<filename>', methods=['GET'])
-# def delete_task(filename):
-#     delete_info = request.args
-#     # parses task id to get task location
-#     if len(delete_info["Id"].split("-")) > 1:
-#         task_id = int(delete_info["Id"].split("-")[-1])
-#         sheet = delete_info["Id"].split("-")[0]
-#     else:
-#         task_id = int(delete_info["Id"])
-#         sheet = "Graph"
-#     # deletes task from sheet
-#     app_methods.Table(filename).delete_from_table(task_id, sheet)
-#     return redirect(url_for("show", filename=filename))
-#
-#
+# Delete a task from the table
+@app.route('/delete/<table>', methods=['GET'])
+def delete_task(table):
+    delete_info = request.args
+    task_id = delete_info["Id"]
+    # # parses task id to get task location
+    # if len(delete_info["Id"].split("-")) > 1:
+    #     task_id = int(delete_info["Id"].split("-")[-1])
+    #     sheet = delete_info["Id"].split("-")[0]
+    # else:
+    #     task_id = int(delete_info["Id"])
+    #     sheet = "Graph"
+    # deletes task from sheet
+    db_obj.delete_task(table, task_id)
+    return redirect(url_for("show", table=table))
+
+
 # # Move a task in or out of storage
 # @app.route('/move/<filename>', methods=['GET'])
 # def move_task(filename):
