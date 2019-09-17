@@ -21,11 +21,14 @@ $(document).ready(function(){
         var index = $(sqr).attr("id") // square id corresponds to the position of it's task in results
         var table = document.getElementById("task_table")
         for (i in result[index]) { // task table is populated with square's task info
-            var row = table.insertRow(-1)
-            var cell1 = row.insertCell(0)
-            var cell2 = row.insertCell(1)
-            cell1.innerHTML = JSON.stringify(i)
-            cell2.innerHTML = JSON.stringify(result[index][i])
+            var no_show = ["Task_ID", "Effort", "Impact", "Completed", "Unplaced", "Date_Completed"]
+            if (no_show.includes(i) == false){
+                var row = table.insertRow(-1)
+                var cell1 = row.insertCell(0)
+                var cell2 = row.insertCell(1)
+                cell1.innerHTML = JSON.stringify(i)
+                cell2.innerHTML = JSON.stringify(result[index][i])
+            }
         }
         if ($("#New").css("display") == "none" && $("#Update").css("display") == "none" && $("#id_div").css("display") == "none"){
             $("#Instructions").hide();
