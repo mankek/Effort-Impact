@@ -134,7 +134,6 @@ div.tooltip {
 /* container and table for Enter button event */
 #id_div{
     display: inline-block;
-    overflow-y: auto;
 }
 #id_table{
     width: 100%;

@@ -267,7 +267,56 @@ $(document).ready(function(){
         ColorClick();
     })
 
+    // attaches id table click event
+    $("#list").on("click", function(){
+        if ($("#New").css("display") == "none" && $("#Update").css("display") == "none"){
+            if ($("#id_div").css('display') == "none" || $("#id_div").css("visibility") == "hidden"){
+                $("#Task_check").on("click", function(){ // if task radio button is clicked, id table displays Task
+                    $("#Desc_check").prop("checked", false)
+                    ID_table_hide()
+                    ID_table_show("Task")
+                })
+                $("#Desc_check").on("click", function(){ // If description radio button is clicked, id table displays description
+                    $("#Task_check").prop("checked", false)
+                    ID_table_hide()
+                    ID_table_show("Description")
+                })
+                $("#Task_check").click()
+            } else { // if id table is already visible, id table is hidden
+               ID_table_hide()
+            }
+        }
+    })
 
+    // attaches add new task button click event
+
+    $("#add_new").on("click", function(){
+        if ($("#id_div").css('display') == "none" && $("#Update").css("display") == "none") {
+            Add_new();
+        }
+    })
+
+    // attaches show instructions button click event
+    $("#instr_show").on("click", function(){
+        // hide change form
+        $("#Update").hide();
+        $("#task_div").hide();
+        $("#id_div").hide();
+        focused = null;
+        $("p[id|='Unplaced']").css("color", "black")
+        // hides id table
+        $(".id_text").remove(); // removes id text from task squares
+        var table = document.getElementById("id_table");
+        for (b = 0; b < $("rect.Data").length; b++) { // contents of id table are deleted
+            table.deleteRow(-1)
+        }
+        // hides new task form
+        if ($("#New").css("display") != "none"){
+            d3.selectAll(".Data:last-of-type").remove();
+        }
+        $("#New").hide();
+        $("#Instructions").show();
+    })
 
     // Button Press Functions
 
@@ -308,7 +357,7 @@ $(document).ready(function(){
         $("#Instructions").show(); // all other info divs are hidden and instructions are shown
     }
 
-    // Button Press Events
+    // Key Press Events
 
     $("body")
         .on('keydown', function (event){
@@ -337,23 +386,6 @@ $(document).ready(function(){
                     $("#Update").hide();
                     $("#Instructions").show();
                     focused = null;
-                }
-            }else if (event.keyCode === 13 && $("#New").css("display") == "none" && $("#Update").css("display") == "none"){
-                if ($("#id_div").css('display') == "none" || $("#id_div").css("visibility") == "hidden") { // If enter button is pressed and id table isn't visible ,id table is rendered and shown
-//                    $("rect.Data").off() // removes task square events so task table can't appear
-                    $("#Task_check").on("click", function(){ // if task radio button is clicked, id table displays Task
-                        $("#Desc_check").prop("checked", false)
-                        ID_table_hide()
-                        ID_table_show("Task")
-                    })
-                    $("#Desc_check").on("click", function(){ // If description radio button is clicked, id table displays description
-                        $("#Task_check").prop("checked", false)
-                        ID_table_hide()
-                        ID_table_show("Description")
-                    })
-                    $("#Task_check").click()
-                } else { // if id table is already visible, id table is hidden
-                   ID_table_hide()
                 }
             }
         });
@@ -669,11 +701,11 @@ $(document).ready(function(){
     // Double Click Event
 
     // Attaches double-click event to chart
-    chart.on("dblclick", function(){
-        if ($("#id_div").css('display') == "none" && $("#Update").css("display") == "none") {
-            Add_new();
-        }
-    })
+//    chart.on("dblclick", function(){
+//        if ($("#id_div").css('display') == "none" && $("#Update").css("display") == "none") {
+//            Add_new();
+//        }
+//    })
 
     // Attaches double-click event to unplaced container
     $("#Unplaced").on("dblclick", function(){

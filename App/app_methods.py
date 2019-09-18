@@ -140,6 +140,21 @@ class Database(object):
         db_conn.commit()
         db_conn.close()
 
+    def download_table(self, table):
+        db_conn = sqlite3.connect(self.db_path)
+        db_cursor = db_conn.cursor()
+        with open(table + ".csv", 'w') as table_file:
+            db_cursor.execute('''PRAGMA table_info(Test)''')
+            table_info = db_cursor.fetchall()
+            table_fields = [s[1] for s in table_info]
+            table_file.write(",".join(table_fields) + "\n")
+            db_cursor.execute('''SELECT * FROM ''' + table)
+            results = db_cursor.fetchall()
+            for result in results:
+                result_string = [str(i) for i in result]
+                table_file.write(",".join(result_string) + "\n")
+        db_conn.commit()
+        db_conn.close()
 
 # print(Database(db_folder_test, current_db_test).check_for_table("test"))
 
@@ -150,43 +165,6 @@ class Database(object):
 # else:
 #     old_pandas = True
 
-
-#     # Moves sheets from one location sheet to another
-#     def move_sheets(self, sheet_from, sheet_to, task_id):
-#         df_to = self.df_dict[sheet_to]
-#         df_from = self.df_dict[sheet_from]
-#         # row task will be moved to
-#         row_number = df_to.shape[0]
-#         # adds the date and time completed
-#         if sheet_to == "Completed":
-#             now_split = str(datetime.datetime.now()).split(" ")
-#             time_split = now_split[1].split(":")
-#             if int(time_split[0]) == 12:
-#                 period = "PM"
-#             elif int(time_split[0]) > 12:
-#                 period = "PM"
-#                 time_split[0] = str(int(time_split[0]) - 12)
-#             else:
-#                 period = "AM"
-#             now = now_split[0] + " " + ":".join(time_split[:2]) + " " + period
-#             df_to.loc[row_number, "Completed"] = now
-#         # for every field in sheet adds task info to new location
-#         for i in self.fields:
-#             df_to.loc[row_number, i] = df_from.loc[task_id, i]
-#         # removes task from old location
-#         df_from.drop(task_id, axis=0, inplace=True)
-#         # resets index of dataframe
-#         df_from.reset_index(drop=True, inplace=True)
-#         self.save_xlsx()
-#
-#     def save_xlsx(self):
-#         # intializes writer
-#         writer = pandas.ExcelWriter(self.path, engine='xlsxwriter')
-#         # writes each location data frame content to lcoation sheet
-#         self.df_dict["Graph"].to_excel(writer, sheet_name="Graph")
-#         self.df_dict["Unplaced"].to_excel(writer, sheet_name='Unplaced')
-#         self.df_dict["Completed"].to_excel(writer, sheet_name='Completed')
-#         writer.save()
 
 def format_task(task_in, fields_in):
     task_dict = dict()
