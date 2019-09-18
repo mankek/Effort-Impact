@@ -143,7 +143,8 @@ class Database(object):
     def download_table(self, table):
         db_conn = sqlite3.connect(self.db_path)
         db_cursor = db_conn.cursor()
-        with open(table + ".csv", 'w') as table_file:
+        file_folder = "\\".join(os.path.dirname(os.path.abspath(__file__)).split("\\")[0:]) + r"\static\Table_Download"
+        with open(os.path.join(file_folder, table + ".csv"), 'w') as table_file:
             db_cursor.execute('''PRAGMA table_info(Test)''')
             table_info = db_cursor.fetchall()
             table_fields = [s[1] for s in table_info]

@@ -149,14 +149,6 @@ def update(table):
 def delete_task(table):
     delete_info = request.args
     task_id = delete_info["Id"]
-    # # parses task id to get task location
-    # if len(delete_info["Id"].split("-")) > 1:
-    #     task_id = int(delete_info["Id"].split("-")[-1])
-    #     sheet = delete_info["Id"].split("-")[0]
-    # else:
-    #     task_id = int(delete_info["Id"])
-    #     sheet = "Graph"
-    # deletes task from sheet
     db_obj.delete_task(table, task_id)
     return redirect(url_for("show", table=table))
 
@@ -176,8 +168,12 @@ def move_task(table):
     return redirect(url_for("show", table=table))
 
 
-# @app.route('/download/<filename>', methods=['GET'])
-# def download(filename):
-#     # returns the current task sheet file
-#     return send_from_directory(directory="Task-Sheets", filename=str(filename), as_attachment=True)
+@app.route('/download/<table>', methods=['GET'])
+def download(table):
+    db_obj.download_table(table)
+    file_folder = os.path.join("\\".join(os.path.dirname(os.path.abspath(__file__)).split("\\")[0:]),
+                               r"\static\Table_Download")
+    # returns the current task sheet file
+    # return redirect(url_for("show", table=table))
+    return send_from_directory(directory=r"\static\Table_Download", filename="Test.csv", as_attachment=True)
 
