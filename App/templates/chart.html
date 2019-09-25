@@ -27,7 +27,7 @@
             <div id="show-bar">
                 <button class="menu" id="add_new">Add New Task</button>
                 <button class="menu" id="list">Show All</button>
-                <a href="/download/{{ file }}"><button class="menu">test download</button></a>
+                <button class="menu" id="download_file">Download</button>
                 <button class="menu" id="instr_show">Show Instructions</button>
             </div>
             <div id="Instructions" class="info_div">
@@ -38,19 +38,21 @@
                 over the color scale to see the corresponding values.</p>
                 <h2>Click with the mouse</h2>
                 <p>Click a square in the graph or in storage to bring up a form to change a certain field of the corresponding task.
-                If your sheet has both Deadline, Subject, or Department, clicking the color scale to change scales.</p>
-                <p>Double-click anywhere on the graph to create a new square and submit the form that appears to add it.
-                Double-click in the Unassigned section to add a new task there.</p>
-                <p>Clicking the "Download Task Files" link will download the workbook containing all tasks.</p>
+                If your sheet has any combination of Deadline, Subject, or Department, clicking the color scale will change scales.</p>
+                <p>Click on the Add New Task button to add a new task to the chart.</p>
+                <p>Click on the Show All button to show a list of all tasks on the chart. NOTE: The number value for
+                each tasks corresponds to the order in which tasks were added to the chart</p>
+                <p>Double click inside the Unassigned box to add a new unassigned task.</p>
+                <p>Clicking the "Download" button will download a CSV containing all tasks. NOTE: The Task_ID field in
+                this file corresponds to the order in which tasks were added to the table.</p>
                 <h2>Drag with the mouse</h2>
                 <p>Click, hold, and drag a square anywhere on the graph to change its position. When dragged outside the
                 graph, a "clone" appears that allows dragging to the Completed or Unassigned lists.
                 Click, hold, and drag a task in the Completed or Unassigned lists to move it from one to the other or onto the graph.</p>
                 <h2>Button Press</h2>
-                <p>Press the Enter button to display each square's id and a table of the corresponding task
-                names/descriptions.</p>
                 <p>When editing a square, the Delete button can be pressed to delete the square and all
                 of its information.</p>
+                <br>
             </div>
             <div id="task_div" class="info_div">
                     <table id="task_table">
@@ -109,7 +111,9 @@
             {% for task2 in unplaced %}
             <p id="Unplaced-{{ task2['Task_ID'] }}" draggable="true" class="stored_task">
                 {% for key in task2.keys() %}
-                <strong>{{ key }}: </strong>{{ task2[key] }}
+                    {% if (key != "Unplaced") and (key != "Completed") and (key != "Date_Completed") %}
+                        <strong>{{ key }}: </strong>{{ task2[key] }}
+                    {% endif %}
                 {% endfor %}
             </p>
             {% endfor %}
@@ -119,7 +123,9 @@
             {% for task in completed %}
             <p id="Completed-{{ task['Task_ID'] }}" draggable="true" class="stored_task">
                 {% for key in task.keys() %}
-                <strong>{{ key }}: </strong>{{ task[key] }}
+                    {% if (key != "Unplaced") and (key != "Completed") %}
+                        <strong>{{ key }}: </strong>{{ task[key] }}
+                    {% endif  %}
                 {% endfor %}
             </p>
             {% endfor %}

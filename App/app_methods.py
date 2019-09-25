@@ -24,6 +24,14 @@ class Database(object):
         self.db_path = os.path.join(db_folder, current_db)
         database_check(self.db_path)
 
+    @staticmethod
+    def clean(table_name):
+        bad_characters = ["?", "/", "\\", "*", ":", "|", "<", ">", "\"", "'", ";"]
+        for i in bad_characters:
+            if table_name.find(i) != -1:
+                table_name = table_name.replace(i, "")
+        return table_name
+
     def get_tables(self):
         db_conn = sqlite3.connect(self.db_path)
         db_cursor = db_conn.cursor()
@@ -86,9 +94,9 @@ class Database(object):
             task_dict = format_task(task, fields)
             complete_status = task[5]
             unplaced_status = task[7]
-            if complete_status != 0:
+            if complete_status != "0":
                 complete.append(task_dict)
-            elif unplaced_status != 0:
+            elif unplaced_status != "0":
                 unplaced.append(task_dict)
             else:
                 graph.append(task_dict)
@@ -105,7 +113,7 @@ class Database(object):
         values = []
         for i in fields:
             if i != "Task_ID":
-                values.append(new_task[i])
+                values.append("\"" + new_task[i] + "\"")
         db_conn = sqlite3.connect(self.db_path)
         db_cursor = db_conn.cursor()
         db_cursor.execute('''INSERT INTO ''' + table + ''' (''' + ",".join(fields) + ''') ''' + ''' VALUES ''' + '''('''
@@ -116,8 +124,7 @@ class Database(object):
     def update_table(self, table, task_id, field, new_value):
         db_conn = sqlite3.connect(self.db_path)
         db_cursor = db_conn.cursor()
-        db_cursor.execute('''UPDATE ''' + table + ''' SET ''' + field + ''' = ''' + new_value +
-                          ''' WHERE Task_ID = ''' + task_id)
+        db_cursor.execute('''UPDATE ''' + table + ''' SET ''' + field + ''' = ''' + "\"" + new_value + "\"" + ''' WHERE Task_ID = ''' + task_id)
         db_conn.commit()
         db_conn.close()
 
@@ -131,21 +138,33 @@ class Database(object):
     def move_task(self, table, src, dest, task_id):
         db_conn = sqlite3.connect(self.db_path)
         db_cursor = db_conn.cursor()
-        if dest == "Graph":
+        # If moving from storage
+        if src != "Graph":
             db_cursor.execute('''UPDATE ''' + table + ''' SET ''' + src + ''' = 0 WHERE Task_ID = ''' + task_id)
+            if src == "Completed":
+                db_cursor.execute('''UPDATE ''' + table + ''' SET Date_Completed = NULL WHERE Task_ID = ''' + task_id)
+            if dest == "Graph":
+                db_cursor.execute('''UPDATE ''' + table + ''' SET ''' + src + ''' = 0 WHERE Task_ID = ''' + task_id)
+            else:
+                db_cursor.execute('''UPDATE ''' + table + ''' SET ''' + dest + ''' = 1 WHERE Task_ID = ''' + task_id)
+        # if moving from graph
         else:
             db_cursor.execute('''UPDATE ''' + table + ''' SET ''' + dest + ''' = 1 WHERE Task_ID = ''' + task_id)
-            if src != "Graph":
-                db_cursor.execute('''UPDATE ''' + table + ''' SET ''' + src + ''' = 0 WHERE Task_ID = ''' + task_id)
+            if dest == "Completed":
+                db_cursor.execute('''UPDATE ''' + table + ''' SET Date_Completed = ''' + "\"" +
+                                  str(datetime.date.today()) + " \"" + ''' WHERE Task_ID = ''' + task_id)
         db_conn.commit()
         db_conn.close()
 
     def download_table(self, table):
         db_conn = sqlite3.connect(self.db_path)
         db_cursor = db_conn.cursor()
-        file_folder = "\\".join(os.path.dirname(os.path.abspath(__file__)).split("\\")[0:]) + r"\static\Table_Download"
-        with open(os.path.join(file_folder, table + ".csv"), 'w') as table_file:
-            db_cursor.execute('''PRAGMA table_info(Test)''')
+        file_folder = "\\".join(os.path.dirname(os.path.abspath(__file__)).split("\\")[0:]) + r"\Table_Download"
+        filename = table + ".csv"
+        if os.path.exists(os.path.join(file_folder, filename)):
+            os.remove(os.path.join(file_folder, filename))
+        with open(os.path.join(file_folder, filename), 'w') as table_file:
+            db_cursor.execute('''PRAGMA table_info(''' + table + ''')''')
             table_info = db_cursor.fetchall()
             table_fields = [s[1] for s in table_info]
             table_file.write(",".join(table_fields) + "\n")

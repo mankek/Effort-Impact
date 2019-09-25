@@ -5,9 +5,6 @@ import os
 
 app = Flask(__name__)
 
-'TODO: Use Ajax request to check new table name prior to submission. Put table names in quotes to avoid invalid ' \
-    'names. Continue new table construction.'
-
 
 db_folder = "\\".join(os.path.dirname(os.path.abspath(__file__)).split("\\")[0:]) + r"\Database"
 current_db = "DB_1.sqlite"
@@ -23,12 +20,12 @@ def index():
         table_list = []
     return render_template("index.html", table_list=table_list)
 
-
+# Add a new table
 @app.route('/new', methods=['POST', 'GET'])
 def new():
     if request.method == 'GET':
         rec_data = request.args
-        new_name = rec_data['name']
+        new_name = db_obj.clean(rec_data['name'])
         table_exists = db_obj.check_for_table(new_name)
         return str(table_exists)
     if request.method == 'POST':
@@ -38,8 +35,7 @@ def new():
         for i in optional_fields:
             if request.form[i] != "No":
                 required_fields.append(request.form[i])
-        new_name = request.form['new_name']
-        new_name = '"' + new_name + '"'
+        new_name = db_obj.clean(request.form['new_name'])
         db_obj.new_table(new_name, required_fields)
         return redirect(url_for("show", table=new_name))
 
@@ -93,15 +89,15 @@ def add_new(table):
         # if deadline was unchosen, task has no deadline
         if i == 'Deadline':
             if request.form[i] == "":
-                data = "\"No Deadline\""
+                data = "\'No Deadline\'"
             else:
                 if request.form['time'] == "":
                     due_time = "00:00"
                 else:
                     due_time = request.form['time']
-                data = "\"" + request.form[i] + ' ' + due_time + "\""
+                data = request.form[i] + ' ' + due_time
         else:
-            data = "\"" + request.form[i] + "\""
+            data = request.form[i]
         # process form data is added to new task dictionary
         new_task[i] = data
     # new task is added to task sheet
@@ -118,7 +114,15 @@ def update(table):
         change = request.args
         # if effort or impact values are beyond boundaries, set them to max/min values
         eff = change['Effort']
+        if float(eff) > 16:
+            eff = str(16)
+        elif float(eff) < 0:
+            eff = str(0)
         im = change['Impact']
+        if float(im) > 16:
+            im = str(16)
+        elif float(im) < 0:
+            im = str(0)
         task_id = change['Id']
         # updates task sheet with new effort & impact values
         db_obj.update_table(table, task_id, "Effort", eff)
@@ -128,18 +132,18 @@ def update(table):
     if request.method == "POST":
         task_id = request.form["id"]
         field = request.form["Field"]
-        content = "\"" + request.form["Content"] + "\""
+        content = request.form["Content"]
         # if deadline was unchosen, task has no deadline
         # else check for a due time and format the deadline and find amount of time until due
         if field == "Deadline":
             if content == "":
-                content = "\"No Deadline\""
+                content = "\'No Deadline\'"
             else:
                 if request.form["up_time"] == "":
                     due_time = "00:00"
                 else:
                     due_time = request.form["up_time"]
-                content = "\"" + content + ' ' + due_time + "\""
+                content = content + ' ' + due_time
         db_obj.update_table(table, task_id, field, content)
         return redirect(url_for("show", table=table))
 
@@ -168,12 +172,11 @@ def move_task(table):
     return redirect(url_for("show", table=table))
 
 
-@app.route('/download/<table>', methods=['GET'])
+# Download a CSV file containing all tasks from the table
+@app.route('/download/<table>', methods=['POST', 'GET'])
 def download(table):
-    db_obj.download_table(table)
-    file_folder = os.path.join("\\".join(os.path.dirname(os.path.abspath(__file__)).split("\\")[0:]),
-                               r"\static\Table_Download")
-    # returns the current task sheet file
-    # return redirect(url_for("show", table=table))
-    return send_from_directory(directory=r"\static\Table_Download", filename="Test.csv", as_attachment=True)
-
+    if request.method == "POST":
+        db_obj.download_table(table)
+        return "Done!"
+    else:
+        return send_from_directory(directory=r"Table_Download", filename=table + ".csv", as_attachment=True)

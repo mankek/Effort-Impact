@@ -164,7 +164,8 @@ $(document).ready(function(){
             $("#task_div").hide();
             $("#Instructions").hide();
             $("#Update").show(); // hides all other info divs and shows task change form
-            $("#id").val(result[this.id]["Task_ID"]); // populates id field in change form
+            var task_id_len = this.id.split("-").length - 1
+            $("#id").val(this.id.split("-")[task_id_len]); // populates id field in change form
             focused = this;
         }
      })
@@ -267,6 +268,8 @@ $(document).ready(function(){
         ColorClick();
     })
 
+    // Menu click events
+
     // attaches id table click event
     $("#list").on("click", function(){
         if ($("#New").css("display") == "none" && $("#Update").css("display") == "none"){
@@ -316,6 +319,23 @@ $(document).ready(function(){
         }
         $("#New").hide();
         $("#Instructions").show();
+    })
+
+    //attaches download click event
+    $("#download_file").on("click", function(){
+        $.ajax({
+            url: "/download/" + filename,
+            type: 'POST',
+//            data: { "Id": $("#id").val() },
+            success: function () {
+                console.log("success!");
+                window.location = "/download/" + filename
+            },
+            error: function (xhr, errorThrown){
+                console.log(xhr.responseText);
+                console.log(errorThrown);
+            }
+        })
     })
 
     // Button Press Functions
@@ -592,6 +612,7 @@ $(document).ready(function(){
             url: "/move/" + filename,
             data: { "Data": data, "Dest": "Graph" },
             success: function () {
+                console.log("success")
                 location.reload(true)
             },
             error: function (xhr, errorThrown){
@@ -700,12 +721,12 @@ $(document).ready(function(){
 
     // Double Click Event
 
-    // Attaches double-click event to chart
-//    chart.on("dblclick", function(){
-//        if ($("#id_div").css('display') == "none" && $("#Update").css("display") == "none") {
-//            Add_new();
-//        }
-//    })
+//     Attaches double-click event to chart
+    chart.on("dblclick", function(){
+        if ($("#id_div").css('display') == "none" && $("#Update").css("display") == "none") {
+            Add_new();
+        }
+    })
 
     // Attaches double-click event to unplaced container
     $("#Unplaced").on("dblclick", function(){
