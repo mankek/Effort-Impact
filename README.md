@@ -95,3 +95,7 @@ Downloading Task info:
 * A CSV file containing all the task information for the rendered table can be downloaded by clicking the Download
 button in the upper right menu.
 
+API Testing
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/5eb29fa63ae358f00da0)
+
