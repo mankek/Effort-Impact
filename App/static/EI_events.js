@@ -691,12 +691,13 @@ $(document).ready(function(){
             })
             .attr("class", "Data")
             .style("fill", function (d, i) {
+                real_i = Number(result[i]["Task_ID"]) - 1
                 if (scale_flag == "DL"){
-                    return c1_scale(dl_colors[i]);
+                    return c1_scale(dl_colors[real_i]);
                 } else if (scale_flag == "SJ"){
-                    return c2_scale(sj_colors[i]);
+                    return c2_scale(sj_colors[real_i]);
                 } else if (scale_flag == "DP"){
-                    return c2_scale(dp_colors[i]);
+                    return c2_scale(dp_colors[real_i]);
                 }else {
                     console.log("no color scale")
                     return c2_scale(i/10);

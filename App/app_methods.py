@@ -187,19 +187,22 @@ class Database(object):
 
 def format_task(task_in, fields_in):
     task_dict = dict()
-    if "DeadlineField" in fields_in:
-        dl_place = fields_in.index("DeadlineField")
+    if "Deadline" in fields_in:
+        dl_place = fields_in.index("Deadline")
     else:
         dl_place = None
     for index, value in enumerate(task_in):
         if index == dl_place:
-            date = value.split(" ")[0]
-            year = date.split("-")[0]
-            month = date.split("-")[1]
-            day = date.split("\t")[2]
-            time = value.split(" ")[1]
-            hour = time.split(":")[0]
-            task_dict[fields_in[index]] = due_day(year, month, day, hour)
+            if value[1] == "N":
+                task_dict[fields_in[index]] = value
+            else:
+                date = value.split(" ")[0]
+                year = int(date.split("-")[0])
+                month = int(date.split("-")[1])
+                day = int(date.split("-")[2])
+                time = value.split(" ")[1]
+                hour = int(time.split(":")[0])
+                task_dict[fields_in[index]] = value + " " + due_day(year, month, day, hour)
         else:
             try:
                 task_dict[fields_in[index]] = value
@@ -235,25 +238,26 @@ def colors(tasks):
     for i in tasks:
         # checks if deadline is a field
         if 'Deadline' in i.keys():
-            due = i['Deadline'].split('_')[-1].split(" ")
-            # checks if amount of time until deadline is in hours or days
-            if due[1][0] == 'h':
-                dl_colors.append((int(due[0])/24) * 0.0027397260273973)
-            elif due[1][0] == 'd':
-                color_val = int(due[0]) * 0.0027397260273973
-                if color_val <= 1:
-                    dl_colors.append(color_val)
-                else:
-                    dl_colors.append(1)
-            # checks if there is no deadline
-            elif due[0][0] == 'N':
+            due = i['Deadline'].split(" ")
+            # value is "No Deadline"
+            if len(due) == 2:
                 dl_colors.append(1)
-            # checks if task is past due
-            elif due[1][0] == 'i':
-                dl_colors.append(0)
-            # checks if task is due today
-            elif due[1][0] == 't':
-                dl_colors.append(.00136)
+            else:
+                # checks if amount of time until deadline is in hours or days
+                if due[3][0] == 'h':
+                    dl_colors.append((int(due[2])/24) * 0.0027397260273973)
+                elif due[3][0] == 'd':
+                    color_val = int(due[2]) * 0.0027397260273973
+                    if color_val <= 1:
+                        dl_colors.append(color_val)
+                    else:
+                        dl_colors.append(1)
+                # checks if task is past due
+                elif due[2][0] == 'T':
+                    dl_colors.append(0)
+                # checks if task is due today
+                elif due[2][0] == 'D':
+                    dl_colors.append(.00136)
         else:
             break
 

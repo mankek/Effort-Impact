@@ -58,6 +58,7 @@ def view():
 def show(table):
     fields = db_obj.get_fields(table)
     table_tasks, completed_tasks, unplaced_tasks = db_obj.load_table(table, fields)
+    print(table_tasks)
     x, y = effort_impact(table_tasks)
     dl_colors, sj_colors, dp_colors = colors(table_tasks)
     new_tasks = clean_result(table_tasks)
