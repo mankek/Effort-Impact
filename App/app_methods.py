@@ -94,12 +94,13 @@ class Database(object):
             task_dict = format_task(task, fields)
             complete_status = task[5]
             unplaced_status = task[7]
-            if complete_status != "0":
-                complete.append(task_dict)
-            elif unplaced_status != "0":
-                unplaced.append(task_dict)
-            else:
+            if (complete_status == "0") and (unplaced_status == "0"):
                 graph.append(task_dict)
+            else:
+                if complete_status != "0":
+                    complete.append(task_dict)
+                elif unplaced_status != "0":
+                    unplaced.append(task_dict)
         return graph, complete, unplaced
 
     def delete_table(self, table_name):
@@ -140,19 +141,17 @@ class Database(object):
         db_cursor = db_conn.cursor()
         # If moving from storage
         if src != "Graph":
-            db_cursor.execute('''UPDATE ''' + table + ''' SET ''' + src + ''' = 0 WHERE Task_ID = ''' + task_id)
+            db_cursor.execute('''UPDATE ''' + table + ''' SET ''' + src + ''' = '0' WHERE Task_ID = ''' + task_id)
             if src == "Completed":
                 db_cursor.execute('''UPDATE ''' + table + ''' SET Date_Completed = NULL WHERE Task_ID = ''' + task_id)
-            if dest == "Graph":
-                db_cursor.execute('''UPDATE ''' + table + ''' SET ''' + src + ''' = 0 WHERE Task_ID = ''' + task_id)
-            else:
-                db_cursor.execute('''UPDATE ''' + table + ''' SET ''' + dest + ''' = 1 WHERE Task_ID = ''' + task_id)
+            if dest != "Graph":
+                db_cursor.execute('''UPDATE ''' + table + ''' SET ''' + dest + ''' = '1' WHERE Task_ID = ''' + task_id)
         # if moving from graph
         else:
-            db_cursor.execute('''UPDATE ''' + table + ''' SET ''' + dest + ''' = 1 WHERE Task_ID = ''' + task_id)
-            if dest == "Completed":
-                db_cursor.execute('''UPDATE ''' + table + ''' SET Date_Completed = ''' + "\"" +
-                                  str(datetime.date.today()) + " \"" + ''' WHERE Task_ID = ''' + task_id)
+            db_cursor.execute('''UPDATE ''' + table + ''' SET ''' + dest + ''' = '1' WHERE Task_ID = ''' + task_id)
+        if dest == "Completed":
+            db_cursor.execute('''UPDATE ''' + table + ''' SET Date_Completed = ''' + "\"" +
+                              str(datetime.date.today()) + " \"" + ''' WHERE Task_ID = ''' + task_id)
         db_conn.commit()
         db_conn.close()
 
