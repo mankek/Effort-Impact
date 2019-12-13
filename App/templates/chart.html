@@ -76,9 +76,9 @@
                         Task: <input type="text" name="Task" required><br><br>
                         Description: <textarea id="desc" name="Description" required>None</textarea><br><br>
                         <input type="hidden" name="sheet" id="sheet" value="Graph">
-                    </div><br>
-                    <button type="submit">Create Task</button><br>
-                    <button type="button" id="HideNew">Go back</button> <br>
+                    </div>
+                    <button type="submit">Create Task</button>
+<!--                    <button type="button" id="HideNew">Go back</button> <br>-->
                     <br>
                 </form>
             </div>
@@ -111,7 +111,7 @@
             {% for task2 in unplaced %}
             <p id="Unplaced-{{ task2['Task_ID'] }}" draggable="true" class="stored_task">
                 {% for key in task2.keys() %}
-                    {% if (key != "Unplaced") and (key != "Completed") and (key != "Date_Completed") %}
+                    {% if (key != "Unplaced") and (key != "Completed") and (key != "Date_Completed") and (key != "Task_ID") %}
                         <strong>{{ key }}: </strong>{{ task2[key] }}
                     {% endif %}
                 {% endfor %}
@@ -123,7 +123,7 @@
             {% for task in completed %}
             <p id="Completed-{{ task['Task_ID'] }}" draggable="true" class="stored_task">
                 {% for key in task.keys() %}
-                    {% if (key != "Unplaced") and (key != "Completed") %}
+                    {% if (key != "Unplaced") and (key != "Completed") and (key != "Task_ID") %}
                         <strong>{{ key }}: </strong>{{ task[key] }}
                     {% endif  %}
                 {% endfor %}

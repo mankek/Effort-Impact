@@ -175,15 +175,6 @@ class Database(object):
         db_conn.commit()
         db_conn.close()
 
-# print(Database(db_folder_test, current_db_test).check_for_table("test"))
-
-# # print(pandas.__version__)
-# # checks version of pandas available
-# if "0.21.0" < pandas.__version__:
-#     old_pandas = False
-# else:
-#     old_pandas = True
-
 
 def format_task(task_in, fields_in):
     task_dict = dict()
