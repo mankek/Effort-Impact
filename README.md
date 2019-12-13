@@ -1,8 +1,10 @@
+## Effort-Impact Application
+
 This repository contains the source-code for an application that allows for the creation of Effort-Impact graphs 
 with user provided tasks. The application allows the user to provide a variety of detail about each task and to freely
 adjust the level of effort and impact associated with each task. 
 
-The application was made using the Python Flask framework. Each task is saved in a table connected SQLite database.
+The application was made using the Python Flask framework. Each task is saved in a table connected to a SQLite database.
 The interactive graph rendered by the application is created using the D3 library.
 
 ###### Starting and Using the Application

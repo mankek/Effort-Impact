@@ -61,10 +61,10 @@ $(document).ready(function(){
             years_due = Math.floor(days_due/365)
             remaining_days = Math.round(days_due % 365)
             return String(years_due) + " years and " + String(remaining_days) + " days until due"
-        } else if(days_due < 1){
+        } else if (days_due < 1){
             hours_due = Math.round(days_due * 24)
             return String(hours_due) + " hours until due"
-        } else{
+        } else {
             return String(Math.round(days_due)) + " days until due"
         }
     }
@@ -145,13 +145,16 @@ $(document).ready(function(){
     // attaches a click event to all task squares in chart
     g.selectAll("rect.Data")
         .on("click", function(d, i){
-            if ($("#id_div").css('display') == "none" && $("#New").css("display") == "none") {
-                $("#task_div").hide();
-                $("#Instructions").hide();
-                $("#Update").show(); // hides all other info divs and shows task change form
-                $("#id").val(result[this.id]["Task_ID"]); // populates id field in change form
-                focused = this; // clicked square becomes saved under focused variable (for use in deletion)
+            if ($("#id_div").css('display') != "none"){
+                ID_table_hide()
             }
+            if ($("#New").css("display") != "none"){
+                 hide_new()
+            }
+            $("#Instructions").hide();
+            $("#Update").show(); // shows task change form
+            $("#id").val(result[this.id]["Task_ID"]); // populates id field in change form
+            focused = this; // clicked square becomes saved under focused variable (for use in deletion)
         });
 
     // Stored Task Click Event
@@ -272,52 +275,54 @@ $(document).ready(function(){
 
     // attaches id table click event
     $("#list").on("click", function(){
-        if ($("#New").css("display") == "none" && $("#Update").css("display") == "none"){
-            if ($("#id_div").css('display') == "none" || $("#id_div").css("visibility") == "hidden"){
-                $("#Task_check").on("click", function(){ // if task radio button is clicked, id table displays Task
-                    $("#Desc_check").prop("checked", false)
-                    ID_table_hide()
-                    ID_table_show("Task")
-                })
-                $("#Desc_check").on("click", function(){ // If description radio button is clicked, id table displays description
-                    $("#Task_check").prop("checked", false)
-                    ID_table_hide()
-                    ID_table_show("Description")
-                })
-                $("#Task_check").click()
-            } else { // if id table is already visible, id table is hidden
-               ID_table_hide()
+        if ($("#id_div").css('display') == "none" || $("#id_div").css("visibility") == "hidden"){
+            if ($("#New").css("display") != "none"){
+                 hide_new()
             }
+            if ($("#Update").css("display") != "none"){
+                hide_update()
+            }
+            $("#Task_check").on("click", function(){ // if task radio button is clicked, id table displays Task
+                $("#Desc_check").prop("checked", false)
+                ID_table_hide()
+                ID_table_show("Task")
+            })
+            $("#Desc_check").on("click", function(){ // If description radio button is clicked, id table displays description
+                $("#Task_check").prop("checked", false)
+                ID_table_hide()
+                ID_table_show("Description")
+            })
+            $("#Task_check").click()
         }
     })
 
     // attaches add new task button click event
 
     $("#add_new").on("click", function(){
-        if ($("#id_div").css('display') == "none" && $("#Update").css("display") == "none") {
-            Add_new();
+        if ($("#id_div").css('display') != "none"){
+            ID_table_hide()
         }
+        if ($("#Update").css("display") != "none") {
+            hide_update()
+        }
+        Add_new();
     })
 
     // attaches show instructions button click event
     $("#instr_show").on("click", function(){
         // hide change form
-        $("#Update").hide();
+        if ($("#Update").css("display") != "none") {
+            hide_update()
+        }
         $("#task_div").hide();
-        $("#id_div").hide();
-        focused = null;
-        $("p[id|='Unplaced']").css("color", "black")
         // hides id table
-        $(".id_text").remove(); // removes id text from task squares
-        var table = document.getElementById("id_table");
-        for (b = 0; b < $("rect.Data").length; b++) { // contents of id table are deleted
-            table.deleteRow(-1)
+        if ($("#id_div").css('display') != "none"){
+            ID_table_hide()
         }
         // hides new task form
         if ($("#New").css("display") != "none"){
-            d3.selectAll(".Data:last-of-type").remove();
+            hide_new()
         }
-        $("#New").hide();
         $("#Instructions").show();
     })
 
@@ -411,23 +416,27 @@ $(document).ready(function(){
         });
 
     // Hides change form when 'Go back' button is pressed
-    $("#HideUpdate").on("click", function() {
+    function hide_update(){
         $("#Update").hide();
         $("#task_div").hide();
         $("#id_div").hide();
         $("#Instructions").show();
         focused = null;
         $("p[id|='Unplaced']").css("color", "black")
+    }
+
+    $("#HideUpdate").on("click", function() {
+        hide_update()
     })
 
     // Hides new task form when 'Go back' button is pressed
-    $("#HideNew").on("click", function() {
-        $("#New").hide();
-        $("#task_div").hide();
-        $("#id_div").hide();
-        $("#Instructions").show();
-        d3.selectAll(".Data:last-of-type").remove();
-    })
+    function hide_new(){
+         $("#New").hide();
+         $("#task_div").hide();
+         $("#id_div").hide();
+         $("#Instructions").show();
+         d3.selectAll(".Data:last-of-type").remove();
+    }
 
 
     // Drag Functions
@@ -691,13 +700,16 @@ $(document).ready(function(){
             })
             .attr("class", "Data")
             .style("fill", function (d, i) {
-                real_i = Number(result[i]["Task_ID"]) - 1
+//                real_i = Number(result[i]["Task_ID"]) - 1
                 if (scale_flag == "DL"){
-                    return c1_scale(dl_colors[real_i]);
+//                    return c1_scale(dl_colors[real_i]);
+                      return c1_scale(dl_colors[1])
                 } else if (scale_flag == "SJ"){
-                    return c2_scale(sj_colors[real_i]);
+//                    return c2_scale(sj_colors[real_i]);
+                      return c2_scale(sj_colors[1])
                 } else if (scale_flag == "DP"){
-                    return c2_scale(dp_colors[real_i]);
+//                    return c2_scale(dp_colors[real_i]);
+                      return c2_scale(dp_colors[1])
                 }else {
                     console.log("no color scale")
                     return c2_scale(i/10);
@@ -716,7 +728,7 @@ $(document).ready(function(){
             });
         $("#Instructions").hide();
         $("#task_div").hide();
-        $("#Update").hide();
+//        $("#Update").hide();
         $("#New").show();
     }
 
