@@ -26,7 +26,7 @@ class Database(object):
 
     @staticmethod
     def clean(table_name):
-        bad_characters = ["?", "/", "\\", "*", ":", "|", "<", ">", "\"", "'", ";"]
+        bad_characters = ["?", "/", "\\", "*", ":", "|", "<", ">", ";"]
         for i in bad_characters:
             if table_name.find(i) != -1:
                 table_name = table_name.replace(i, "")
@@ -64,13 +64,13 @@ class Database(object):
         db_conn = sqlite3.connect(self.db_path)
         db_cursor = db_conn.cursor()
         field_string = "Task_ID INTEGER PRIMARY KEY AUTOINCREMENT, " + ", ".join(table_fields)
-        db_cursor.execute('''CREATE TABLE ''' + table_name + ''' (''' + field_string + ''')''')
+        db_cursor.execute('''CREATE TABLE ''' + "\"" + table_name + "\"" + ''' (''' + field_string + ''')''')
 
     def get_fields(self, table):
         fields = []
         db_conn = sqlite3.connect(self.db_path)
         db_cursor = db_conn.cursor()
-        db_cursor.execute('''PRAGMA table_info(''' + table + ''')''')
+        db_cursor.execute('''PRAGMA table_info(''' + "\"" + table + "\"" + ''')''')
         results = db_cursor.fetchall()
         db_conn.commit()
         db_conn.close()
@@ -83,7 +83,7 @@ class Database(object):
     def load_table(self, table_name, fields):
         db_conn = sqlite3.connect(self.db_path)
         db_cursor = db_conn.cursor()
-        db_cursor.execute('''SELECT ''' + ", ".join(fields) + ''' FROM ''' + table_name)
+        db_cursor.execute('''SELECT ''' + ", ".join(fields) + ''' FROM ''' + "\"" + table_name + "\"")
         results = db_cursor.fetchall()
         db_conn.commit()
         db_conn.close()
@@ -106,7 +106,7 @@ class Database(object):
     def delete_table(self, table_name):
         db_conn = sqlite3.connect(self.db_path)
         db_cursor = db_conn.cursor()
-        db_cursor.execute('''DROP TABLE ''' + table_name)
+        db_cursor.execute('''DROP TABLE ''' + "\"" + table_name + "\"")
         db_conn.commit()
         db_conn.close()
 
