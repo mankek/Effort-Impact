@@ -73,7 +73,7 @@
                     <h2>New Task Form</h2>
                     <br>
                     <div id="input">
-                        Task: <input type="text" name="Task" required><br><br>
+                        Task: <input type="text" name="Task" required autocomplete="off"><br><br>
                         Description: <textarea id="desc" name="Description" required>None</textarea><br><br>
                         <input type="hidden" name="sheet" id="sheet" value="Graph">
                     </div>
@@ -170,7 +170,7 @@
             if (fields[i] == "Subject" || fields[i] == "Department" || fields[i] == "Notes") {
                 // Form 1
                 var label = $("<label></label>").text(String(fields[i]) + ": ")
-                var new_in = $("<input>").attr("type", "text").attr("name", String(fields[i])).attr("value", "None");
+                var new_in = $("<input>").attr("type", "text").attr("name", String(fields[i])).attr("value", "None").attr("autocomplete", "off");
                 var space = $("<br>")
                 var space_2 = $("<br>")
                 $("#input").append(label, new_in, space, space_2)
