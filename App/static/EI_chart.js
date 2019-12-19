@@ -156,13 +156,13 @@ g.append("rect")
     .attr("width", 25)
     .attr("height", 25)
     .style("fill", function (d, i) {
-        real_i = Number(result[i]["Task_ID"]) - 1
+//        real_i = Number(result[i]["Task_ID"]) - 1
         if (scale_flag == "DL"){
-            return c1_scale(dl_colors[real_i]);
+            return c1_scale(dl_colors[i]);
         } else if (scale_flag == "SJ"){
-            return c2_scale(sj_colors[real_i]);
+            return c2_scale(sj_colors[i]);
         } else if (scale_flag == "DP"){
-            return c2_scale(dp_colors[real_i]);
+            return c2_scale(dp_colors[i]);
         } else if (scale_flag == "None"){
             return c2_scale(i/10);
         }
