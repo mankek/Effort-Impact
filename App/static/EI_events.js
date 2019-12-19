@@ -305,6 +305,10 @@ $(document).ready(function(){
         if ($("#Update").css("display") != "none") {
             hide_update()
         }
+        if ($("#New").css("display") != "none"){
+            hide_new()
+        }
+        $("#sheet").val("Graph")
         Add_new();
     })
 
@@ -431,12 +435,18 @@ $(document).ready(function(){
 
     // Hides new task form when 'Go back' button is pressed
     function hide_new(){
-         $("#New").hide();
          $("#task_div").hide();
          $("#id_div").hide();
          $("#Instructions").show();
-         d3.selectAll(".Data:last-of-type").remove();
+         if (($("#sheet").val() === "Graph") && ($("#New").css("display") != "none")){
+            d3.selectAll(".Data:last-of-type").remove();
+         }
+         $("#New").hide();
     }
+
+    $("#HideNew").on("click", function() {
+        hide_new()
+    })
 
 
     // Drag Functions
@@ -734,22 +744,26 @@ $(document).ready(function(){
 
     // Double Click Event
 
-//     Attaches double-click event to chart
+    // Attaches double-click event to chart
     chart.on("dblclick", function(){
-        if ($("#id_div").css('display') == "none" && $("#Update").css("display") == "none") {
-            Add_new();
-        }
+        ID_table_hide()
+        hide_update()
+        hide_new()
+        $("#Instructions").hide();
+        $("#task_div").hide();
+        $("#sheet").val("Graph")
+        Add_new();
     })
 
     // Attaches double-click event to unplaced container
     $("#Unplaced").on("dblclick", function(){
-        if ($("#id_div").css('display') == "none" && $("#Update").css("display") == "none") {
-            $("#Instructions").hide();
-            $("#task_div").hide();
-            $("#Update").hide();
-            $("#New").show();
-            $("#sheet").val("Unplaced")
-        }
+        ID_table_hide()
+        hide_update()
+        hide_new()
+        $("#Instructions").hide();
+        $("#task_div").hide();
+        $("#sheet").val("Unplaced")
+        $("#New").show();
     })
 
 
