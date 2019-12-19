@@ -22,7 +22,7 @@ $(document).ready(function(){
         var table = document.getElementById("task_table")
         for (i in result[index]) { // task table is populated with square's task info
             var no_show = ["Task_ID", "Effort", "Impact", "Completed", "Unplaced", "Date_Completed"]
-            if (no_show.includes(i) == false){
+            if (no_show.indexOf(i) == -1){
                 var row = table.insertRow(-1)
                 var cell1 = row.insertCell(0)
                 var cell2 = row.insertCell(1)
