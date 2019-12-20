@@ -5,7 +5,6 @@ body {
     width: 100%;
     min-width: 1930px;
     height: 100%;
-    overflow-x: hidden;
     font-family: sans-serif;
 }
 #heading {
